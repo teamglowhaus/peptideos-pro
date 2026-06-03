@@ -646,6 +646,17 @@ function rTL(){
     '</div>'+
     '<div class="card" style="margin-bottom:16px"><div class="st">&#9200; Daily Reminder</div><p style="font-size:12px;color:#64748b;margin-bottom:12px">Get a daily notification to log your peptide doses on time</p>'+
     '<button class="bp" onclick="setupReminder()" style="min-width:180px">'+(localStorage.getItem('pep_reminder')?'&#9200; Reminder set: '+localStorage.getItem('pep_reminder')+' (Edit)':'&#9200; Set Daily Reminder')+'</button></div>'+
+    '<div class="card" style="margin-bottom:16px"><div class="st">&#128260; Backup &amp; Restore</div><p style="font-size:12px;color:#64748b;margin-bottom:14px">Save all your data to a file and restore it on any device or browser</p>'+
+    '<div style="display:flex;flex-direction:column;gap:10px">'+
+    '<button class="bp" onclick="exportAllData()" style="width:100%;padding:13px 0">&#128190; Save Backup File</button>'+
+    '<button onclick="importAllData()" style="width:100%;padding:13px 0;border-radius:10px;background:rgba(59,130,246,0.12);border:1px solid rgba(59,130,246,0.3);color:#60a5fa;cursor:pointer;font-family:inherit;font-weight:700;font-size:14px">&#128204; Restore From Backup</button>'+
+    '</div>'+
+    '<div style="margin-top:14px;padding:12px;border-radius:10px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);font-size:12px;color:#64748b;line-height:1.7">'+
+    '<strong style="color:#94a3b8">Switching devices or browsers?</strong><br>'+
+    '1. Tap <em>Save Backup File</em> on your current device<br>'+
+    '2. Transfer the file to your new device (AirDrop, email, Google Drive, etc.)<br>'+
+    '3. Open the app on your new device, tap <em>Restore From Backup</em>, and select the file'+
+    '</div></div>'+
     '<div class="card" style="margin-bottom:16px"><div class="st">&#128228; Export Data</div><p style="font-size:12px;color:#64748b;margin-bottom:12px">Download your data as CSV to share with your healthcare provider</p>'+ebts+'</div>'+
     '</div>';
 }
@@ -828,6 +839,37 @@ function expDL(){var rows=[['Date','Peptide','Dose','Unit','Site','Mood','Side E
 function expBD(){var rows=[['Date','Weight','BF%','Waist','Hips','Chest','Arm','Thigh','Energy','Notes']];S.body.forEach(function(s){rows.push([s.date,s.weight,s.bf,s.waist,s.hips,s.chest,s.arm,s.thigh,s.energy,s.notes||'']);});dlCSV('body_measurements.csv',rows);toast('Measurements exported! &#128228;');}
 function expPR(){var rows=[['Peptide','Category','Dose','Unit','Route','Frequency','Days','Start Date','Notes']];S.protocol.forEach(function(p){var pep=gp(p.id);rows.push([p.name,pep?pep.cat:'',p.dose,p.unit,p.route,pep?pep.freq:'',(p.days||[]).join(', '),p.startDate,p.notes||'']);});dlCSV('peptide_protocol.csv',rows);toast('Protocol exported! &#128228;');}
 function expLB(){var rows=[['Date','Marker','Value','Unit','Reference Range','Notes']];S.labs.forEach(function(e){(e.markers||[]).forEach(function(m){rows.push([e.date,m.name,m.value,m.unit,m.range||'',e.notes||'']);});});dlCSV('lab_results.csv',rows);toast('Labs exported! &#128228;');}
+
+function exportAllData(){
+  var keys=['pep_prot','pep_logs','pep_body','pep_vials','pep_jrn','pep_labs','pep_goals','pep_reminder'];
+  var data={_v:1,_date:new Date().toISOString()};
+  keys.forEach(function(k){try{var v=localStorage.getItem(k);if(v)data[k]=JSON.parse(v);}catch(e){};});
+  var blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  var a=document.createElement('a');a.href=URL.createObjectURL(blob);
+  a.download='PeptideOS-backup-'+new Date().toISOString().slice(0,10)+'.json';
+  document.body.appendChild(a);a.click();document.body.removeChild(a);
+  toast('Backup saved! Transfer this file to your other device. &#128190;');
+}
+function importAllData(){
+  var inp=document.createElement('input');inp.type='file';inp.accept='.json';
+  inp.onchange=function(e){
+    var file=e.target.files[0];if(!file)return;
+    var reader=new FileReader();
+    reader.onload=function(ev){
+      try{
+        var data=JSON.parse(ev.target.result);
+        if(!data._v){toast('Invalid backup file','w');return;}
+        var keys=['pep_prot','pep_logs','pep_body','pep_vials','pep_jrn','pep_labs','pep_goals','pep_reminder'];
+        keys.forEach(function(k){if(data[k]!==undefined)try{localStorage.setItem(k,JSON.stringify(data[k]));}catch(e){};});
+        S.protocol=ld('pep_prot',[]);S.logs=ld('pep_logs',{});S.body=ld('pep_body',[]);
+        S.vials=ld('pep_vials',[]);S.journal=ld('pep_jrn',[]);S.labs=ld('pep_labs',[]);S.goals=ld('pep_goals',{});
+        render();toast('Data restored successfully! &#9989;');
+      }catch(ex){toast('Could not read backup file. Make sure it is a valid PeptideOS backup.','w');}
+    };
+    reader.readAsText(file);
+  };
+  inp.click();
+}
 
 // PUSH NOTIFICATIONS
 var _swReg=null;
