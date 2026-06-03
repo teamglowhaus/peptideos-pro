@@ -644,6 +644,8 @@ function rTL(){
     '<div class="card" style="margin-bottom:16px"><div class="st">&#9203; Cycle Countdowns</div>'+
     (act.length===0?'<p style="color:#64748b;font-size:13px;margin-top:10px">Add peptides to see cycle countdowns.</p>':'<div class="ga" style="margin-top:12px">'+cd+'</div>')+
     '</div>'+
+    '<div class="card" style="margin-bottom:16px"><div class="st">&#9200; Daily Reminder</div><p style="font-size:12px;color:#64748b;margin-bottom:12px">Get a daily notification to log your peptide doses on time</p>'+
+    '<button class="bp" onclick="setupReminder()" style="min-width:180px">'+(localStorage.getItem('pep_reminder')?'&#9200; Reminder set: '+localStorage.getItem('pep_reminder')+' (Edit)':'&#9200; Set Daily Reminder')+'</button></div>'+
     '<div class="card" style="margin-bottom:16px"><div class="st">&#128228; Export Data</div><p style="font-size:12px;color:#64748b;margin-bottom:12px">Download your data as CSV to share with your healthcare provider</p>'+ebts+'</div>'+
     '</div>';
 }
@@ -826,6 +828,56 @@ function expDL(){var rows=[['Date','Peptide','Dose','Unit','Site','Mood','Side E
 function expBD(){var rows=[['Date','Weight','BF%','Waist','Hips','Chest','Arm','Thigh','Energy','Notes']];S.body.forEach(function(s){rows.push([s.date,s.weight,s.bf,s.waist,s.hips,s.chest,s.arm,s.thigh,s.energy,s.notes||'']);});dlCSV('body_measurements.csv',rows);toast('Measurements exported! &#128228;');}
 function expPR(){var rows=[['Peptide','Category','Dose','Unit','Route','Frequency','Days','Start Date','Notes']];S.protocol.forEach(function(p){var pep=gp(p.id);rows.push([p.name,pep?pep.cat:'',p.dose,p.unit,p.route,pep?pep.freq:'',(p.days||[]).join(', '),p.startDate,p.notes||'']);});dlCSV('peptide_protocol.csv',rows);toast('Protocol exported! &#128228;');}
 function expLB(){var rows=[['Date','Marker','Value','Unit','Reference Range','Notes']];S.labs.forEach(function(e){(e.markers||[]).forEach(function(m){rows.push([e.date,m.name,m.value,m.unit,m.range||'',e.notes||'']);});});dlCSV('lab_results.csv',rows);toast('Labs exported! &#128228;');}
+
+// PUSH NOTIFICATIONS
+var _swReg=null;
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.register('/peptideos-pro/sw.js').then(function(reg){
+    _swReg=reg;
+    if('periodicSync' in reg){
+      navigator.permissions.query({name:'periodic-background-sync'}).then(function(st){
+        if(st.state==='granted'){reg.periodicSync.register('daily-dose',{minInterval:60*60*1000}).catch(function(){});}
+      }).catch(function(){});
+    }
+  }).catch(function(){});
+}
+setInterval(function(){
+  var rt=localStorage.getItem('pep_reminder');
+  if(!rt||Notification.permission!=='granted')return;
+  var now=new Date(),parts=rt.split(':');
+  if(now.getHours()===parseInt(parts[0])&&now.getMinutes()===parseInt(parts[1])){
+    var today=now.toDateString();
+    if(localStorage.getItem('pep_last_notif')!==today){
+      localStorage.setItem('pep_last_notif',today);
+      var opts={body:"Time for your daily peptides! Open the app to log today's doses.",tag:'daily-dose',requireInteraction:true};
+      if(_swReg){_swReg.showNotification('PeptideOS Pro',opts);}
+      else{try{new Notification('PeptideOS Pro',opts);}catch(e){}}
+    }
+  }
+},60000);
+function setupReminder(){
+  if(!('Notification' in window)){toast('Notifications not supported on this browser','w');return;}
+  Notification.requestPermission().then(function(p){
+    if(p==='granted'){openReminderModal();}
+    else{toast('Please enable notifications in your browser or device settings','w');}
+  }).catch(function(){openReminderModal();});
+}
+function openReminderModal(){
+  var cur=localStorage.getItem('pep_reminder')||'';
+  openM(MH('&#9200; Daily Reminder')+
+    '<p style="color:#64748b;font-size:13px;margin-bottom:16px">Choose a time to receive a daily notification to log your peptide doses.</p>'+
+    '<label class="lbl">Reminder Time</label><input type="time" class="if" id="rt" style="margin:6px 0 16px" value="'+cur+'">'+
+    '<button class="bp" style="width:100%;padding:12px 0;margin-bottom:10px" onclick="saveReminder()">Save Reminder &#10003;</button>'+
+    (cur?'<button onclick="cancelReminder()" style="width:100%;padding:10px 0;border-radius:9px;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);color:#f87171;cursor:pointer;font-family:inherit;font-weight:600">Remove Reminder</button>':'')+
+    '<div style="margin-top:16px;padding:12px;border-radius:10px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);font-size:12px;color:#64748b;line-height:1.6">&#128241; <strong style="color:#94a3b8">iPhone users:</strong> For background reminders, add this app to your Home Screen. In Safari tap the Share button &#8679; then tap <em>Add to Home Screen</em>.</div>');
+}
+function saveReminder(){
+  var t=document.getElementById('rt').value;
+  if(!t){alert('Please pick a time');return;}
+  localStorage.setItem('pep_reminder',t);
+  closeM();toast('Reminder set for '+t+' every day! &#9989;');
+}
+function cancelReminder(){localStorage.removeItem('pep_reminder');closeM();toast('Reminder removed');}
 
 // INIT
 window._rc={};window._icA='';window._icB='';
