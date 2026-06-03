@@ -50,7 +50,8 @@ textarea.if{resize:vertical;min-height:80px}
 .g4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
 .ga{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px}
 .bdg{display:inline-block;padding:2px 9px;border-radius:999px;font-size:10px;font-weight:700}
-#ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:100;align-items:center;justify-content:center;padding:16px}
+#ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:100;align-items:center;justify-content:center;padding:16px;-webkit-transform:translateZ(0);transform:translateZ(0)}
+select.if{pointer-events:auto;position:relative;z-index:2}
 #ov.open{display:flex}
 .modal{background:#111827;border:1px solid rgba(255,255,255,0.1);border-radius:20px;max-width:560px;width:100%;max-height:90vh;overflow-y:auto;padding:24px}
 #notif{position:fixed;top:20px;right:16px;z-index:999;padding:11px 18px;border-radius:10px;font-weight:600;font-size:13px;border:1px solid;display:none;animation:sli 0.3s ease}
@@ -276,6 +277,12 @@ var PL = [
   {id:"combo_sleep",name:"Sleep and Recovery Stack",cat:"Combo Blends",aka:"DSIP + MK-677 + BPC-157",color:"#f43f5e",hl:"Varies",dose:"100-300mcg DSIP + 10-25mg MK-677 + 250mcg BPC",routes:['SubQ + Oral'],freq:"Nightly",cycle:"4-8 weeks",benefits:['Deep sleep architecture','GH pulse during sleep','Overnight repair'],notes:"DSIP for sleep + MK-677 oral for GH pulse + BPC-157 for overnight repair.",emoji:"&#127769;",isCombo:true,components:['DSIP','MK-677','BPC-157']},
   {id:"combo_wl",name:"Weight Loss Stack",cat:"Combo Blends",aka:"GLP-1 + AOD-9604",color:"#f43f5e",hl:"Varies",dose:"Per GLP-1 titration + 250mcg AOD",routes:['SubQ'],freq:"Weekly GLP-1 + Daily AOD",cycle:"Ongoing",benefits:['Maximum weight loss','Appetite control','Targeted fat metabolism'],notes:"Any GLP-1 plus AOD-9604. Appetite control + fat cell metabolism.",emoji:"&#127939;",isCombo:true,components:['Semaglutide/Tirzepatide/Retatrutide','AOD-9604']},
   {id:"combo_trt",name:"TRT Support Stack",cat:"Combo Blends",aka:"Gonadorelin + Kisspeptin-10",color:"#f43f5e",hl:"Varies",dose:"100-250mcg Gon + 200-500mcg Kiss",routes:['SubQ'],freq:"2-3x/week",cycle:"Ongoing with TRT",benefits:['Testicular preservation','LH/FSH maintenance','Fertility support'],notes:"Essential for men on TRT preserving fertility and testicular size.",emoji:"&#9879;",isCombo:true,components:['Gonadorelin','Kisspeptin-10']},
+  {id:"glutathione",name:"Glutathione",cat:"Longevity",aka:"GSH / Master Antioxidant",color:"#10b981",hl:"Minutes IV / ~1 hr SubQ",dose:"200-1200 mg",routes:['IV','SubQ','Oral','Nebulized'],freq:"Daily to 3x/week",cycle:"Ongoing",benefits:['Master antioxidant','Skin brightening','Detoxification','Immune support','Anti-aging'],notes:"Tripeptide of glycine, cysteine and glutamate. IV has highest bioavailability. Liposomal oral is next best. SubQ is growing in popularity for convenience.",emoji:"&#10024;"},
+  {id:"lcarnitine",name:"L-Carnitine",cat:"GLP-1 / Metabolic",aka:"L-Carnitine / Acetyl-L-Carnitine",color:"#f59e0b",hl:"~3 hrs",dose:"500-2000 mg",routes:['Oral','IM','IV'],freq:"Daily",cycle:"Ongoing",benefits:['Fat metabolism','Energy production','Mitochondrial support','Exercise recovery','Cognitive support'],notes:"Transports fatty acids into mitochondria for energy. Injectable has higher bioavailability than oral. Pairs well with AOD-9604 for enhanced fat metabolism.",emoji:"&#128293;"},
+  {id:"amino1mq",name:"5-Amino-1MQ",cat:"Longevity",aka:"5-Amino-1-Methylquinolinium",color:"#10b981",hl:"4-6 hrs",dose:"50-200 mg",routes:['Oral','SubQ'],freq:"Daily to 3x/week",cycle:"8-12 weeks",benefits:['NNMT inhibition','NAD+ pathway boost','Fat metabolism','Metabolic health','Weight management'],notes:"Inhibits NNMT enzyme to boost NAD+ precursors and activate fat burning. Often stacked with NAD+ for synergistic metabolic benefit. Start low.",emoji:"&#9889;"},
+  {id:"glow",name:"Glow",cat:"Skin & Anti-Aging",aka:"Glow Peptide Blend",color:"#c084fc",hl:"Varies",dose:"Per vendor protocol",routes:['SubQ','Topical','IV'],freq:"Per protocol",cycle:"Ongoing",benefits:['Skin radiance','Anti-aging','Collagen support','Complexion enhancement','Luminosity'],notes:"Glow-focused peptide formulation. Follow your specific vendor or provider protocol for dosing and administration guidance.",emoji:"&#10024;"},
+  {id:"klow",name:"KLOW",cat:"Longevity",aka:"KLOW Peptide",color:"#10b981",hl:"Varies",dose:"Per vendor protocol",routes:['SubQ','IV'],freq:"Per protocol",cycle:"Per protocol",benefits:['Per vendor protocol'],notes:"Follow your specific vendor or provider protocol for dosing and administration guidance.",emoji:"&#128300;"},
+  {id:"cag4",name:"CAG-4",cat:"Bioregulators",aka:"CAG Peptide Bioregulator",color:"#78716c",hl:"Unknown",dose:"1-2 mg",routes:['SubQ','Oral'],freq:"Daily cycled",cycle:"10-day cycles",benefits:['Cellular regulation','Tissue support','Organ bioregulation','Longevity'],notes:"Peptide bioregulator. Use in 10-day cycles 2-3 times per year following the Khavinson bioregulator protocol.",emoji:"&#128300;"},
 ];
 
 var CATS=[];PL.forEach(function(p){if(CATS.indexOf(p.cat)<0)CATS.push(p.cat);});
@@ -308,6 +315,9 @@ var SMX=[['bpc157','tb500'],['cjc1295','ipamorelin'],['cjc1295','ghrp2'],['sermo
 // ── RENDER ENGINE ─────────────────────────────────────────────
 function render(){
   var el=document.getElementById('main'),t=S.tab;
+  var prev=document.activeElement;
+  var isLibSearch=t==='lb'&&prev&&prev.tagName==='INPUT'&&el.contains(prev);
+  var sPos=isLibSearch&&prev.selectionStart!=null?prev.selectionStart:0;
   if(t==='db')el.innerHTML=rDB();
   else if(t==='td')el.innerHTML=rTD();
   else if(t==='pr')el.innerHTML=rPR();
@@ -318,6 +328,7 @@ function render(){
   else if(t==='jn')el.innerHTML=rJN();
   else if(t==='lx')el.innerHTML=rLX();
   else if(t==='tl')el.innerHTML=rTL();
+  if(isLibSearch){var ni=el.querySelector('input.if');if(ni){ni.focus();try{ni.setSelectionRange(sPos,sPos);}catch(e){}}}
 }
 function H1(t){return '<h1 style="font-family:\'Space Grotesk\',sans-serif;font-size:26px;font-weight:700;margin-bottom:6px">'+t+'</h1>';}
 function Sub(t){return '<p style="color:#64748b;font-size:14px;margin-bottom:20px">'+t+'</p>';}
@@ -692,12 +703,12 @@ function openLogModal(pepId){
     '<label class="lbl">Side Effects</label><input class="if" id="lse" style="margin:4px 0 10px" placeholder="None, or describe..." value="'+(ex.sideEffects||'')+'">'+
     '<label class="lbl">Improvements / Results</label><input class="if" id="lim" style="margin:4px 0 10px" placeholder="Pain relief, energy, sleep..." value="'+(ex.improvements||'')+'">'+
     '<label class="lbl">Notes</label><input class="if" id="ln" style="margin:4px 0 10px" placeholder="Timing, observations..." value="'+(ex.notes||'')+'">'+
-    '<label class="lbl">Effectiveness Rating</label><div style="display:flex;gap:5px;margin:6px 0 14px" id="sr">'+[1,2,3,4,5].map(function(s){return '<button onclick="setSt('+s+')" id="st'+s+'" style="font-size:22px;cursor:pointer;background:none;border:none;color:'+(ex.rating>=s?'#f59e0b':'#2a3a5c')+'">&#11088;</button>';}).join('')+'</div>'+
+    '<label class="lbl">Effectiveness Rating</label><div style="display:flex;gap:5px;margin:6px 0 14px" id="sr">'+[1,2,3,4,5].map(function(s){return '<button onclick="setSt('+s+')" id="st'+s+'" style="font-size:28px;cursor:pointer;background:none;border:none;line-height:1;color:'+(ex.rating>=s?'#f59e0b':'#374151')+'">&#9733;</button>';}).join('')+'</div>'+
     '<input type="hidden" id="lr" value="'+(ex.rating||0)+'">'+
     '<button class="bp" style="width:100%;padding:12px 0;font-size:15px" onclick="subLog(\''+pepId+'\')">&#10003; Log Dose</button>'+
     '<p style="font-size:11px;color:#475569;text-align:center;margin-top:8px">&#9888; For research purposes only. Always consult a qualified healthcare provider.</p>');
 }
-function setSt(n){document.getElementById('lr').value=n;for(var i=1;i<=5;i++){var s=document.getElementById('st'+i);if(s)s.style.color=i<=n?'#f59e0b':'#2a3a5c';}}
+function setSt(n){document.getElementById('lr').value=n;for(var i=1;i<=5;i++){var s=document.getElementById('st'+i);if(s)s.style.color=i<=n?'#f59e0b':'#374151';}}
 function subLog(pepId){
   var mood='';document.querySelectorAll('.mdb').forEach(function(b){if(b.style.color==='rgb(0, 212, 170)')mood=b.getAttribute('data-m');});
   S.logs[pepId+'_'+S.date]={taken:true,actualDose:document.getElementById('ld').value,siteUsed:document.getElementById('ls').value,mood:mood,sideEffects:document.getElementById('lse').value,improvements:document.getElementById('lim').value,notes:document.getElementById('ln').value,rating:parseInt(document.getElementById('lr').value)||0,ts:new Date().toISOString()};
@@ -759,13 +770,13 @@ function openJrn(){
     '<div><label class="lbl">Entry</label><textarea class="if" id="jb" style="margin-top:4px;min-height:100px" placeholder="How are you feeling? What changes have you noticed?"></textarea></div>'+
     '<div class="g2" style="gap:10px"><div><label class="lbl">Side Effects</label><input class="if" id="jse" style="margin-top:4px" placeholder="None, or describe..."></div><div><label class="lbl">Improvements</label><input class="if" id="jim" style="margin-top:4px" placeholder="Pain down, energy up..."></div></div>'+
     '<div style="display:flex;gap:20px;align-items:center"><div><label class="lbl">Energy</label><div style="display:flex;gap:4px;margin-top:5px">'+[1,2,3,4,5].map(function(n){return '<button onclick="setJE('+n+')" id="je'+n+'" style="font-size:18px;cursor:pointer;background:none;border:none;opacity:'+(n<=3?'1':'0.25')+'">&#9889;</button>';}).join('')+'</div></div>'+
-    '<div><label class="lbl">Rating</label><div style="display:flex;gap:3px;margin-top:5px">'+[1,2,3,4,5].map(function(n){return '<button onclick="setJR('+n+')" id="jrat'+n+'" style="font-size:18px;cursor:pointer;background:none;border:none;color:#2a3a5c">&#11088;</button>';}).join('')+'</div></div></div></div>'+
+    '<div><label class="lbl">Rating</label><div style="display:flex;gap:3px;margin-top:5px">'+[1,2,3,4,5].map(function(n){return '<button onclick="setJR('+n+')" id="jrat'+n+'" style="font-size:24px;cursor:pointer;background:none;border:none;line-height:1;color:#374151">&#9733;</button>';}).join('')+'</div></div></div></div>'+
     '<input type="hidden" id="jen" value="3"><input type="hidden" id="jrn" value="0">'+
     '<button class="bp" style="width:100%;margin-top:16px;padding:12px 0" onclick="subJrn()">Save Entry</button>');
 }
 function tJP(name){var i=window._jp.indexOf(name);if(i>=0)window._jp.splice(i,1);else window._jp.push(name);document.querySelectorAll('[id^="jp_"]').forEach(function(b){var n=b.textContent;b.style.background=window._jp.indexOf(n)>=0?'rgba(0,212,170,0.2)':'rgba(255,255,255,0.06)';b.style.color=window._jp.indexOf(n)>=0?'#00d4aa':'#94a3b8';});}
 function setJE(n){document.getElementById('jen').value=n;for(var i=1;i<=5;i++){var e=document.getElementById('je'+i);if(e)e.style.opacity=i<=n?'1':'0.25';}}
-function setJR(n){window._jr=n;document.getElementById('jrn').value=n;for(var i=1;i<=5;i++){var s=document.getElementById('jrat'+i);if(s)s.style.color=i<=n?'#f59e0b':'#2a3a5c';}}
+function setJR(n){window._jr=n;document.getElementById('jrn').value=n;for(var i=1;i<=5;i++){var s=document.getElementById('jrat'+i);if(s)s.style.color=i<=n?'#f59e0b':'#374151';}}
 function subJrn(){
   var body=document.getElementById('jb').value;
   if(!body){alert('Write something first');return;}
