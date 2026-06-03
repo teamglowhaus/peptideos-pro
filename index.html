@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>PeptideOS Pro</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:linear-gradient(135deg,#0a0a14,#0d1220,#0a0f1a);color:#e2e8f0;font-family:'DM Sans','Segoe UI',sans-serif;min-height:100vh}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:#0d1220}::-webkit-scrollbar-thumb{background:#2a3a5c;border-radius:3px}
+a{color:#00d4aa;text-decoration:none}
+#hdr{background:rgba(0,0,0,0.5);border-bottom:1px solid rgba(255,255,255,0.07);padding:0 16px;position:sticky;top:0;z-index:50;backdrop-filter:blur(12px)}
+#hdr-in{max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:58px;gap:12px}
+#logo{display:flex;align-items:center;gap:10px;flex-shrink:0}
+#logo-ic{width:34px;height:34px;background:linear-gradient(135deg,#00d4aa,#3b82f6);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:17px}
+#logo-nm{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:17px}
+#logo-sb{font-size:9px;color:#64748b;letter-spacing:0.5px;text-transform:uppercase}
+#dnav{display:flex;gap:2px;flex-wrap:wrap}
+.tb{cursor:pointer;background:none;border:none;color:#64748b;font-size:12px;font-weight:600;padding:8px 11px;border-radius:9px;transition:all 0.2s;font-family:inherit;white-space:nowrap}
+.tb.on{background:rgba(0,212,170,0.12);color:#00d4aa}
+.tb:hover:not(.on){color:#94a3b8;background:rgba(255,255,255,0.04)}
+#mnav{display:none;position:fixed;bottom:0;left:0;right:0;z-index:60;background:rgba(10,10,20,0.97);border-top:1px solid rgba(255,255,255,0.1);padding:6px 0 8px}
+.mt{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:6px 4px;cursor:pointer;background:none;border:none;color:#64748b;font-size:10px;font-weight:600;font-family:inherit;min-height:52px}
+.mt-ic{font-size:20px;line-height:1}
+.mt.on{color:#00d4aa}
+#mnav-in{display:flex;justify-content:space-around}
+#mdraw{display:none;position:fixed;bottom:68px;left:0;right:0;z-index:59;background:rgba(13,18,32,0.98);border-top:1px solid rgba(255,255,255,0.1);padding:12px;grid-template-columns:1fr 1fr;gap:8px}
+#mdraw.open{display:grid}
+.mi{display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:11px;background:rgba(255,255,255,0.05);border:none;cursor:pointer;font-family:inherit;color:#e2e8f0;font-size:14px;font-weight:600}
+.mi.on{background:rgba(0,212,170,0.12);color:#00d4aa}
+#mbk{display:none;position:fixed;inset:0;z-index:58}
+#mbk.open{display:block}
+#main{max-width:1100px;margin:0 auto;padding:20px 16px 100px}
+.card{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);border-radius:16px;padding:20px;margin-bottom:16px}
+.ch:hover{background:rgba(255,255,255,0.07)!important;cursor:pointer}
+.bp{background:linear-gradient(135deg,#00d4aa,#0099cc);color:#fff;border:none;border-radius:10px;padding:11px 20px;font-weight:700;cursor:pointer;font-family:inherit;font-size:14px;min-height:44px;transition:all 0.2s}
+.bs{background:rgba(0,212,170,0.12);color:#00d4aa;border:1px solid rgba(0,212,170,0.3);border-radius:8px;padding:7px 14px;font-weight:600;cursor:pointer;font-family:inherit;font-size:12px}
+.bd{background:rgba(239,68,68,0.12);color:#f87171;border:1px solid rgba(239,68,68,0.3);border-radius:8px;padding:7px 12px;font-size:12px;cursor:pointer;font-family:inherit}
+.if{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:11px 14px;color:#e2e8f0;font-size:16px;font-family:inherit;outline:none;width:100%;-webkit-appearance:none}
+.if:focus{border-color:rgba(0,212,170,0.5);background:rgba(255,255,255,0.08)}
+select.if{cursor:pointer}
+select.if option{background:#1a2035}
+textarea.if{resize:vertical;min-height:80px}
+.db{width:38px;height:38px;border-radius:50%;border:1px solid rgba(255,255,255,0.15);background:transparent;cursor:pointer;font-size:11px;font-weight:700;color:#64748b;transition:all 0.2s}
+.db.on{background:rgba(0,212,170,0.2);border-color:#00d4aa;color:#00d4aa}
+.lbl{font-size:11px;color:#64748b;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;display:block;margin-bottom:5px}
+.st{font-weight:700;font-size:14px;margin-bottom:12px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.ga{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px}
+.bdg{display:inline-block;padding:2px 9px;border-radius:999px;font-size:10px;font-weight:700}
+#ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:100;align-items:center;justify-content:center;padding:16px}
+#ov.open{display:flex}
+.modal{background:#111827;border:1px solid rgba(255,255,255,0.1);border-radius:20px;max-width:560px;width:100%;max-height:90vh;overflow-y:auto;padding:24px}
+#notif{position:fixed;top:20px;right:16px;z-index:999;padding:11px 18px;border-radius:10px;font-weight:600;font-size:13px;border:1px solid;display:none;animation:sli 0.3s ease}
+@keyframes sli{from{opacity:0;transform:translateX(18px)}to{opacity:1;transform:translateX(0)}}
+#disc{position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:200;display:flex;align-items:center;justify-content:center;padding:16px}
+#ftr{background:rgba(0,0,0,0.6);border-top:1px solid rgba(245,158,11,0.15);padding:8px 16px;text-align:center;font-size:11px;color:#475569;line-height:1.5}
+.pb{height:6px;background:rgba(255,255,255,0.08);border-radius:3px;overflow:hidden}
+.pf{height:100%;border-radius:3px;transition:width 0.5s;background:linear-gradient(90deg,#00d4aa,#3b82f6)}
+.ts{overflow-x:auto;-webkit-overflow-scrolling:touch}
+table{width:100%;font-size:13px;border-collapse:collapse}
+th{text-align:left;padding:6px 10px;font-weight:600;font-size:11px;text-transform:uppercase;color:#64748b;border-bottom:1px solid rgba(255,255,255,0.07)}
+td{padding:8px 10px;border-bottom:1px solid rgba(255,255,255,0.04)}
+.pb2{cursor:pointer;border:none;border-radius:999px;padding:5px 12px;font-size:11px;font-weight:600;transition:all 0.2s;font-family:inherit}
+@media(max-width:640px){
+  #dnav{display:none!important}
+  #mnav{display:block}
+  #main{padding-bottom:120px}
+  .g2{grid-template-columns:1fr}
+  .g4{grid-template-columns:1fr 1fr}
+  .ga{grid-template-columns:1fr}
+  .modal{border-radius:20px 20px 0 0;max-height:92vh;padding:20px 16px;align-self:flex-end}
+  #ov.open{align-items:flex-end;padding:0}
+  #notif{bottom:80px;top:auto;left:12px;right:12px;text-align:center}
+}
+@media(max-width:900px){.g4{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+
+<div id="pwgate" style="position:fixed;inset:0;background:linear-gradient(135deg,#0a0a14,#0d1220,#0a0f1a);z-index:300;display:flex;align-items:center;justify-content:center;padding:16px">
+  <div style="background:#111827;border:1px solid rgba(0,212,170,0.3);border-radius:20px;max-width:400px;width:100%;padding:32px 28px;text-align:center">
+    <div style="font-size:48px;margin-bottom:16px">&#128274;</div>
+    <h2 id="pw-title" style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:22px;color:#e2e8f0;margin-bottom:8px">PeptideOS Pro</h2>
+    <p id="pw-sub" style="color:#64748b;font-size:14px;margin-bottom:24px">Create a personal password to protect your data</p>
+    <input type="password" id="pwi" placeholder="Create password" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:12px 16px;color:#e2e8f0;font-size:15px;font-family:inherit;outline:none;width:100%;margin-bottom:10px;-webkit-appearance:none" onkeydown="if(event.key==='Enter')chkPW()">
+    <input type="password" id="pwi2" placeholder="Confirm password" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:12px 16px;color:#e2e8f0;font-size:15px;font-family:inherit;outline:none;width:100%;margin-bottom:10px;-webkit-appearance:none" onkeydown="if(event.key==='Enter')chkPW()">
+    <div id="pwe" style="color:#f87171;font-size:13px;min-height:20px;margin-bottom:10px"></div>
+    <button id="pw-btn" onclick="chkPW()" style="width:100%;padding:13px 0;border-radius:10px;background:linear-gradient(135deg,#00d4aa,#3b82f6);color:#fff;border:none;font-weight:700;font-size:15px;cursor:pointer;font-family:inherit">Set Password &amp; Enter &#8594;</button>
+    <p style="font-size:11px;color:#475569;margin-top:14px">Your password is stored only on this device. It cannot be recovered if forgotten.</p>
+  </div>
+</div>
+
+<div id="disc">
+  <div style="background:#0d1220;border:1px solid rgba(245,158,11,0.4);border-radius:20px;max-width:560px;width:100%;max-height:92vh;overflow-y:auto;padding:28px 24px">
+    <div style="text-align:center;margin-bottom:20px">
+      <div style="font-size:42px;margin-bottom:10px">&#9888;</div>
+      <h2 style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:20px;color:#f59e0b;margin-bottom:6px">Research Use Only &mdash; Legal Disclaimer</h2>
+      <div style="font-size:12px;color:#64748b;text-transform:uppercase;letter-spacing:1px">Please read and accept before continuing</div>
+    </div>
+    <div style="background:rgba(245,158,11,0.07);border:1px solid rgba(245,158,11,0.25);border-radius:12px;padding:16px 18px;margin-bottom:16px;font-size:13px;color:#e2e8f0;line-height:1.8">
+      <p style="margin-bottom:10px"><strong style="color:#f59e0b">FOR RESEARCH AND INFORMATIONAL PURPOSES ONLY.</strong> PeptideOS Pro is a personal research logging and reference tool. All information is provided strictly for educational and documentation purposes.</p>
+      <p style="margin-bottom:10px">Many compounds referenced are <strong>research chemicals NOT approved by the FDA</strong> for human consumption or therapeutic use, unless explicitly noted otherwise.</p>
+      <p style="margin-bottom:10px"><strong style="color:#f87171">This is NOT medical advice.</strong> The creator accepts no liability for any actions taken based on information in this app. Consult a licensed healthcare professional before starting any protocol.</p>
+      <p style="margin-bottom:8px">By continuing you confirm you are <strong>18 years of age or older</strong> and assume full personal responsibility for any decisions made.</p>
+    </div>
+    <button onclick="acceptDisc()" style="width:100%;padding:14px 0;border-radius:11px;background:linear-gradient(135deg,#f59e0b,#ef4444);color:#fff;border:none;font-weight:800;font-size:15px;cursor:pointer;font-family:inherit">
+      I Understand &mdash; I Am 18+ and Using This for Research Only
+    </button>
+    <p style="font-size:11px;color:#475569;text-align:center;margin-top:10px">By clicking above you confirm you have read, understood, and agree to the full disclaimer above.</p>
+  </div>
+</div>
+
+<div id="hdr">
+  <div id="hdr-in">
+    <div id="logo">
+      <div id="logo-ic">&#129516;</div>
+      <div><div id="logo-nm">PeptideOS Pro</div><div id="logo-sb">The Complete Protocol</div></div>
+    </div>
+    <nav id="dnav" class="desktop-nav">
+      <button class="tb on" onclick="go('db')">&#128202; Dashboard</button>
+      <button class="tb" onclick="go('td')">&#9989; Today</button>
+      <button class="tb" onclick="go('pr')">&#9883; Protocol</button>
+      <button class="tb" onclick="go('lb')">&#128218; Library</button>
+      <button class="tb" onclick="go('ca')">&#128290; Calc</button>
+      <button class="tb" onclick="go('pg')">&#128207; Progress</button>
+      <button class="tb" onclick="go('iv')">&#129514; Inventory</button>
+      <button class="tb" onclick="go('jn')">&#128211; Journal</button>
+      <button class="tb" onclick="go('lx')">&#129656; Labs</button>
+      <button class="tb" onclick="go('tl')">&#128295; Tools</button>
+    </nav>
+  </div>
+</div>
+
+<div id="mnav">
+  <div id="mnav-in">
+    <button class="mt on" onclick="go('db')"><span class="mt-ic">&#128202;</span>Home</button>
+    <button class="mt" onclick="go('td')"><span class="mt-ic">&#9989;</span>Today</button>
+    <button class="mt" onclick="go('pr')"><span class="mt-ic">&#9883;</span>Protocol</button>
+    <button class="mt" onclick="go('lb')"><span class="mt-ic">&#128218;</span>Library</button>
+    <button class="mt" id="mbtn" onclick="togDrawer()"><span class="mt-ic">&#8943;</span>More</button>
+  </div>
+</div>
+<div id="mbk" onclick="closeDrawer()"></div>
+<div id="mdraw">
+  <button class="mi" onclick="go('ca');closeDrawer()">&#128290; Calculator</button>
+  <button class="mi" onclick="go('pg');closeDrawer()">&#128207; Progress</button>
+  <button class="mi" onclick="go('iv');closeDrawer()">&#129514; Inventory</button>
+  <button class="mi" onclick="go('jn');closeDrawer()">&#128211; Journal</button>
+  <button class="mi" onclick="go('lx');closeDrawer()">&#129656; Labs</button>
+  <button class="mi" onclick="go('tl');closeDrawer()">&#128295; Tools</button>
+</div>
+
+<div id="main"></div>
+
+<div id="ftr">
+  &#9888; <strong style="color:#64748b">For Research &amp; Informational Purposes Only.</strong>
+  Not medical advice. Not FDA approved for human use. Consult a licensed healthcare provider before starting any protocol. Developer assumes no liability. 18+ only.
+</div>
+
+<div id="ov"></div>
+<div id="notif"></div>
+<script>
+
+(function(){
+  var stored;
+  try{stored=localStorage.getItem('pep_pw');}catch(e){}
+  if(stored){
+    // returning user — show login mode
+    document.getElementById('pw-title').textContent='Welcome Back';
+    document.getElementById('pw-sub').textContent='Enter your password to unlock PeptideOS Pro';
+    document.getElementById('pwi').placeholder='Your password';
+    document.getElementById('pwi2').style.display='none';
+    document.getElementById('pw-btn').textContent='Unlock →';
+  }
+})();
+function chkPW(){
+  var stored;
+  try{stored=localStorage.getItem('pep_pw');}catch(e){}
+  var v=document.getElementById('pwi').value.trim();
+  var err=document.getElementById('pwe');
+  if(!v){err.textContent='Please enter a password.';return;}
+  if(stored){
+    // login mode
+    if(v===stored){document.getElementById('pwgate').style.display='none';}
+    else{err.textContent='Incorrect password. Try again.';document.getElementById('pwi').value='';document.getElementById('pwi').focus();}
+  } else {
+    // create mode
+    var v2=document.getElementById('pwi2').value.trim();
+    if(v.length<4){err.textContent='Password must be at least 4 characters.';return;}
+    if(v!==v2){err.textContent='Passwords do not match.';document.getElementById('pwi2').value='';document.getElementById('pwi2').focus();return;}
+    try{localStorage.setItem('pep_pw',v);}catch(e){}
+    document.getElementById('pwgate').style.display='none';
+  }
+}
+
+var S={tab:'db',protocol:ld('pep_prot',[]),logs:ld('pep_logs',{}),body:ld('pep_body',[]),vials:ld('pep_vials',[]),journal:ld('pep_jrn',[]),labs:ld('pep_labs',[]),goals:ld('pep_goals',{weight:'',bf:'',waist:'',notes:''}),date:td(),libF:'All',libS:'',exp:null};
+function ld(k,d){try{var v=localStorage.getItem(k);return v?JSON.parse(v):d;}catch(e){return d;}}
+function sv(){try{localStorage.setItem('pep_prot',JSON.stringify(S.protocol));localStorage.setItem('pep_logs',JSON.stringify(S.logs));localStorage.setItem('pep_body',JSON.stringify(S.body));localStorage.setItem('pep_vials',JSON.stringify(S.vials));localStorage.setItem('pep_jrn',JSON.stringify(S.journal));localStorage.setItem('pep_labs',JSON.stringify(S.labs));localStorage.setItem('pep_goals',JSON.stringify(S.goals));}catch(e){}}
+function td(){return new Date().toISOString().slice(0,10);}
+function acceptDisc(){try{localStorage.setItem('pd','y');}catch(e){}document.getElementById('disc').style.display='none';}
+(function(){try{if(localStorage.getItem('pd')==='y')document.getElementById('disc').style.display='none';}catch(e){}})();
+function toast(m,t){var n=document.getElementById('notif');n.innerHTML=m;n.style.background=t==='w'?'#92400e':'#064e3b';n.style.borderColor=t==='w'?'#d97706':'#10b981';n.style.color=t==='w'?'#fde68a':'#6ee7b7';n.style.display='block';setTimeout(function(){n.style.display='none';},2800);}
+function go(tab){S.tab=tab;document.querySelectorAll('.tb').forEach(function(b){b.classList.remove('on');});document.querySelectorAll('.mt').forEach(function(b){b.classList.remove('on');});document.querySelectorAll('.mi').forEach(function(b){b.classList.remove('on');});var mains=['db','td','pr','lb'];if(mains.indexOf(tab)>=0){var btns=document.querySelectorAll('.mt');btns[mains.indexOf(tab)].classList.add('on');}else{document.getElementById('mbtn').classList.add('on');}document.querySelectorAll('.tb').forEach(function(b){if(b.getAttribute('onclick')&&b.getAttribute('onclick').indexOf("'"+tab+"'")>=0)b.classList.add('on');});render();}
+function togDrawer(){var d=document.getElementById('mdraw'),b=document.getElementById('mbk');d.classList.toggle('open');b.classList.toggle('open');}
+function closeDrawer(){document.getElementById('mdraw').classList.remove('open');document.getElementById('mbk').classList.remove('open');}
+function gp(id){return PL.find(function(p){return p.id===id;});}
+function tday(){var d=new Date(S.date+'T12:00:00');return ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][d.getDay()];}
+function gl(pepId,dt){return S.logs[(pepId+'_'+(dt||S.date))];}
+
+var PL = [
+  {id:"bpc157",name:"BPC-157",cat:"Healing & Recovery",aka:"Body Protection Compound",color:"#00d4aa",hl:"4-6 hrs",dose:"250-500 mcg",routes:['SubQ','IM','Oral'],freq:"1-2x daily",cycle:"4-12 weeks",benefits:['Tissue repair','Gut healing','Tendon repair','Anti-inflammatory'],notes:"Most popular healing peptide. Can be taken orally for gut benefits.",emoji:"&#128300;"},
+  {id:"tb500",name:"TB-500",cat:"Healing & Recovery",aka:"Thymosin Beta-4 Fragment",color:"#00d4aa",hl:"Days",dose:"2-5 mg",routes:['SubQ','IM'],freq:"2x/week loading",cycle:"4-6 weeks loading",benefits:['Systemic tissue repair','Reduces inflammation','Tendon healing'],notes:"Wolverine Stack partner with BPC-157. Loading phase then maintenance.",emoji:"&#128170;"},
+  {id:"ara290",name:"ARA-290",cat:"Healing & Recovery",aka:"Cibinetide",color:"#00d4aa",hl:"~3 hrs",dose:"4 mg",routes:['SubQ','IV'],freq:"Daily",cycle:"4-8 weeks",benefits:['Neuropathic pain','Tissue protection','Anti-inflammatory'],notes:"EPO receptor agonist. Studied for small fiber neuropathy.",emoji:"&#129449;"},
+  {id:"ghkcu",name:"GHK-Cu",cat:"Skin & Anti-Aging",aka:"Copper Peptide",color:"#c084fc",hl:"~1 hr",dose:"1-2 mg",routes:['SubQ','Topical'],freq:"Daily",cycle:"Ongoing",benefits:['Collagen synthesis','Skin repair','Hair support','Anti-aging'],notes:"Broadest research for dermatological anti-aging. Topical or injectable.",emoji:"&#10024;"},
+  {id:"argireline",name:"Argireline",cat:"Skin & Anti-Aging",aka:"Acetyl Hexapeptide-3",color:"#c084fc",hl:"Topical",dose:"5-10% formulation",routes:['Topical'],freq:"1-2x daily",cycle:"Ongoing",benefits:['Reduces expression lines','Botox-like effect','Forehead lines'],notes:"The topical botox peptide. Inhibits neurotransmitter release at surface level.",emoji:"&#128134;"},
+  {id:"snap8",name:"SNAP-8",cat:"Skin & Anti-Aging",aka:"Acetyl Octapeptide-3",color:"#c084fc",hl:"Topical",dose:"3-5% formulation",routes:['Topical'],freq:"1-2x daily",cycle:"Ongoing",benefits:['Expression wrinkle reduction','More potent than Argireline'],notes:"More potent Argireline variant for expression lines around eyes and forehead.",emoji:"&#10027;"},
+  {id:"matrixyl",name:"Matrixyl 3000",cat:"Skin & Anti-Aging",aka:"Palmitoyl Pentapeptide-4",color:"#c084fc",hl:"Topical",dose:"2-5% formulation",routes:['Topical'],freq:"1-2x daily",cycle:"Ongoing",benefits:['Collagen synthesis','Wrinkle depth reduction','Skin firming'],notes:"One of the most studied anti-aging peptides. Stimulates collagen and elastin.",emoji:"&#127801;"},
+  {id:"os01",name:"OS-01",cat:"Skin & Anti-Aging",aka:"OneSkin Peptide",color:"#c084fc",hl:"Topical",dose:"Topical varies",routes:['Topical'],freq:"Daily",cycle:"Ongoing",benefits:['Skin senescence reduction','Skin rejuvenation','Cellular longevity'],notes:"Emerging topical peptide with senolytic properties for skin.",emoji:"&#127800;"},
+  {id:"cjc1295",name:"CJC-1295",cat:"Growth Hormone",aka:"CJC-1295 w/DAC",color:"#3b82f6",hl:"6-8 days",dose:"1-2 mg",routes:['SubQ'],freq:"1-2x/week",cycle:"12-16 weeks",benefits:['Sustained GH release','Muscle growth','Fat loss','Sleep quality'],notes:"Most popular GH peptide. Stack with Ipamorelin for synergistic effect.",emoji:"&#128200;"},
+  {id:"ipamorelin",name:"Ipamorelin",cat:"Growth Hormone",aka:"GHRP-3 Analog",color:"#3b82f6",hl:"2 hrs",dose:"200-300 mcg",routes:['SubQ'],freq:"1-3x daily",cycle:"12-16 weeks",benefits:['Selective GH pulse','Muscle recovery','Fat loss','Minimal side effects'],notes:"Cleanest GHRP. Best combined with CJC-1295. Gold standard GHRP.",emoji:"&#128260;"},
+  {id:"modgrf129",name:"ModGRF 1-29",cat:"Growth Hormone",aka:"CJC-1295 No DAC",color:"#3b82f6",hl:"30 min",dose:"100-200 mcg",routes:['SubQ'],freq:"3x daily fasted",cycle:"12-16 weeks",benefits:['Pulsatile GH release','Natural GH pattern','Muscle growth'],notes:"Short-acting CJC without DAC. Mimics natural GH pulses. Inject fasted.",emoji:"&#9889;"},
+  {id:"ghrp2",name:"GHRP-2",cat:"Growth Hormone",aka:"Growth Hormone Releasing Peptide 2",color:"#3b82f6",hl:"1-2 hrs",dose:"100-300 mcg",routes:['SubQ'],freq:"2-3x daily",cycle:"12-16 weeks",benefits:['Strong GH release','Hunger stimulation','Muscle growth'],notes:"Stronger GH than Ipamorelin. Causes hunger. Raises cortisol somewhat.",emoji:"&#128165;"},
+  {id:"ghrp6",name:"GHRP-6",cat:"Growth Hormone",aka:"Growth Hormone Releasing Peptide 6",color:"#3b82f6",hl:"2-3 hrs",dose:"100-300 mcg",routes:['SubQ'],freq:"2-3x daily",cycle:"12-16 weeks",benefits:['Strong GH release','Appetite stimulation','Muscle growth'],notes:"Classic GHRP. Causes intense hunger. Great for bulking.",emoji:"&#127860;"},
+  {id:"hexarelin",name:"Hexarelin",cat:"Growth Hormone",aka:"Examorelin",color:"#3b82f6",hl:"3-4 hrs",dose:"100-200 mcg",routes:['SubQ'],freq:"2-3x daily cycled",cycle:"8 weeks on 4 off",benefits:['Most potent GHRP','Cardiac protection','Muscle growth'],notes:"Most potent GHRP. Desensitizes quickly. 8 weeks max.",emoji:"&#127942;"},
+  {id:"sermorelin",name:"Sermorelin",cat:"Growth Hormone",aka:"GHRH 1-29",color:"#3b82f6",hl:"10-20 min",dose:"200-500 mcg",routes:['SubQ'],freq:"Nightly",cycle:"3-6 months",benefits:['GH production support','Anti-aging','Sleep quality'],notes:"Longest clinical track record. Best used at bedtime.",emoji:"&#127765;"},
+  {id:"tesamorelin",name:"Tesamorelin",cat:"Growth Hormone",aka:"TH9507",color:"#3b82f6",hl:"26-38 min",dose:"1-2 mg",routes:['SubQ'],freq:"Daily",cycle:"26-52 weeks",benefits:['Visceral fat reduction','GH release','Body recomposition'],notes:"FDA-approved for lipodystrophy. Strong evidence for visceral fat loss.",emoji:"&#128293;"},
+  {id:"mk677",name:"MK-677",cat:"Growth Hormone",aka:"Ibutamoren / Nutrobal",color:"#3b82f6",hl:"24 hrs",dose:"10-25 mg",routes:['Oral'],freq:"Daily",cycle:"Ongoing or cycled",benefits:['GH secretion','IGF-1 increase','Muscle mass','Sleep quality','Oral'],notes:"Oral GH secretagogue. Causes hunger and water retention. Best at bedtime.",emoji:"&#127947;"},
+  {id:"semaglutide",name:"Semaglutide",cat:"GLP-1 / Metabolic",aka:"Ozempic / Wegovy",color:"#f59e0b",hl:"~1 week",dose:"0.25-2.4 mg",routes:['SubQ'],freq:"Weekly",cycle:"Ongoing",benefits:['Weight loss','Blood sugar control','Appetite suppression'],notes:"FDA-approved. Titrate over 16-20 weeks. 15-17% average weight loss.",emoji:"&#9878;"},
+  {id:"tirzepatide",name:"Tirzepatide",cat:"GLP-1 / Metabolic",aka:"Mounjaro / Zepbound",color:"#f59e0b",hl:"~5 days",dose:"2.5-15 mg",routes:['SubQ'],freq:"Weekly",cycle:"Ongoing",benefits:['Superior weight loss','Dual GLP-1/GIP','Blood sugar control'],notes:"FDA-approved. Dual agonist often outperforms semaglutide.",emoji:"&#127919;"},
+  {id:"retatrutide",name:"Retatrutide",cat:"GLP-1 / Metabolic",aka:"LY3437943 Triple Agonist",color:"#f59e0b",hl:"~6 days",dose:"1-12 mg titrated",routes:['SubQ'],freq:"Weekly",cycle:"48+ weeks",benefits:['28.7% weight loss Phase 3','Triple GIP/GLP-1/Glucagon'],notes:"Investigational Phase 3. Highest weight loss ever recorded. Titrate slowly.",emoji:"&#129351;"},
+  {id:"liraglutide",name:"Liraglutide",cat:"GLP-1 / Metabolic",aka:"Victoza / Saxenda",color:"#f59e0b",hl:"13 hrs",dose:"0.6-3 mg",routes:['SubQ'],freq:"Daily",cycle:"Ongoing",benefits:['Weight loss','Blood sugar control','Daily dose control'],notes:"FDA-approved GLP-1. Daily injection for granular dose control.",emoji:"&#128138;"},
+  {id:"aod9604",name:"AOD-9604",cat:"GLP-1 / Metabolic",aka:"Anti-Obesity Drug 9604",color:"#f59e0b",hl:"3 hrs",dose:"250-300 mcg",routes:['SubQ','Oral'],freq:"Daily fasted",cycle:"12-16 weeks",benefits:['Fat metabolism','Targeted fat burning','GRAS rated safe'],notes:"HGH fragment for fat metabolism without GH side effects. Best fasted.",emoji:"&#127939;"},
+  {id:"semax",name:"Semax",cat:"Cognitive",aka:"ACTH 4-7 Analog",color:"#ec4899",hl:"Minutes nasal",dose:"200-600 mcg",routes:['Nasal','SubQ'],freq:"Daily",cycle:"2-4 weeks on 1-2 off",benefits:['BDNF increase','Cognitive enhancement','Memory','Focus'],notes:"Russian approved. Nasal form most common. Cycle to maintain sensitivity.",emoji:"&#129504;"},
+  {id:"naSemax",name:"NA Semax Amidate",cat:"Cognitive",aka:"N-Acetyl Semax Amidate",color:"#ec4899",hl:"Longer than standard",dose:"100-300 mcg",routes:['Nasal'],freq:"Daily",cycle:"2-4 weeks on 1-2 off",benefits:['Enhanced BDNF','More potent than Semax','Cognitive boost'],notes:"More potent and longer-acting than standard Semax.",emoji:"&#129516;"},
+  {id:"selank",name:"Selank",cat:"Cognitive",aka:"Tuftsin Analog",color:"#ec4899",hl:"Minutes nasal",dose:"250-500 mcg",routes:['Nasal','SubQ'],freq:"Daily",cycle:"2-3 weeks",benefits:['Anxiety reduction','Cognitive enhancement','Mood stabilization'],notes:"Often paired with Semax. Anxiolytic without sedation.",emoji:"&#129512;"},
+  {id:"dihexa",name:"Dihexa",cat:"Cognitive",aka:"PNB-0408",color:"#ec4899",hl:"Unknown",dose:"10-20 mg topical",routes:['Topical','Oral'],freq:"Daily",cycle:"4-8 weeks",benefits:['Memory enhancement','Neurogenesis','Synaptogenesis'],notes:"Highly potent nootropic. Start very low. Transdermal cream most common.",emoji:"&#128161;"},
+  {id:"vip",name:"VIP",cat:"Cognitive",aka:"Vasoactive Intestinal Peptide",color:"#ec4899",hl:"~2 min IV",dose:"50-100 mcg",routes:['Nasal','IV'],freq:"2-4x daily nasal",cycle:"4-12 weeks",benefits:['Neuroprotection','Anti-inflammatory','CIRS/mold illness'],notes:"Key in Dr. Shoemaker CIRS/mold illness protocol.",emoji:"&#127783;"},
+  {id:"dsip",name:"DSIP",cat:"Cognitive",aka:"Delta Sleep-Inducing Peptide",color:"#ec4899",hl:"30 min",dose:"100-600 mcg",routes:['SubQ','IV'],freq:"Nightly or as needed",cycle:"1-4 weeks cycled",benefits:['Sleep architecture','Circadian regulation','Stress reduction'],notes:"Under FDA review for opioid withdrawal and insomnia.",emoji:"&#128164;"},
+  {id:"oxytocin",name:"Oxytocin",cat:"Cognitive",aka:"Love Hormone / OXT",color:"#ec4899",hl:"20 min SubQ",dose:"10-40 IU",routes:['SubQ','Nasal'],freq:"As needed",cycle:"As needed",benefits:['Social bonding','Anxiety reduction','Stress relief','Libido'],notes:"Nasal form most popular. Use as needed only.",emoji:"&#128149;"},
+  {id:"p21pep",name:"P21",cat:"Cognitive",aka:"CNTF-derived Peptide",color:"#ec4899",hl:"Unknown",dose:"1-3 mg",routes:['SubQ','Nasal'],freq:"Daily",cycle:"4-8 weeks",benefits:['Neurogenesis','BDNF upregulation','Tau reduction'],notes:"CNTF-derived peptide. Often stacked with Dihexa.",emoji:"&#127807;"},
+  {id:"epitalon",name:"Epitalon",cat:"Longevity",aka:"Epithalon AEDG Tetrapeptide",color:"#10b981",hl:"Unknown",dose:"5-10 mg",routes:['SubQ','IM','Nasal'],freq:"Daily cycled",cycle:"10-20 days 2-3x/year",benefits:['Telomerase activation','Anti-aging','Pineal regulation'],notes:"Pioneer longevity peptide. Telomerase activator. Short cycles 2-3x/year.",emoji:"&#9203;"},
+  {id:"motsc",name:"MOTS-c",cat:"Longevity",aka:"Mitochondrial ORF 12S rRNA",color:"#10b981",hl:"1-2 hrs",dose:"5-10 mg",routes:['SubQ'],freq:"2-3x/week",cycle:"Ongoing or cycled",benefits:['Metabolic regulation','Exercise mimetic','Insulin sensitivity'],notes:"Mitochondria-derived. Mimics exercise at cellular level.",emoji:"&#9889;"},
+  {id:"ss31",name:"SS-31",cat:"Longevity",aka:"Elamipretide",color:"#10b981",hl:"1-2 hrs",dose:"1-5 mg",routes:['SubQ'],freq:"Daily",cycle:"Ongoing",benefits:['Mitochondrial membrane','Cellular energy','Anti-aging','Cardiovascular'],notes:"Targets cardiolipin on mitochondrial inner membrane.",emoji:"&#128267;"},
+  {id:"humanin",name:"Humanin",cat:"Longevity",aka:"HNG Humanin G",color:"#10b981",hl:"~4 hrs",dose:"2-4 mg",routes:['SubQ','Nasal'],freq:"3x/week",cycle:"Ongoing or cycled",benefits:['Neuroprotection','Mitochondrial health','Alzheimers protection'],notes:"Mitochondria-derived neuroprotective peptide. Stack with SS-31 and MOTS-c.",emoji:"&#129513;"},
+  {id:"foxo4dri",name:"FOXO4-DRI",cat:"Longevity",aka:"Senolytic Peptide",color:"#10b981",hl:"Unknown",dose:"1-5 mg",routes:['SubQ'],freq:"3-day pulses monthly",cycle:"3-day pulses quarterly",benefits:['Senescent cell clearance','Tissue rejuvenation','Longevity'],notes:"Powerful senolytic. Clears zombie cells. Use pulsed short cycles.",emoji:"&#129529;"},
+  {id:"nad_peptide",name:"NAD+",cat:"Longevity",aka:"Nicotinamide Adenine Dinucleotide",color:"#10b981",hl:"Minutes IV",dose:"100-500 mg",routes:['SubQ','IV','Oral'],freq:"Daily to weekly",cycle:"Ongoing",benefits:['Cellular energy ATP','DNA repair','Sirtuins activation','Anti-aging'],notes:"Injectable for higher bioavailability. IV causes flush. SubQ is smoother.",emoji:"&#9883;"},
+  {id:"thymosin_alpha1",name:"Thymosin Alpha-1",cat:"Immune Support",aka:"Zadaxin",color:"#06b6d4",hl:"~2 hrs",dose:"1.6 mg",routes:['SubQ'],freq:"2x/week",cycle:"4-6 weeks cyclable",benefits:['T-cell activation','Immune modulation','Anti-viral','Cancer adjuvant'],notes:"Approved in 30+ countries. Most clinically validated immune peptide.",emoji:"&#128737;"},
+  {id:"kpv",name:"KPV",cat:"Immune Support",aka:"Lys-Pro-Val alpha-MSH",color:"#06b6d4",hl:"Short",dose:"100-500 mcg",routes:['SubQ','Oral','Topical'],freq:"1-2x daily",cycle:"4-8 weeks",benefits:['Anti-inflammatory','Gut healing IBD','Antimicrobial'],notes:"Excellent for gut inflammation. Stack with BPC-157.",emoji:"&#127807;"},
+  {id:"ll37",name:"LL-37",cat:"Immune Support",aka:"Cathelicidin hCAP18",color:"#06b6d4",hl:"Short",dose:"50-200 mcg",routes:['SubQ','Topical','Nasal'],freq:"Daily to 3x/week",cycle:"2-4 weeks",benefits:['Broad antimicrobial','Anti-viral','Anti-fungal','Innate immunity'],notes:"Natural antimicrobial peptide boosted by vitamin D. Short cycles.",emoji:"&#9876;"},
+  {id:"tb4frag",name:"TB-4 Fragment 17-23",cat:"Immune Support",aka:"Ac-SDKP",color:"#06b6d4",hl:"Unknown",dose:"200-500 mcg",routes:['SubQ'],freq:"Daily",cycle:"4-8 weeks",benefits:['Anti-inflammatory','Cardiac protection','Kidney protection'],notes:"Smaller anti-inflammatory fragment of TB-500.",emoji:"&#129528;"},
+  {id:"pt141",name:"PT-141",cat:"Sexual Health",aka:"Bremelanotide",color:"#f97316",hl:"~2.7 hrs",dose:"1-2 mg",routes:['SubQ','Nasal'],freq:"As needed",cycle:"As needed",benefits:['Libido boost','Sexual function','Arousal men and women'],notes:"FDA-approved for female sexual dysfunction. Start at 0.75 mg.",emoji:"&#10084;"},
+  {id:"kisspeptin10",name:"Kisspeptin-10",cat:"Sexual Health",aka:"Metastin KP-10",color:"#f97316",hl:"~4 min",dose:"100-1000 mcg",routes:['SubQ','IV'],freq:"As needed or pulsed",cycle:"Varies",benefits:['LH/FSH stimulation','Testosterone support','Libido','Fertility'],notes:"Master regulator of reproductive hormones. Natural testosterone support.",emoji:"&#128261;"},
+  {id:"melanotan2",name:"Melanotan II",cat:"Sexual Health",aka:"MT-2",color:"#f97316",hl:"1-2 hrs",dose:"0.5-1 mg",routes:['SubQ','Nasal'],freq:"Loading then maintenance",cycle:"Loading then maintenance",benefits:['Libido enhancement','Erectile function','Tanning','Appetite suppression'],notes:"Start at 0.25 mg. Nausea and flushing common initially.",emoji:"&#9728;"},
+  {id:"gonadorelin",name:"Gonadorelin",cat:"Sexual Health",aka:"GnRH LHRH",color:"#f97316",hl:"2-4 min",dose:"100-500 mcg",routes:['SubQ','IV'],freq:"Pulsed every 90 min ideal",cycle:"Per TRT protocol",benefits:['LH/FSH stimulation','Testicular preservation','Fertility on TRT'],notes:"Used alongside TRT to maintain testicular size and fertility.",emoji:"&#9879;"},
+  {id:"igf1lr3",name:"IGF-1 LR3",cat:"Performance",aka:"Insulin-like Growth Factor 1 LR3",color:"#6366f1",hl:"20-30 hrs",dose:"20-100 mcg",routes:['SubQ','IM'],freq:"Daily post-workout",cycle:"4-6 weeks",benefits:['Muscle hypertrophy','Fat loss','Rapid size gains'],notes:"Potent anabolic. Cycle strictly 4-6 weeks max. Can cause hypoglycemia.",emoji:"&#128175;"},
+  {id:"pegmgf",name:"PEG-MGF",cat:"Performance",aka:"Pegylated Mechano Growth Factor",color:"#6366f1",hl:"2-3 days",dose:"200-400 mcg",routes:['SubQ','IM'],freq:"2x/week",cycle:"4-8 weeks",benefits:['Muscle satellite cell activation','Muscle repair','Recovery'],notes:"Activate muscle stem cells post-workout. Inject near trained muscle.",emoji:"&#129470;"},
+  {id:"follistatin344",name:"Follistatin-344",cat:"Performance",aka:"FST-344",color:"#6366f1",hl:"Unknown",dose:"50-100 mcg",routes:['SubQ','IM'],freq:"Daily cycled",cycle:"10-30 days long off",benefits:['Myostatin inhibition','Muscle mass','Strength gains'],notes:"Inhibits myostatin. Very potent. Strictly cycle with long off periods.",emoji:"&#129409;"},
+  {id:"ptd_dbm",name:"PTD-DBM",cat:"Hair Growth",aka:"Protein Transduction Domain DBM",color:"#a78bfa",hl:"Unknown",dose:"Topical",routes:['Topical'],freq:"Daily",cycle:"Ongoing",benefits:['Hair follicle regeneration','Wnt pathway activation'],notes:"Topical hair peptide. Apply to scalp. Often combined with GHK-Cu.",emoji:"&#128135;"},
+  {id:"bronchogen",name:"Bronchogen",cat:"Bioregulators",aka:"Ala-Glu-Asp-Leu",color:"#78716c",hl:"Unknown",dose:"1-2 mg",routes:['SubQ','Oral'],freq:"Daily cycled",cycle:"10-day cycles",benefits:['Lung tissue support','Bronchial health'],notes:"Khavinson bioregulator for lung tissue. 10-day cycles 2-3x/year.",emoji:"&#129326;"},
+  {id:"cardiogen",name:"Cardiogen",cat:"Bioregulators",aka:"Ala-Glu-Asp-Arg",color:"#78716c",hl:"Unknown",dose:"1-2 mg",routes:['SubQ','Oral'],freq:"Daily cycled",cycle:"10-day cycles",benefits:['Cardiac tissue support','Heart function'],notes:"Khavinson bioregulator for heart tissue. Pairs with SS-31.",emoji:"&#10084;"},
+  {id:"thymalin",name:"Thymalin",cat:"Bioregulators",aka:"Thymus Peptide Complex",color:"#78716c",hl:"Unknown",dose:"5-10 mg",routes:['IM','SubQ'],freq:"Daily cycled",cycle:"10-day courses",benefits:['Immune restoration','Thymus function','T-cell production','Longevity'],notes:"Thymus gland bioregulator. Used in Dr. Fahy TRIIM trial.",emoji:"&#127744;"},
+  {id:"livagen",name:"Livagen",cat:"Bioregulators",aka:"Lys-Glu-Asp-Gly",color:"#78716c",hl:"Unknown",dose:"1-2 mg",routes:['SubQ','Oral'],freq:"Daily cycled",cycle:"10-day cycles",benefits:['Liver support','Gut health','Immune modulation'],notes:"Khavinson bioregulator for liver and immune function.",emoji:"&#128998;"},
+  {id:"cortagen",name:"Cortagen",cat:"Bioregulators",aka:"Ala-Glu-Asp-Pro",color:"#78716c",hl:"Unknown",dose:"1-2 mg",routes:['SubQ','Oral'],freq:"Daily cycled",cycle:"10-day cycles",benefits:['Neurological support','Brain cortex','Neuroprotection'],notes:"Khavinson bioregulator targeting brain cortex and neurological tissue.",emoji:"&#129504;"},
+  {id:"combo_wolverine",name:"Wolverine Stack",cat:"Combo Blends",aka:"BPC-157 + TB-500",color:"#f43f5e",hl:"Varies",dose:"250-500mcg BPC + 2-5mg TB",routes:['SubQ','IM'],freq:"2-3x/week",cycle:"4-6 weeks",benefits:['Synergistic tissue repair','Local + systemic healing'],notes:"Most popular combo. BPC-157 local repair + TB-500 systemic healing.",emoji:"&#128058;",isCombo:true,components:['BPC-157','TB-500']},
+  {id:"combo_gh",name:"GH Stack",cat:"Combo Blends",aka:"CJC-1295 + Ipamorelin",color:"#f43f5e",hl:"Varies",dose:"1-2mg CJC + 200-300mcg Ipa",routes:['SubQ'],freq:"1-2x/week CJC + nightly Ipa",cycle:"12-16 weeks",benefits:['Amplified GH pulses','Muscle growth','Fat loss','Sleep quality'],notes:"Most prescribed GH combo. GHRH + GHRP = synergistic GH amplification.",emoji:"&#128200;",isCombo:true,components:['CJC-1295','Ipamorelin']},
+  {id:"combo_cog",name:"Cognitive Blend",cat:"Combo Blends",aka:"Semax + Selank",color:"#f43f5e",hl:"Short",dose:"200-300mcg each nasal",routes:['Nasal'],freq:"Daily",cycle:"2-3 weeks on 1 off",benefits:['Cognitive enhancement','Anxiety reduction','Focus + calm'],notes:"Semax for focus/BDNF + Selank for calm. Classic nootropic combo.",emoji:"&#129504;",isCombo:true,components:['Semax','Selank']},
+  {id:"combo_gut",name:"Gut Healing Stack",cat:"Combo Blends",aka:"BPC-157 + KPV",color:"#f43f5e",hl:"Varies",dose:"250-500mcg BPC + 100-500mcg KPV",routes:['SubQ','Oral'],freq:"1-2x daily",cycle:"4-8 weeks",benefits:['IBD/IBS healing','Gut lining repair','Anti-inflammatory GI'],notes:"BPC-157 rebuilds gut tissue; KPV reduces inflammation. Both oral-bioavailable.",emoji:"&#127807;",isCombo:true,components:['BPC-157','KPV']},
+  {id:"combo_quad",name:"Quad Healing Blend",cat:"Combo Blends",aka:"BPC + TB + KPV + GHK-Cu",color:"#f43f5e",hl:"Varies",dose:"250mcg BPC + 2mg TB + 200mcg KPV + 1mg GHK",routes:['SubQ'],freq:"2-3x/week",cycle:"4-8 weeks",benefits:['Comprehensive healing','Local + systemic + gut + skin'],notes:"Premium clinic protocol. All four major healing peptides combined.",emoji:"&#127973;",isCombo:true,components:['BPC-157','TB-500','KPV','GHK-Cu']},
+  {id:"combo_mito",name:"Mito Longevity Stack",cat:"Combo Blends",aka:"MOTS-c + SS-31 + Humanin",color:"#f43f5e",hl:"Varies",dose:"5-10mg MOTS-c + 1-3mg SS-31 + 2-4mg Humanin",routes:['SubQ'],freq:"3x/week",cycle:"Ongoing or cycled",benefits:['Complete mitochondrial support','Anti-aging','Neuroprotection'],notes:"Three mito-derived peptides: energy + membrane integrity + neuroprotection.",emoji:"&#9889;",isCombo:true,components:['MOTS-c','SS-31','Humanin']},
+  {id:"combo_recomp",name:"Body Recomp Stack",cat:"Combo Blends",aka:"Tesamorelin + AOD + CJC/Ipa",color:"#f43f5e",hl:"Varies",dose:"Per individual protocols",routes:['SubQ'],freq:"Daily Tesam/AOD + weekly CJC",cycle:"12-16 weeks",benefits:['Visceral fat loss','Lean muscle','GH optimization'],notes:"Tesamorelin targets visceral fat; AOD peripheral fat; CJC/Ipa for GH.",emoji:"&#127919;",isCombo:true,components:['Tesamorelin','AOD-9604','CJC-1295','Ipamorelin']},
+  {id:"combo_immune",name:"Immune Defense Stack",cat:"Combo Blends",aka:"Thymosin A1 + KPV + LL-37",color:"#f43f5e",hl:"Varies",dose:"1.6mg Ta1 + 200mcg KPV + 100mcg LL-37",routes:['SubQ'],freq:"2-3x/week",cycle:"4-6 weeks",benefits:['T-cell modulation','Broad antimicrobial','Anti-inflammatory'],notes:"Adaptive T-cell immunity + mucosal control + frontline antimicrobial.",emoji:"&#128737;",isCombo:true,components:['Thymosin Alpha-1','KPV','LL-37']},
+  {id:"combo_antiage",name:"Anti-Aging Master Stack",cat:"Combo Blends",aka:"Epitalon + GHK-Cu + Thymalin + CJC",color:"#f43f5e",hl:"Varies",dose:"Per individual protocols",routes:['SubQ'],freq:"Per individual schedules",cycle:"Cycled per component",benefits:['Telomere support','Collagen and skin','Immune restoration','GH'],notes:"Based on Khavinson/Fahy protocols. Multi-system anti-aging.",emoji:"&#9203;",isCombo:true,components:['Epitalon','GHK-Cu','Thymalin','CJC-1295']},
+  {id:"combo_sleep",name:"Sleep and Recovery Stack",cat:"Combo Blends",aka:"DSIP + MK-677 + BPC-157",color:"#f43f5e",hl:"Varies",dose:"100-300mcg DSIP + 10-25mg MK-677 + 250mcg BPC",routes:['SubQ + Oral'],freq:"Nightly",cycle:"4-8 weeks",benefits:['Deep sleep architecture','GH pulse during sleep','Overnight repair'],notes:"DSIP for sleep + MK-677 oral for GH pulse + BPC-157 for overnight repair.",emoji:"&#127769;",isCombo:true,components:['DSIP','MK-677','BPC-157']},
+  {id:"combo_wl",name:"Weight Loss Stack",cat:"Combo Blends",aka:"GLP-1 + AOD-9604",color:"#f43f5e",hl:"Varies",dose:"Per GLP-1 titration + 250mcg AOD",routes:['SubQ'],freq:"Weekly GLP-1 + Daily AOD",cycle:"Ongoing",benefits:['Maximum weight loss','Appetite control','Targeted fat metabolism'],notes:"Any GLP-1 plus AOD-9604. Appetite control + fat cell metabolism.",emoji:"&#127939;",isCombo:true,components:['Semaglutide/Tirzepatide/Retatrutide','AOD-9604']},
+  {id:"combo_trt",name:"TRT Support Stack",cat:"Combo Blends",aka:"Gonadorelin + Kisspeptin-10",color:"#f43f5e",hl:"Varies",dose:"100-250mcg Gon + 200-500mcg Kiss",routes:['SubQ'],freq:"2-3x/week",cycle:"Ongoing with TRT",benefits:['Testicular preservation','LH/FSH maintenance','Fertility support'],notes:"Essential for men on TRT preserving fertility and testicular size.",emoji:"&#9879;",isCombo:true,components:['Gonadorelin','Kisspeptin-10']},
+];
+
+var CATS=[];PL.forEach(function(p){if(CATS.indexOf(p.cat)<0)CATS.push(p.cat);});
+var CC={'Healing & Recovery':'#00d4aa','Skin & Anti-Aging':'#c084fc','Growth Hormone':'#3b82f6','GLP-1 / Metabolic':'#f59e0b','Cognitive':'#ec4899','Longevity':'#10b981','Immune Support':'#06b6d4','Sexual Health':'#f97316','Performance':'#6366f1','Hair Growth':'#a78bfa','Bioregulators':'#78716c','Combo Blends':'#f43f5e'};
+var DAYS=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+var SYN=[
+  ['bpc157','tb500',95,'BPC-157 (local/vascular) + TB-500 (systemic). Wolverine Stack. Can mix in same syringe.'],
+  ['bpc157','kpv',88,'BPC-157 rebuilds gut tissue; KPV silences inflammation. Both oral-bioavailable for gut targeting.'],
+  ['cjc1295','ipamorelin',95,'GHRH + GHRP = synergistic GH pulse. Most prescribed GH combo. Can mix in same syringe.'],
+  ['semax','selank',90,'Semax (BDNF/focus) + Selank (anxiolytic/calm). Classic cognitive combo.'],
+  ['motsc','ss31',90,'MOTS-c (AMPK/metabolic) + SS-31 (inner membrane). Complete mitochondrial health.'],
+  ['motsc','humanin',88,'Both mitochondria-derived. MOTS-c metabolic, Humanin neuroprotective. Complementary.'],
+  ['epitalon','thymalin',88,'Pineal telomere support + thymic immune restoration. Core of TRIIM trial protocol.'],
+  ['thymosin_alpha1','kpv',85,'Thymosin A1 adaptive T-cell + KPV mucosal anti-inflammatory. Different immune layers.'],
+  ['igf1lr3','pegmgf',85,'IGF-1 LR3 systemic + PEG-MGF local satellite cell activation. Complementary anabolic.'],
+  ['semaglutide','aod9604',78,'GLP-1 appetite control + AOD-9604 fat metabolism. Different mechanisms for additive fat loss.'],
+  ['gonadorelin','kisspeptin10',88,'Both stimulate LH/FSH. Kisspeptin triggers hypothalamic GnRH; Gonadorelin mimics it.'],
+  ['nad_peptide','motsc',85,'NAD+ for sirtuins/DNA repair + MOTS-c for AMPK activation. Cellular energy from two angles.'],
+];
+var CON=[
+  ['semaglutide','tirzepatide','AVOID','Two GLP-1 agonists targeting same receptor. No extra benefit; doubles GI side effects.'],
+  ['semaglutide','retatrutide','AVOID','Two GLP-1 agonists. Retatrutide already includes GLP-1. Stacks side effects with no benefit.'],
+  ['tirzepatide','retatrutide','AVOID','Both are GLP-1 multi-agonists. Significantly increases nausea and pancreatitis risk.'],
+  ['ghrp2','ghrp6','CAUTION','Two GHRPs competing at same receptor. Diminishing returns; stacked cortisol spike. Pick one.'],
+  ['ipamorelin','ghrp2','CAUTION','Both GHRPs. GHRP-2 adds cortisol, negating Ipamorelins clean advantage.'],
+  ['pt141','melanotan2','CAUTION','Both hit melanocortin receptors. Overlapping mechanism. Use one or the other for libido.'],
+];
+var SMX=[['bpc157','tb500'],['cjc1295','ipamorelin'],['cjc1295','ghrp2'],['sermorelin','ipamorelin'],['bpc157','ghkcu'],['bpc157','kpv']];
+
+// ── RENDER ENGINE ─────────────────────────────────────────────
+function render(){
+  var el=document.getElementById('main'),t=S.tab;
+  if(t==='db')el.innerHTML=rDB();
+  else if(t==='td')el.innerHTML=rTD();
+  else if(t==='pr')el.innerHTML=rPR();
+  else if(t==='lb')el.innerHTML=rLB();
+  else if(t==='ca')el.innerHTML=rCA();
+  else if(t==='pg')el.innerHTML=rPG();
+  else if(t==='iv')el.innerHTML=rIV();
+  else if(t==='jn')el.innerHTML=rJN();
+  else if(t==='lx')el.innerHTML=rLX();
+  else if(t==='tl')el.innerHTML=rTL();
+}
+function H1(t){return '<h1 style="font-family:\'Space Grotesk\',sans-serif;font-size:26px;font-weight:700;margin-bottom:6px">'+t+'</h1>';}
+function Sub(t){return '<p style="color:#64748b;font-size:14px;margin-bottom:20px">'+t+'</p>';}
+function PH(title,sub,btn){return '<div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:10px;margin-bottom:22px"><div>'+H1(title)+Sub(sub)+'</div>'+(btn||'')+'</div>';}
+
+function rDB(){
+  var act=S.protocol.filter(function(p){return p.active;}).length;
+  var tlog=Object.values(S.logs).filter(function(l){return l.taken;}).length;
+  var tsched=S.protocol.filter(function(p){return p.active&&p.days&&p.days.indexOf(tday())>=0;});
+  var tdone=tsched.filter(function(p){var l=gl(p.id);return l&&l.taken;}).length;
+  var lat=S.body.length?S.body[S.body.length-1]:null;
+  var stats=[{i:'&#9883;',v:act,l:'Active Peptides',c:'#00d4aa'},{i:'&#128137;',v:tlog,l:'Doses Logged',c:'#3b82f6'},{i:'&#9989;',v:tdone+'/'+tsched.length,l:"Today's Progress",c:'#f59e0b'},{i:'&#128207;',v:lat?lat.weight+' lbs':'--',l:'Current Weight',c:'#ec4899'}];
+  var last7=[];for(var i=6;i>=0;i--){var d=new Date();d.setDate(d.getDate()-i);last7.push(d.toISOString().slice(0,10));}
+  var bars=last7.map(function(d){
+    var day=new Date(d+'T12:00:00').toLocaleDateString('en-US',{weekday:'short'}).slice(0,3);
+    var sc=S.protocol.filter(function(p){return p.active&&p.days&&p.days.indexOf(day)>=0;});
+    if(!sc.length)return '<div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end"><div style="width:100%;height:4px;background:rgba(255,255,255,0.06);border-radius:3px 3px 0 0"></div><div style="font-size:10px;color:#64748b;margin-top:4px">'+day+'</div><div style="font-size:10px;color:#475569">--</div></div>';
+    var dn=sc.filter(function(p){var l=S.logs[p.id+'_'+d];return l&&l.taken;}).length;
+    var pct=Math.round((dn/sc.length)*100);
+    var ht=Math.max(pct*0.7,4);
+    var bg=pct===100?'#00d4aa':pct>50?'#f59e0b':pct>0?'#f87171':'rgba(255,255,255,0.06)';
+    return '<div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end"><div style="width:100%;height:'+ht+'px;background:'+bg+';border-radius:3px 3px 0 0"></div><div style="font-size:10px;color:#64748b;margin-top:4px">'+day+'</div><div style="font-size:10px;color:#94a3b8;font-weight:600">'+pct+'%</div></div>';
+  }).join('');
+  var titems=tsched.slice(0,5).map(function(p){var log=gl(p.id);var pep=gp(p.id);return '<div style="display:flex;align-items:center;gap:8px;font-size:13px;margin-bottom:6px"><div style="width:8px;height:8px;border-radius:50%;background:'+(pep?pep.color:'#64748b')+';flex-shrink:0"></div><span style="flex:1;color:'+(log&&log.taken?'#00d4aa':'#e2e8f0')+';text-decoration:'+(log&&log.taken?'line-through':'none')+'">'+(pep?pep.name:p.name)+'</span><span style="font-size:11px;color:#64748b">'+p.dose+' '+p.unit+'</span>'+(log&&log.taken?'<span style="color:#00d4aa">&#10003;</span>':'')+'</div>';}).join('');
+  return '<div>'+H1('Dashboard')+Sub(new Date().toLocaleDateString('en-US',{weekday:'long',year:'numeric',month:'long',day:'numeric'}))+
+    '<div class="g4" style="margin-bottom:22px">'+stats.map(function(s){return '<div class="card" style="text-align:center;padding:18px"><div style="font-size:22px;margin-bottom:6px">'+s.i+'</div><div style="font-size:26px;font-weight:700;color:'+s.c+';font-family:\'Space Grotesk\',sans-serif">'+s.v+'</div><div style="font-size:11px;color:#64748b;margin-top:4px">'+s.l+'</div></div>';}).join('')+'</div>'+
+    '<div class="card" style="margin-bottom:16px"><div class="st">&#128200; 7-Day Adherence</div><div style="display:flex;gap:8px;align-items:flex-end;height:80px;margin-top:10px">'+bars+'</div></div>'+
+    '<div class="g2"><div class="card"><div class="st">&#9878; Weight Trend</div>'+(lat?'<div style="font-size:28px;font-weight:700;color:#e2e8f0;margin-top:10px">'+lat.weight+' <span style="font-size:14px;color:#64748b">lbs</span></div><div style="font-size:11px;color:#64748b;margin-top:4px">'+lat.date+'</div>':'<p style="color:#475569;font-size:13px;margin-top:10px">No measurements yet.</p>')+'<button class="bs" style="margin-top:12px" onclick="go(\'pg\')">View Progress &rarr;</button></div>'+
+    '<div class="card"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px"><div class="st">&#128197; Today\'s Doses</div><button class="bp" style="padding:7px 14px;font-size:12px" onclick="go(\'td\')">Log &rarr;</button></div>'+(tsched.length===0?'<p style="color:#475569;font-size:13px">No doses today.</p>':titems+(tsched.length>5?'<div style="font-size:11px;color:#475569">+'+( tsched.length-5)+' more...</div>':''))+'</div></div></div>';
+}
+
+function rTD(){
+  var tsched=S.protocol.filter(function(p){return p.active&&p.days&&p.days.indexOf(tday())>=0;});
+  var tdone=tsched.filter(function(p){var l=gl(p.id);return l&&l.taken;}).length;
+  var pct=tsched.length?Math.round((tdone/tsched.length)*100):0;
+  var items=tsched.map(function(p){
+    var log=gl(p.id);var pep=gp(p.id);var taken=log&&log.taken;
+    return '<div class="card" style="border-color:'+(taken?'rgba(0,212,170,0.3)':'rgba(255,255,255,0.07)')+';margin-bottom:10px">'+
+      '<div style="display:flex;justify-content:space-between;align-items:center">'+
+      '<div style="display:flex;gap:12px;align-items:center">'+
+      '<div style="width:42px;height:42px;border-radius:11px;background:'+(pep?pep.color+'20':'rgba(255,255,255,0.08)')+';border:1px solid '+(pep?pep.color+'40':'rgba(255,255,255,0.1)')+';display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0">'+(pep?pep.emoji:'&#128137;')+'</div>'+
+      '<div><div style="font-weight:700;font-size:15px">'+(pep?pep.name:p.name)+'</div>'+
+      '<div style="font-size:12px;color:#64748b">'+p.dose+' '+p.unit+' &middot; '+p.route+'</div>'+
+      (log&&log.siteUsed?'<div style="font-size:11px;color:#94a3b8">&#128205; '+log.siteUsed+'</div>':'')+'</div></div>'+
+      '<div style="display:flex;gap:8px;align-items:center">'+
+      (taken?'<span style="background:rgba(0,212,170,0.15);color:#00d4aa;padding:4px 12px;border-radius:999px;font-size:12px;font-weight:700">&#10003; Done</span><button class="bd" style="font-size:11px;padding:4px 10px" onclick="unlog(\''+p.id+'\')">Undo</button>':
+      '<button class="bp" style="padding:8px 16px;font-size:13px" onclick="openLogModal(\''+p.id+'\')">Log +</button>')+
+      '</div></div></div>';
+  }).join('');
+  return '<div>'+
+    '<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:20px"><div>'+H1('Daily Log')+Sub('Tap a dose to log it')+'</div>'+
+    '<input type="date" class="if" style="width:auto" value="'+S.date+'" onchange="S.date=this.value;render()"></div>'+
+    (tsched.length?'<div class="card" style="margin-bottom:16px"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><span style="font-weight:600;font-size:13px">Progress</span><span style="color:#00d4aa;font-weight:700;font-size:14px">'+tdone+'/'+tsched.length+'</span></div><div class="pb"><div class="pf" style="width:'+pct+'%"></div></div></div>':'')+
+    (tsched.length===0?'<div class="card" style="padding:40px;text-align:center"><div style="font-size:40px;margin-bottom:12px">&#128203;</div><p style="color:#64748b">No doses scheduled for this day.</p><button class="bp" style="margin-top:16px" onclick="go(\'pr\')">Set Up Protocol &rarr;</button></div>':items)+
+    '</div>';
+}
+
+function rPR(){
+  var items=S.protocol.map(function(p,i){
+    var pep=gp(p.id);
+    var dbs=DAYS.map(function(d){return '<button class="db '+(p.days&&p.days.indexOf(d)>=0?'on':'')+'" onclick="tDay('+i+',\''+d+'\')">'+d[0]+'</button>';}).join(' ');
+    return '<div class="card">'+
+      '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;flex-wrap:wrap;gap:8px">'+
+      '<div style="display:flex;gap:12px;align-items:center">'+
+      '<div style="width:46px;height:46px;border-radius:12px;background:'+(pep?pep.color+'18':'rgba(255,255,255,0.08)')+';border:1px solid '+(pep?pep.color+'35':'rgba(255,255,255,0.1)')+';display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0">'+(pep?pep.emoji:'&#128137;')+'</div>'+
+      '<div><div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">'+
+      '<span style="font-weight:700;font-size:15px">'+(pep?pep.name:p.name)+'</span>'+
+      (pep?'<span class="bdg" style="background:'+pep.color+'20;color:'+pep.color+'">'+pep.cat+'</span>':'')+
+      (!p.active?'<span class="bdg" style="background:rgba(239,68,68,0.15);color:#f87171">PAUSED</span>':'')+
+      '</div>'+(pep&&pep.aka?'<div style="font-size:11px;color:#64748b;margin-top:2px">'+pep.aka+'</div>':'')+'</div></div>'+
+      '<div style="display:flex;gap:8px;flex-shrink:0">'+
+      '<button class="bs" style="background:'+(p.active?'rgba(239,68,68,0.1)':'rgba(0,212,170,0.1)')+';color:'+(p.active?'#f87171':'#00d4aa')+';border-color:'+(p.active?'rgba(239,68,68,0.3)':'rgba(0,212,170,0.3)')+'" onclick="tAct('+i+')">'+(p.active?'Pause':'Resume')+'</button>'+
+      '<button class="bd" onclick="rmProt('+i+')">Remove</button></div></div>'+
+      '<div class="g2" style="margin-bottom:12px">'+
+      '<div><label class="lbl">Dose</label><div style="display:flex;gap:6px;margin-top:4px"><input class="if" style="flex:2" value="'+p.dose+'" placeholder="e.g. 250" onchange="upProt('+i+',\'dose\',this.value)"><select class="if" style="flex:1" onchange="upProt('+i+',\'unit\',this.value)">'+['mcg','mg','IU','units','mL'].map(function(u){return '<option'+(p.unit===u?' selected':'')+'>'+u+'</option>';}).join('')+'</select></div></div>'+
+      '<div><label class="lbl">Route</label><select class="if" style="margin-top:4px" onchange="upProt('+i+',\'route\',this.value)">'+(pep?pep.routes:['SubQ','IM','Oral']).map(function(r){return '<option'+(p.route===r?' selected':'')+'>'+r+'</option>';}).join('')+'</select></div>'+
+      '<div><label class="lbl">Start Date</label><input type="date" class="if" style="margin-top:4px" value="'+p.startDate+'" onchange="upProt('+i+',\'startDate\',this.value)"></div>'+
+      '<div><label class="lbl">Vial mg / BAC mL</label><div style="display:flex;gap:6px;margin-top:4px"><input class="if" style="flex:1" placeholder="mg" value="'+(p.vialMg||'')+'" onchange="upProt('+i+',\'vialMg\',this.value)"><input class="if" style="flex:1" placeholder="mL" value="'+(p.waterMl||'')+'" onchange="upProt('+i+',\'waterMl\',this.value)"></div></div>'+
+      '</div>'+
+      '<label class="lbl">Dosing Days</label><div style="display:flex;gap:5px;margin:8px 0 12px">'+dbs+'</div>'+
+      '<label class="lbl">Notes</label><input class="if" style="margin-top:6px" placeholder="Cycle notes, vendor, batch..." value="'+(p.notes||'')+'" onchange="upProt('+i+',\'notes\',this.value)">'+
+      (pep?'<div style="margin-top:10px;padding:8px 12px;border-radius:8px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);display:flex;gap:16px;flex-wrap:wrap;font-size:12px"><span>&#9203; '+pep.hl+'</span><span>&#128207; '+pep.dose+'</span><span>&#128260; '+pep.cycle+'</span></div>':'')+
+      '</div>';
+  }).join('');
+  return '<div>'+PH('My Protocol','Configure dosages, frequencies and schedules','<button class="bp" onclick="openAdd()">+ Add Peptide</button>')+
+    (S.protocol.length===0?'<div class="card" style="padding:50px;text-align:center"><div style="font-size:46px;margin-bottom:14px">&#9883;</div><div style="font-weight:700;font-size:18px;margin-bottom:8px">No Protocol Yet</div><p style="color:#64748b;margin-bottom:20px">Browse the library and build your custom peptide protocol</p><button class="bp" onclick="openAdd()">Add Your First Peptide</button></div>':items)+'</div>';
+}
+
+function rLB(){
+  var fl=PL.filter(function(p){
+    var co=S.libF==='All'||p.cat===S.libF;
+    var s=S.libS.toLowerCase();
+    return co&&(!s||p.name.toLowerCase().indexOf(s)>=0||p.aka.toLowerCase().indexOf(s)>=0||p.benefits.some(function(b){return b.toLowerCase().indexOf(s)>=0;}));
+  });
+  var fps=['All'].concat(CATS).map(function(c){var a=S.libF===c;var col=CC[c]||'#64748b';return '<button class="pb2" style="background:'+(a?col+'25':'rgba(255,255,255,0.06)')+';color:'+(a?col:'#64748b')+';margin:2px" onclick="setLF(\''+c+'\')">'+(c==='All'?'All':c)+'</button>';}).join('');
+  var cards=fl.map(function(pep){
+    var inp=S.protocol.some(function(p){return p.id===pep.id;});
+    var iex=S.exp===pep.id;
+    var col=pep.color||'#64748b';
+    var bens=pep.benefits.slice(0,3).map(function(b){return '<span style="font-size:10px;padding:2px 7px;border-radius:6px;background:rgba(255,255,255,0.05);color:#94a3b8">'+b+'</span>';}).join(' ');
+    var exHTML='';
+    if(iex){
+      exHTML='<div style="border-top:1px solid rgba(255,255,255,0.07);padding-top:12px;margin-top:12px">' +
+        '<div style="font-size:12px;color:#94a3b8;margin-bottom:8px">Routes: '+pep.routes.join(', ')+' &middot; Freq: '+pep.freq+' &middot; Cycle: '+pep.cycle+'</div>'+
+        '<div style="background:rgba(255,255,255,0.03);border-radius:8px;padding:9px 11px;font-size:12px;color:#94a3b8;margin-bottom:10px;line-height:1.6">&#128204; '+pep.notes+'</div>'+
+        (pep.isCombo?'<div style="background:rgba(244,63,94,0.06);border-radius:8px;padding:8px 11px;font-size:12px;color:#fda4af;margin-bottom:10px">&#129513; Components: '+pep.components.join(' + ')+'</div>':'')+
+        '<div style="display:flex;gap:8px">'+
+        (!inp?'<button style="flex:1;padding:7px 0;border-radius:8px;background:rgba(0,212,170,0.2);color:#00d4aa;border:1px solid rgba(0,212,170,0.4);font-size:12px;font-weight:700;cursor:pointer;font-family:inherit" onclick="qAdd(\''+pep.id+'\')">+ Add to Protocol</button>':
+        '<button style="flex:1;padding:7px 0;border-radius:8px;background:rgba(59,130,246,0.15);color:#3b82f6;border:1px solid rgba(59,130,246,0.3);font-size:12px;font-weight:700;cursor:pointer;font-family:inherit" onclick="go(\'pr\')">&#9881; Edit Protocol</button>')+
+        '</div></div>';
+    }
+    return '<div class="card ch" style="border-color:'+(inp?col+'40':pep.isCombo?'rgba(244,63,94,0.25)':'rgba(255,255,255,0.07)')+';position:relative" onclick="togExp(\''+pep.id+'\')">' +
+      (inp?'<div style="position:absolute;top:10px;right:10px;background:rgba(0,212,170,0.15);color:#00d4aa;font-size:9px;font-weight:700;padding:2px 7px;border-radius:999px">IN PROTOCOL</div>':'')+
+      (pep.isCombo?'<div style="position:absolute;top:'+(inp?28:10)+'px;right:10px;background:rgba(244,63,94,0.15);color:#f43f5e;font-size:9px;font-weight:700;padding:2px 7px;border-radius:999px">COMBO</div>':'')+
+      '<div style="display:flex;gap:11px;align-items:center;margin-bottom:10px"><div style="width:42px;height:42px;border-radius:11px;background:'+col+'18;border:1px solid '+col+'30;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0">'+pep.emoji+'</div>'+
+      '<div><div style="font-weight:700;font-size:14px">'+pep.name+'</div><div style="font-size:11px;color:#64748b">'+pep.aka+'</div>'+
+      '<span class="bdg" style="background:'+col+'20;color:'+col+';margin-top:3px;display:inline-block">'+pep.cat+'</span></div></div>'+
+      '<div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px">'+bens+'</div>'+
+      '<div style="display:flex;gap:14px;font-size:11px;color:#64748b"><span>&#128207; '+pep.dose+'</span><span>&#9203; '+pep.hl+'</span></div>'+
+      '<div style="font-size:10px;color:#475569;text-align:center;margin-top:8px">'+(iex?'&#9650; collapse':'&#9660; details')+'</div>'+
+      exHTML+'</div>';
+  }).join('');
+  return '<div>'+H1('Peptide Library')+Sub(PL.length+' peptides and combos &middot; Tap any card to expand')+
+    '<input class="if" style="margin-bottom:10px" placeholder="&#128269; Search peptides, benefits..." value="'+S.libS+'" oninput="S.libS=this.value;render()">'+
+    '<div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:18px;overflow-x:auto;padding-bottom:4px">'+fps+'</div>'+
+    '<div class="ga">'+cards+'</div></div>';
+}
+
+function rCA(){
+  var rc=window._rc||{};
+  var res='';
+  if(rc.vialMg&&rc.waterMl){
+    var cM=(parseFloat(rc.vialMg)/parseFloat(rc.waterMl));
+    var cMcg=cM*1000;
+    res='<div style="margin-top:16px;padding:14px;border-radius:10px;background:rgba(0,212,170,0.07);border:1px solid rgba(0,212,170,0.2)"><div style="font-weight:700;color:#00d4aa;margin-bottom:10px">&#128202; Results</div>'+
+      '<div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px"><span style="color:#64748b">Concentration</span><span style="font-weight:700">'+cMcg.toFixed(1)+' mcg/mL</span></div>'+
+      '<div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px"><span style="color:#64748b">mg per mL</span><span style="font-weight:700">'+cM.toFixed(3)+' mg/mL</span></div>';
+    if(rc.targetMcg){
+      var d=parseFloat(rc.targetMcg);
+      var u=(d/cMcg*100).toFixed(1);
+      var ml=(d/cMcg).toFixed(3);
+      res+='<div style="border-top:1px solid rgba(0,212,170,0.15);margin:10px 0"></div>'+
+        '<div style="display:flex;justify-content:space-between;align-items:center;background:rgba(0,212,170,0.1);border-radius:8px;padding:10px 12px"><span style="font-weight:600;font-size:13px">Units on U-100 syringe</span><span style="font-weight:800;font-size:22px;color:#00d4aa">'+u+'</span></div>'+
+        '<div style="display:flex;justify-content:space-between;font-size:13px;margin-top:8px"><span style="color:#64748b">Draw volume</span><span style="font-weight:700">'+ml+' mL</span></div>';
+    }
+    res+='</div>';
+  }
+  var qc=S.protocol.filter(function(p){return p.vialMg&&p.waterMl&&p.dose;}).map(function(p){
+    var cMcg=(parseFloat(p.vialMg)/parseFloat(p.waterMl))*1000;
+    var dm=p.unit==='mg'?parseFloat(p.dose)*1000:parseFloat(p.dose);
+    var u=(dm/cMcg*100).toFixed(1);
+    return '<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 12px;border-radius:8px;background:rgba(255,255,255,0.04);margin-bottom:6px"><div><div style="font-weight:600;font-size:13px">'+p.name+'</div><div style="font-size:11px;color:#64748b">'+p.dose+' '+p.unit+'</div></div><div style="text-align:right"><div style="font-weight:800;font-size:18px;color:#00d4aa">'+u+'<span style="font-size:11px;color:#64748b"> units</span></div><div style="font-size:10px;color:#475569">U-100</div></div></div>';
+  }).join('');
+  var stacks=[{n:'&#128058; Wolverine Stack',p:'BPC-157 + TB-500',d:'Local + systemic healing'},
+    {n:'&#128200; GH Stack',p:'CJC-1295 + Ipamorelin',d:'Most prescribed GH combo'},
+    {n:'&#127807; Gut Stack',p:'BPC-157 + KPV + VIP',d:'IBD / gut repair'},
+    {n:'&#128737; Immune Stack',p:'Thymosin A1 + KPV + LL-37',d:'Full immune defense'},
+    {n:'&#9889; Mito Stack',p:'MOTS-c + SS-31 + Humanin',d:'Mitochondrial longevity'},
+    {n:'&#128293; Recomp Stack',p:'Tesamorelin + AOD + CJC/Ipa',d:'Visceral fat + muscle'},
+    {n:'&#9203; Anti-Age Stack',p:'Epitalon + GHK-Cu + Thymalin',d:'Multi-system anti-aging'},
+    {n:'&#129504; Cognitive Stack',p:'Semax + Selank + Dihexa',d:'Focus + calm + neurogenesis'},
+    {n:'&#127769; Sleep Stack',p:'DSIP + MK-677 + BPC-157',d:'Deep sleep + GH + repair'},
+    {n:'&#127939; Weight Loss',p:'Retatrutide + AOD-9604',d:'Triple agonist + fat metabolism'}];
+  var sites=['Left Abdomen','Right Abdomen','Left Thigh','Right Thigh','Left Deltoid','Right Deltoid','Left Glute','Right Glute','Navel Area','Flank L','Flank R','Upper Arm'];
+  return '<div>'+H1('Calculator Suite')+Sub('Reconstitution calculator, protocol quick calcs, stacks and injection sites')+
+    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:20px">'+
+    '<div class="card"><div class="st">&#129514; Reconstitution Calculator</div><p style="color:#64748b;font-size:12px;margin-bottom:14px">Calculate exact syringe units for any vial and BAC water combination</p>'+
+    '<label class="lbl">Vial Size (mg)</label><input class="if" type="number" style="margin-bottom:10px;margin-top:4px" placeholder="e.g. 5" value="'+(rc.vialMg||'')+'" oninput="window._rc=window._rc||{};window._rc.vialMg=this.value;render()">'+
+    '<label class="lbl">BAC Water (mL)</label><input class="if" type="number" style="margin-bottom:10px;margin-top:4px" placeholder="e.g. 2" value="'+(rc.waterMl||'')+'" oninput="window._rc=window._rc||{};window._rc.waterMl=this.value;render()">'+
+    '<label class="lbl">Target Dose (mcg)</label><input class="if" type="number" style="margin-top:4px" placeholder="e.g. 250" value="'+(rc.targetMcg||'')+'" oninput="window._rc=window._rc||{};window._rc.targetMcg=this.value;render()">'+
+    res+'<p style="font-size:11px;color:#475569;margin-top:12px;line-height:1.5">&#9888; Inject BAC water slowly along vial wall. Swirl gently, never shake. Refrigerate. Stable 28 days.</p></div>'+
+    '<div>'+(qc?'<div class="card" style="margin-bottom:16px"><div class="st">&#9883; Your Protocol Quick Calc</div><div style="margin-top:10px">'+qc+'</div></div>':'')+
+    '<div class="card" style="margin-bottom:16px"><div class="st">&#128161; Popular Stacks</div><div style="margin-top:10px">'+stacks.map(function(s){return '<div style="padding:9px 11px;border-radius:9px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);margin-bottom:7px"><div style="font-weight:600;font-size:12px;margin-bottom:4px">'+s.n+'</div><div style="font-size:11px;color:#00d4aa;margin-bottom:2px">'+s.p+'</div><div style="font-size:11px;color:#64748b">'+s.d+'</div></div>';}).join('')+'</div></div>'+
+    '<div class="card"><div class="st">&#128137; Injection Site Rotation</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:10px">'+sites.map(function(s){return '<div style="padding:7px 10px;border-radius:7px;font-size:11px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);text-align:center;color:#94a3b8">'+s+'</div>';}).join('')+'</div><p style="font-size:11px;color:#475569;margin-top:10px">Rotate sites to prevent lipodystrophy. Keep a 2-finger gap between sites.</p></div>'+
+    '</div></div></div>';
+}
+
+function rPG(){
+  var g=S.goals;
+  var gins=[{l:'Target Weight (lbs)',k:'weight'},{l:'Target BF%',k:'bf'},{l:'Target Waist (in)',k:'waist'}].map(function(gi){
+    var prog=S.body.length&&S.body[S.body.length-1][gi.k]&&g[gi.k]?'<div style="font-size:11px;margin-top:4px;color:'+(parseFloat(S.body[S.body.length-1][gi.k])<=parseFloat(g[gi.k])?'#00d4aa':'#f59e0b')+'">'+(parseFloat(S.body[S.body.length-1][gi.k])-parseFloat(g[gi.k])).toFixed(1)+' to go</div>':'';
+    return '<div><label class="lbl">'+gi.l+'</label><input class="if" style="margin-top:4px" placeholder="e.g. 160" value="'+(g[gi.k]||'')+'" onchange="S.goals.'+gi.k+'=this.value;sv()">'+prog+'</div>';
+  }).join('');
+  var rows=[...S.body].reverse().map(function(s,i){
+    var oi=S.body.length-1-i;
+    var pv=oi>0?S.body[oi-1]:null;
+    var wd=pv&&s.weight&&pv.weight?(parseFloat(s.weight)-parseFloat(pv.weight)).toFixed(1):null;
+    var ee=s.energy?['&#128564;','&#128528;','&#128522;','&#128640;','&#9889;'][s.energy-1]:'--';
+    return '<tr><td style="font-weight:600">'+s.date+'</td><td>'+( s.weight||'--')+(wd?'<span style="font-size:10px;margin-left:4px;color:'+(parseFloat(wd)<0?'#00d4aa':'#f87171')+'">'+(parseFloat(wd)<0?'&#8595;':'&#8593;')+Math.abs(wd)+'</span>':'')+'</td><td>'+(s.bf||'--')+'</td><td>'+(s.waist||'--')+'</td><td>'+(s.hips||'--')+'</td><td>'+(s.chest||'--')+'</td><td>'+(s.arm||'--')+'</td><td>'+(s.thigh||'--')+'</td><td>'+ee+'</td><td style="color:#64748b;font-size:11px;max-width:100px">'+(s.notes||'')+'</td><td><button class="bd" style="font-size:10px;padding:3px 8px" onclick="delBody('+oi+')">&#10005;</button></td></tr>';
+  }).join('');
+  return '<div>'+PH('Progress Tracker','Weight, measurements and transformation tracking','<button class="bp" onclick="openStat()">+ Log Measurements</button>')+
+    '<div class="card" style="margin-bottom:20px"><div class="st">&#127919; Goals</div><div class="g4" style="gap:10px;margin-top:12px">'+gins+'<div><label class="lbl">Protocol Goal</label><input class="if" style="margin-top:4px" placeholder="e.g. Heal knee, lose 20 lbs" value="'+(g.notes||'')+'" onchange="S.goals.notes=this.value;sv()"></div></div></div>'+
+    (S.body.length===0?'<div class="card" style="padding:40px;text-align:center"><div style="font-size:40px;margin-bottom:12px">&#128207;</div><p style="color:#64748b">No measurements logged yet.</p></div>':
+    '<div class="card"><div class="st">&#128202; Measurement History ('+S.body.length+' entries)</div><div class="ts"><table><thead><tr><th>Date</th><th>Weight</th><th>BF%</th><th>Waist</th><th>Hips</th><th>Chest</th><th>Arm</th><th>Thigh</th><th>Energy</th><th>Notes</th><th></th></tr></thead><tbody>'+rows+'</tbody></table></div></div>')+
+    '</div>';
+}
+
+function rIV(){
+  var cards=S.vials.map(function(v,i){
+    var exp=new Date(v.reconDate);
+    exp.setDate(exp.getDate()+(parseInt(v.daysStable)||28));
+    var dl=Math.round((exp-new Date())/86400000);
+    var dp=v.vialMg&&v.waterMl&&v.doseMcg?(parseFloat(v.vialMg)*1000/parseFloat(v.doseMcg)).toFixed(0):null;
+    var rm=dp&&v.dosesUsed!=null?Math.max(0,parseFloat(dp)-v.dosesUsed):null;
+    var ec=dl<7?'#f87171':dl<14?'#f59e0b':'#00d4aa';
+    return '<div class="card" style="border-color:'+(dl<7?'rgba(239,68,68,0.4)':dl<14?'rgba(245,158,11,0.4)':'rgba(255,255,255,0.07)')+'">'+
+      '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px"><div><div style="font-weight:700;font-size:15px">'+v.pepName+'</div><div style="font-size:11px;color:#64748b">'+v.vialMg+'mg &middot; '+(v.vendor||'No vendor')+'</div>'+(v.batchNum?'<div style="font-size:11px;color:#64748b">Batch: '+v.batchNum+'</div>':'')+'</div>'+
+      '<button class="bd" style="font-size:10px;padding:3px 8px" onclick="delVial('+i+')">&#10005;</button></div>'+
+      '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:12px">'+
+      '<div style="background:rgba(255,255,255,0.04);border-radius:8px;padding:8px 10px"><div style="color:#64748b;font-size:10px;margin-bottom:2px">EXPIRES</div><div style="font-weight:700;color:'+ec+'">'+(dl>0?dl+'d':'EXPIRED')+'</div><div style="font-size:10px;color:#64748b">'+exp.toLocaleDateString()+'</div></div>'+
+      (rm!=null?'<div style="background:rgba(255,255,255,0.04);border-radius:8px;padding:8px 10px"><div style="color:#64748b;font-size:10px;margin-bottom:2px">DOSES LEFT</div><div style="font-weight:700;font-size:16px">'+rm+'</div><div style="font-size:10px;color:#64748b">of '+dp+' total</div></div>':'')+
+      '</div>'+(v.notes?'<div style="font-size:11px;color:#94a3b8;margin-top:8px">'+v.notes+'</div>':'')+
+      (rm!=null?'<button class="bs" style="margin-top:10px;width:100%" onclick="mDose('+i+')">Mark 1 Dose Used</button>':'')+
+      '</div>';
+  }).join('');
+  return '<div>'+PH('Vial Inventory','Track peptide stock, expiration dates and remaining doses','<button class="bp" onclick="openVial()">+ Add Vial</button>')+
+    (S.vials.length===0?'<div class="card" style="padding:40px;text-align:center"><div style="font-size:40px;margin-bottom:12px">&#129514;</div><p style="color:#64748b">No vials tracked yet.</p></div>':'<div class="ga">'+cards+'</div>')+
+    '</div>';
+}
+
+function rJN(){
+  var ens=[...S.journal].reverse().map(function(j,i){
+    var oi=S.journal.length-1-i;
+    var tags=(j.peptides||[]).map(function(p){return '<span style="background:rgba(0,212,170,0.1);color:#00d4aa;padding:2px 8px;border-radius:999px;font-size:11px">'+p+'</span>';}).join(' ');
+    return '<div class="card"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px">'+
+      '<div><div style="font-weight:700;font-size:15px">'+(j.title||'Journal Entry')+'</div><div style="font-size:11px;color:#64748b;margin-top:2px">'+j.date+' &middot; Week '+(j.week||'?')+'</div></div>'+
+      '<div style="display:flex;gap:8px;align-items:center">'+
+      (j.energy?'<span style="font-size:20px">'+['&#128564;','&#128528;','&#128522;','&#128640;','&#9889;'][j.energy-1]+'</span>':'')+
+      (j.rating?'<span style="color:#f59e0b">'+'&#11088;'.repeat(j.rating)+'</span>':'')+
+      '<button class="bd" style="font-size:10px;padding:3px 8px" onclick="delJrn('+oi+')">&#10005;</button></div></div>'+
+      (tags?'<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px">'+tags+'</div>':'')+
+      '<div style="font-size:13px;color:#e2e8f0;line-height:1.6">'+j.body+'</div>'+
+      (j.sideEffects?'<div style="margin-top:8px;font-size:12px;color:#fda4af">&#9888; Side effects: '+j.sideEffects+'</div>':'')+
+      (j.improvements?'<div style="margin-top:4px;font-size:12px;color:#86efac">&#9989; Improvements: '+j.improvements+'</div>':'')+
+      '</div>';
+  }).join('');
+  return '<div>'+PH('Protocol Journal','Track results, observations and how you feel','<button class="bp" onclick="openJrn()">+ New Entry</button>')+
+    (S.journal.length===0?'<div class="card" style="padding:40px;text-align:center"><div style="font-size:40px;margin-bottom:12px">&#128211;</div><p style="color:#64748b">No journal entries yet.</p></div>':ens)+
+    '</div>';
+}
+
+function rLX(){
+  var bm={};
+  S.labs.forEach(function(e){(e.markers||[]).forEach(function(m){if(!bm[m.name])bm[m.name]=[];bm[m.name].push({date:e.date,value:m.value,unit:m.unit,range:m.range});});});
+  var mc=Object.keys(bm).map(function(mk){
+    var rs=bm[mk];var lat=rs[rs.length-1];var pv=rs.length>1?rs[rs.length-2]:null;
+    var tr=pv?(parseFloat(lat.value)-parseFloat(pv.value)):null;
+    var hist=rs.map(function(r){return '<div style="padding:5px 10px;border-radius:7px;background:rgba(255,255,255,0.05);font-size:12px;text-align:center"><div style="color:#64748b;font-size:10px">'+r.date+'</div><div style="font-weight:600">'+r.value+'</div></div>';}).join('');
+    return '<div class="card"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px"><div><div style="font-weight:700;font-size:15px">'+mk+'</div><div style="font-size:11px;color:#64748b">'+rs.length+' readings</div></div><div style="text-align:right"><div style="font-size:22px;font-weight:700;color:#00d4aa">'+lat.value+' <span style="font-size:12px;color:#64748b">'+lat.unit+'</span></div>'+(tr!==null?'<div style="font-size:12px;color:'+(tr>0?'#f59e0b':'#00d4aa')+'">'+(tr>0?'&#8593;':'&#8595;')+Math.abs(tr).toFixed(1)+' from prev</div>':'')+(lat.range?'<div style="font-size:11px;color:#475569">Ref: '+lat.range+'</div>':'')+'</div></div>'+
+      '<div style="display:flex;gap:6px;flex-wrap:wrap">'+hist+'</div></div>';
+  }).join('');
+  var aen=[...S.labs].reverse().map(function(e,i){
+    var oi=S.labs.length-1-i;
+    var ms=(e.markers||[]).map(function(m){return '<span style="font-size:12px;padding:3px 9px;border-radius:7px;background:rgba(0,212,170,0.1);color:#00d4aa">'+m.name+': '+m.value+' '+m.unit+'</span>';}).join(' ');
+    return '<div style="padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.05)"><div style="display:flex;justify-content:space-between;margin-bottom:6px"><span style="font-weight:600;font-size:13px">'+e.date+'</span><button class="bd" style="font-size:10px;padding:3px 8px" onclick="delLab('+oi+')">&#10005;</button></div><div style="display:flex;gap:8px;flex-wrap:wrap">'+ms+'</div>'+(e.notes?'<div style="font-size:12px;color:#64748b;margin-top:4px">'+e.notes+'</div>':'')+'</div>';
+  }).join('');
+  return '<div>'+PH('Lab Results Tracker','Log IGF-1, testosterone, glucose, lipids and any biomarker','<button class="bp" onclick="openLab()">+ Log Labs</button>')+
+    (S.labs.length===0?'<div class="card" style="padding:40px;text-align:center"><div style="font-size:40px;margin-bottom:12px">&#129656;</div><p style="color:#64748b">No lab results logged yet.</p></div>':
+    mc+(aen?'<div class="card"><div class="st">All Lab Entries</div>'+aen+'</div>':''))+
+    '</div>';
+}
+
+function rTL(){
+  var act=S.protocol.filter(function(p){return p.active;});
+  var syns=[],cons=[];
+  for(var i=0;i<act.length;i++){for(var j=i+1;j<act.length;j++){var a=act[i].id,b=act[j].id;
+    var s=SYN.find(function(s){return (s[0]===a&&s[1]===b)||(s[0]===b&&s[1]===a);});
+    if(s)syns.push({p1:act[i].name,p2:act[j].name,score:s[2],note:s[3]});
+    var c=CON.find(function(c){return (c[0]===a&&c[1]===b)||(c[0]===b&&c[1]===a);});
+    if(c)cons.push({p1:act[i].name,p2:act[j].name,sev:c[2],reason:c[3]});
+  }}
+  var sh=syns.sort(function(a,b){return b.score-a.score;}).map(function(s){
+    var co=s.score>=90?'#00d4aa':s.score>=80?'#3b82f6':'#f59e0b';
+    return '<div style="padding:11px 14px;border-radius:10px;background:rgba(0,212,170,0.05);border:1px solid rgba(0,212,170,0.15);margin-bottom:8px"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px"><span style="font-weight:700;font-size:13px">'+s.p1+' + '+s.p2+'</span><div style="display:flex;align-items:center;gap:8px"><div style="height:5px;width:80px;background:rgba(255,255,255,0.08);border-radius:3px;overflow:hidden"><div style="height:100%;width:'+s.score+'%;background:'+co+';border-radius:3px"></div></div><span style="font-weight:800;font-size:14px;color:'+co+'">'+s.score+'</span></div></div><div style="font-size:11px;color:#94a3b8;line-height:1.5">'+s.note+'</div></div>';
+  }).join('');
+  var ch=cons.map(function(c){var av=c.sev==='AVOID';return '<div style="padding:10px 12px;border-radius:10px;background:'+(av?'rgba(239,68,68,0.08)':'rgba(245,158,11,0.08)')+';border:1px solid '+(av?'rgba(239,68,68,0.3)':'rgba(245,158,11,0.3)')+';margin-bottom:8px"><div style="display:flex;gap:6px;align-items:center;margin-bottom:4px"><span>'+(av?'&#128683;':'&#9888;')+'</span><span style="font-weight:700;font-size:12px;color:'+(av?'#f87171':'#f59e0b')+'">'+c.sev+'</span><span style="font-size:12px;color:#e2e8f0">'+c.p1+' + '+c.p2+'</span></div><div style="font-size:11px;color:#94a3b8;line-height:1.5">'+c.reason+'</div></div>';}).join('');
+  var icA=window._icA||'',icB=window._icB||'';
+  var icR='';
+  if(icA&&icB&&icA!==icB){
+    var s2=SYN.find(function(s){return (s[0]===icA&&s[1]===icB)||(s[0]===icB&&s[1]===icA);});
+    var c2=CON.find(function(c){return (c[0]===icA&&c[1]===icB)||(c[0]===icB&&c[1]===icA);});
+    var cm=SMX.some(function(p){return (p[0]===icA&&p[1]===icB)||(p[0]===icB&&p[1]===icA);});
+    icR='<div style="display:flex;flex-direction:column;gap:10px;margin-top:14px">'+
+      '<div style="padding:10px 14px;border-radius:10px;background:'+(cm?'rgba(0,212,170,0.07)':'rgba(100,116,139,0.07)')+';border:1px solid '+(cm?'rgba(0,212,170,0.25)':'rgba(100,116,139,0.2)')+'"><span style="font-weight:700;font-size:13px;color:'+(cm?'#00d4aa':'#64748b')+'">'+(cm?'&#9989; Can mix in same syringe':'&#128137; Use separate syringes')+'</span></div>'+
+      (s2?'<div style="padding:12px 14px;border-radius:10px;background:rgba(0,212,170,0.06);border:1px solid rgba(0,212,170,0.2)"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px"><span style="font-weight:700;font-size:13px;color:#00d4aa">&#129309; Synergy: '+s2[2]+'/100</span><div style="height:6px;width:100px;background:rgba(255,255,255,0.08);border-radius:3px;overflow:hidden"><div style="height:100%;width:'+s2[2]+'%;background:#00d4aa;border-radius:3px"></div></div></div><div style="font-size:12px;color:#94a3b8;line-height:1.6">'+s2[3]+'</div></div>':'')+
+      (c2?'<div style="padding:12px 14px;border-radius:10px;background:'+(c2[2]==='AVOID'?'rgba(239,68,68,0.08)':'rgba(245,158,11,0.08)')+';border:1px solid '+(c2[2]==='AVOID'?'rgba(239,68,68,0.3)':'rgba(245,158,11,0.3)')+'"><div style="font-weight:700;font-size:13px;color:'+(c2[2]==='AVOID'?'#f87171':'#f59e0b')+';margin-bottom:6px">'+(c2[2]==='AVOID'?'&#128683; AVOID this combination':'&#9888; Use with caution')+'</div><div style="font-size:12px;color:#94a3b8;line-height:1.6">'+c2[3]+'</div></div>':'')+
+      (!s2&&!c2?'<div style="padding:10px 14px;border-radius:10px;background:rgba(0,212,170,0.04);border:1px solid rgba(0,212,170,0.12);font-size:12px;color:#64748b">No known synergy or conflict data for this pair. May still be complementary if they target different mechanisms.</div>':'')+
+      '</div>';
+  }
+  var pops=PL.filter(function(p){return !p.isCombo;}).map(function(p){return '<option value="'+p.id+'"'+(icA===p.id?' selected':'')+'>'+p.name+'</option>';}).join('');
+  var popsB=PL.filter(function(p){return !p.isCombo&&p.id!==icA;}).map(function(p){return '<option value="'+p.id+'"'+(icB===p.id?' selected':'')+'>'+p.name+'</option>';}).join('');
+  var cd=act.filter(function(p){return p.startDate;}).map(function(p){
+    var pep=gp(p.id);
+    var st=new Date(p.startDate+'T12:00:00');
+    var ds=Math.floor((new Date()-st)/86400000);
+    var cw=pep?(parseInt(pep.cycle)||12):12;
+    var cdz=cw*7;var dl2=Math.max(0,cdz-ds);var pct=Math.min(100,Math.round((ds/cdz)*100));
+    var bc=pct>90?'#f87171':pct>70?'#f59e0b':'#00d4aa';
+    return '<div style="padding:14px;border-radius:12px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07)"><div style="display:flex;gap:8px;align-items:center;margin-bottom:8px"><span style="font-size:18px">'+(pep?pep.emoji:'&#128137;')+'</span><div style="flex:1"><div style="font-weight:600;font-size:13px">'+p.name+'</div><div style="font-size:11px;color:#64748b">'+(pep?pep.cycle:'Unknown')+'</div></div></div><div style="height:5px;background:rgba(255,255,255,0.08);border-radius:3px;overflow:hidden;margin-bottom:6px"><div style="height:100%;width:'+pct+'%;background:'+bc+';border-radius:3px"></div></div><div style="display:flex;justify-content:space-between;font-size:11px;color:#64748b"><span>Day '+ds+'</span><span style="color:'+(dl2<7?'#f87171':'#94a3b8')+'">'+(dl2>0?dl2+'d left':'Cycle complete &#9888;')+'</span></div></div>';
+  }).join('');
+  var ebts=['<button class="bs" style="margin:4px" onclick="expDL()">Export Dose Log (CSV)</button>','<button class="bs" style="margin:4px" onclick="expBD()">Export Measurements (CSV)</button>','<button class="bs" style="margin:4px" onclick="expPR()">Export Protocol (CSV)</button>','<button class="bs" style="margin:4px" onclick="expLB()">Export Labs (CSV)</button>'].join('');
+  return '<div>'+H1('Tools')+Sub('Stack analyzer, interaction checker, cycle countdowns and CSV export')+
+    '<div class="card" style="margin-bottom:16px"><div class="st">&#128300; Stack Analyzer</div>'+
+    (act.length===0?'<p style="color:#64748b;font-size:13px;margin-top:10px">Add peptides to your protocol to analyze your stack.</p>':
+    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0">'+
+    [{i:'&#9883;',v:act.length,l:'Active Peptides',c:'#00d4aa'},{i:'&#129309;',v:syns.length,l:'Synergies Found',c:'#3b82f6'},{i:'&#11088;',v:syns.length?Math.round(syns.reduce(function(s,x){return s+x.score;},0)/syns.length)+'/100':'--',l:'Avg Score',c:'#f59e0b'},{i:'&#9888;',v:cons.length,l:'Conflicts',c:cons.length?'#f87171':'#00d4aa'}].map(function(s){return '<div style="background:rgba(255,255,255,0.04);border-radius:12px;padding:12px;text-align:center"><div style="font-size:18px;margin-bottom:4px">'+s.i+'</div><div style="font-weight:800;font-size:20px;color:'+s.c+'">'+s.v+'</div><div style="font-size:11px;color:#64748b;margin-top:3px">'+s.l+'</div></div>';}).join('')+'</div>'+
+    (ch?'<div style="margin-bottom:12px"><div style="font-weight:600;font-size:13px;color:#f87171;margin-bottom:8px">&#9888; Conflicts and Cautions</div>'+ch+'</div>':'<div style="padding:10px 12px;border-radius:10px;background:rgba(0,212,170,0.06);border:1px solid rgba(0,212,170,0.2);margin-bottom:12px;font-weight:600;font-size:13px;color:#00d4aa">&#9989; No conflicts detected</div>')+
+    (sh?'<div><div style="font-weight:600;font-size:13px;color:#00d4aa;margin-bottom:8px">&#129309; Synergies in Your Stack</div>'+sh+'</div>':''))+
+    '</div>'+
+    '<div class="card" style="margin-bottom:16px"><div class="st">&#128269; Interaction Checker</div><p style="font-size:12px;color:#64748b;margin-bottom:14px">Check any two peptides for synergy, conflicts and syringe compatibility</p>'+
+    '<div class="g2" style="gap:12px"><div><label class="lbl">Peptide A</label><select class="if" style="margin-top:4px" onchange="window._icA=this.value;render()"><option value="">Select...</option>'+pops+'</select></div>'+
+    '<div><label class="lbl">Peptide B</label><select class="if" style="margin-top:4px" onchange="window._icB=this.value;render()"><option value="">Select...</option>'+popsB+'</select></div></div>'+icR+'</div>'+
+    '<div class="card" style="margin-bottom:16px"><div class="st">&#9203; Cycle Countdowns</div>'+
+    (act.length===0?'<p style="color:#64748b;font-size:13px;margin-top:10px">Add peptides to see cycle countdowns.</p>':'<div class="ga" style="margin-top:12px">'+cd+'</div>')+
+    '</div>'+
+    '<div class="card" style="margin-bottom:16px"><div class="st">&#128228; Export Data</div><p style="font-size:12px;color:#64748b;margin-bottom:12px">Download your data as CSV to share with your healthcare provider</p>'+ebts+'</div>'+
+    '</div>';
+}
+
+// ── MODAL SYSTEM ──────────────────────────────────────────────
+function openM(html){var o=document.getElementById('ov');o.innerHTML='<div class="modal">'+html+'</div>';o.classList.add('open');}
+function closeM(){var o=document.getElementById('ov');o.classList.remove('open');o.innerHTML='';}
+function MH(t){return '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px"><h2 style="font-family:\'Space Grotesk\',sans-serif;font-weight:700;font-size:18px">'+t+'</h2><button onclick="closeM()" style="background:none;border:none;color:#64748b;font-size:20px;cursor:pointer">&#10005;</button></div>';}
+
+// ADD MODAL
+var _as='pick',_asl=null,_ac='All',_aq='',_acfg={};
+function openAdd(){_as='pick';_asl=null;_aq='';_ac='All';rAdd();}
+function rAdd(){
+  if(_as==='pick'){
+    var ip=S.protocol.map(function(p){return p.id;});
+    var fp=['All'].concat(CATS).map(function(c){return '<button class="pb2" style="background:'+(_ac===c?'rgba(0,212,170,0.2)':'rgba(255,255,255,0.06)')+';color:'+(_ac===c?'#00d4aa':'#64748b')+';font-size:10px;padding:4px 9px;margin:2px" onclick="_ac=\''+c+'\';rAdd()">'+c+'</button>';}).join('');
+    var its=PL.filter(function(p){var co=_ac==='All'||p.cat===_ac;var s=_aq.toLowerCase();return co&&(!s||p.name.toLowerCase().indexOf(s)>=0||p.benefits.some(function(b){return b.toLowerCase().indexOf(s)>=0;}));}).map(function(pep){
+      var ad=ip.indexOf(pep.id)>=0;
+      return '<div onclick="'+(ad?'':'pickP(\''+pep.id+'\')')+'" style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:9px;cursor:'+(ad?'not-allowed':'pointer')+';background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);margin-bottom:6px;opacity:'+(ad?0.5:1)+'"><span style="font-size:20px">'+pep.emoji+'</span><div style="flex:1"><div style="font-weight:600;font-size:13px">'+pep.name+'</div><div style="font-size:11px;color:#64748b">'+pep.cat+(pep.isCombo?' &middot; COMBO':'')+' &middot; '+pep.dose+'</div></div>'+(ad?'<span style="font-size:11px;color:#475569">&#10003; Added</span>':'<span style="font-size:18px;color:#00d4aa">+</span>')+'</div>';
+    }).join('');
+    openM(MH('Choose a Peptide')+'<input class="if" placeholder="&#128269; Search..." style="margin-bottom:10px" value="'+_aq+'" oninput="_aq=this.value;rAdd()"><div style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:12px">'+fp+'</div><div style="max-height:380px;overflow-y:auto">'+its+'</div>');
+  } else {
+    var pep=gp(_asl);
+    var dbs=DAYS.map(function(d){return '<button class="db '+(_acfg.days&&_acfg.days.indexOf(d)>=0?'on':'')+'" onclick="_acfg.days=(_acfg.days||[]);var i=_acfg.days.indexOf(\''+d+'\');if(i>=0)_acfg.days.splice(i,1);else _acfg.days.push(\''+d+'\');rAdd()">'+d[0]+'</button>';}).join(' ');
+    openM(MH('Configure '+pep.name)+
+      '<div style="display:flex;gap:10px;align-items:center;padding:12px 14px;border-radius:10px;background:'+pep.color+'12;border:1px solid '+pep.color+'30;margin-bottom:16px"><span style="font-size:26px">'+pep.emoji+'</span><div><div style="font-weight:700">'+pep.name+'</div><div style="font-size:12px;color:#64748b">'+pep.cat+' &middot; '+pep.aka+'</div></div></div>'+
+      '<div class="g2"><div><label class="lbl">Dose</label><input class="if" style="margin-top:4px" value="'+(_acfg.dose||'')+'" placeholder="e.g. 250" oninput="_acfg.dose=this.value"></div>'+
+      '<div><label class="lbl">Unit</label><select class="if" style="margin-top:4px" onchange="_acfg.unit=this.value">'+['mcg','mg','IU','units','mL'].map(function(u){return '<option'+((_acfg.unit||'mcg')===u?' selected':'')+'>'+u+'</option>';}).join('')+'</select></div>'+
+      '<div><label class="lbl">Route</label><select class="if" style="margin-top:4px" onchange="_acfg.route=this.value">'+pep.routes.map(function(r){return '<option'+((_acfg.route||pep.routes[0])===r?' selected':'')+'>'+r+'</option>';}).join('')+'</select></div>'+
+      '<div><label class="lbl">Start Date</label><input type="date" class="if" style="margin-top:4px" value="'+(_acfg.startDate||td())+'" onchange="_acfg.startDate=this.value"></div></div>'+
+      '<div style="margin-top:10px"><label class="lbl">Dosing Days</label><div style="display:flex;gap:5px;margin-top:6px">'+dbs+'</div></div>'+
+      '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px"><div><label class="lbl">Vial (mg)</label><input class="if" style="margin-top:4px" type="number" placeholder="e.g. 5" value="'+(_acfg.vialMg||'')+'" oninput="_acfg.vialMg=this.value"></div>'+
+      '<div><label class="lbl">BAC Water (mL)</label><input class="if" style="margin-top:4px" type="number" placeholder="e.g. 2" value="'+(_acfg.waterMl||'')+'" oninput="_acfg.waterMl=this.value"></div></div>'+
+      '<div style="margin-top:10px"><label class="lbl">Notes</label><input class="if" style="margin-top:4px" placeholder="Notes, vendor, batch..." value="'+(_acfg.notes||'')+'" oninput="_acfg.notes=this.value"></div>'+
+      '<div style="display:flex;gap:10px;margin-top:16px"><button onclick="_as=\'pick\';rAdd()" style="flex:1;padding:10px 0;border-radius:9px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:#94a3b8;cursor:pointer;font-family:inherit;font-weight:600">&larr; Back</button>'+
+      '<button class="bp" style="flex:2" onclick="confAdd()">Add to Protocol &#10003;</button></div>');
+  }
+}
+function pickP(id){_asl=id;var pep=gp(id);var d=pep.dose.split('-')[0].replace(/[^\d.]/g,'');_acfg={dose:d,unit:pep.dose.toLowerCase().indexOf('mg')>=0?'mg':'mcg',route:pep.routes[0],days:['Mon','Wed','Fri'],startDate:td(),notes:'',vialMg:'',waterMl:''};_as='cfg';rAdd();}
+function confAdd(){
+  if(!_asl)return;
+  if(S.protocol.some(function(p){return p.id===_asl;})){toast('Already in protocol!','w');return;}
+  var pep=gp(_asl);
+  S.protocol.push({id:_asl,name:pep.name,dose:_acfg.dose||'',unit:_acfg.unit||'mcg',route:_acfg.route||pep.routes[0],days:_acfg.days||['Mon','Wed','Fri'],startDate:_acfg.startDate||td(),notes:_acfg.notes||'',active:true,vialMg:_acfg.vialMg||'',waterMl:_acfg.waterMl||''});
+  sv();closeM();toast(pep.name+' added! &#127881;');render();
+}
+
+// LOG DOSE MODAL
+function openLogModal(pepId){
+  var pep=gp(pepId);var pr=S.protocol.find(function(p){return p.id===pepId;});var ex=gl(pepId)||{};
+  var sites=['Left Abdomen','Right Abdomen','Left Thigh','Right Thigh','Left Deltoid','Right Deltoid','Left Glute','Right Glute','Other'];
+  var moods=['&#128564; Tired','&#128528; Neutral','&#128522; Good','&#128640; Great','&#9889; Amazing'];
+  openM(MH((pep?pep.emoji:'&#128137;')+' Log '+(pep?pep.name:'Dose'))+
+    '<div class="g2" style="margin-bottom:12px"><div><label class="lbl">Actual Dose</label><div style="display:flex;gap:6px;align-items:center;margin-top:4px"><input class="if" id="ld" value="'+(ex.actualDose||pr&&pr.dose||'')+'" style="flex:1"><span style="color:#64748b;font-size:12px;white-space:nowrap">'+(pr?pr.unit:'mcg')+'</span></div></div>'+
+    '<div><label class="lbl">Injection Site</label><select class="if" id="ls" style="margin-top:4px"><option value="">Select...</option>'+sites.map(function(s){return '<option'+(ex.siteUsed===s?' selected':'')+'>'+s+'</option>';}).join('')+'</select></div></div>'+
+    '<label class="lbl">How do you feel?</label><div style="display:flex;gap:6px;flex-wrap:wrap;margin:8px 0 12px">'+moods.map(function(m){return '<button onclick="this.parentNode.querySelectorAll(\'.mdb\').forEach(function(b){b.style.background=\'rgba(255,255,255,0.06)\';b.style.color=\'#94a3b8\'});this.style.background=\'rgba(0,212,170,0.2)\';this.style.color=\'#00d4aa\'" class="mdb" data-m="'+m+'" style="padding:6px 10px;border-radius:8px;font-size:12px;cursor:pointer;background:'+(ex.mood===m?'rgba(0,212,170,0.2)':'rgba(255,255,255,0.06)')+';border:1px solid rgba(255,255,255,0.1);color:'+(ex.mood===m?'#00d4aa':'#94a3b8')+';font-family:inherit">'+m+'</button>';}).join('')+'</div>'+
+    '<label class="lbl">Side Effects</label><input class="if" id="lse" style="margin:4px 0 10px" placeholder="None, or describe..." value="'+(ex.sideEffects||'')+'">'+
+    '<label class="lbl">Improvements / Results</label><input class="if" id="lim" style="margin:4px 0 10px" placeholder="Pain relief, energy, sleep..." value="'+(ex.improvements||'')+'">'+
+    '<label class="lbl">Notes</label><input class="if" id="ln" style="margin:4px 0 10px" placeholder="Timing, observations..." value="'+(ex.notes||'')+'">'+
+    '<label class="lbl">Effectiveness Rating</label><div style="display:flex;gap:5px;margin:6px 0 14px" id="sr">'+[1,2,3,4,5].map(function(s){return '<button onclick="setSt('+s+')" id="st'+s+'" style="font-size:22px;cursor:pointer;background:none;border:none;color:'+(ex.rating>=s?'#f59e0b':'#2a3a5c')+'">&#11088;</button>';}).join('')+'</div>'+
+    '<input type="hidden" id="lr" value="'+(ex.rating||0)+'">'+
+    '<button class="bp" style="width:100%;padding:12px 0;font-size:15px" onclick="subLog(\''+pepId+'\')">&#10003; Log Dose</button>'+
+    '<p style="font-size:11px;color:#475569;text-align:center;margin-top:8px">&#9888; For research purposes only. Always consult a qualified healthcare provider.</p>');
+}
+function setSt(n){document.getElementById('lr').value=n;for(var i=1;i<=5;i++){var s=document.getElementById('st'+i);if(s)s.style.color=i<=n?'#f59e0b':'#2a3a5c';}}
+function subLog(pepId){
+  var mood='';document.querySelectorAll('.mdb').forEach(function(b){if(b.style.color==='rgb(0, 212, 170)')mood=b.getAttribute('data-m');});
+  S.logs[pepId+'_'+S.date]={taken:true,actualDose:document.getElementById('ld').value,siteUsed:document.getElementById('ls').value,mood:mood,sideEffects:document.getElementById('lse').value,improvements:document.getElementById('lim').value,notes:document.getElementById('ln').value,rating:parseInt(document.getElementById('lr').value)||0,ts:new Date().toISOString()};
+  sv();closeM();toast('Logged! &#9989;');render();
+}
+function unlog(pepId){var k=pepId+'_'+S.date;if(S.logs[k]){S.logs[k].taken=false;sv();render();}}
+
+// STAT MODAL
+function openStat(){
+  openM(MH('&#128207; Log Measurements &mdash; '+S.date)+
+    '<div class="g2">'+[['Weight (lbs)','sw'],['Body Fat %','sbf'],['Waist (in)','swa'],['Hips (in)','shi'],['Chest (in)','sch'],['Arm/Bicep (in)','sar'],['Thigh (in)','sth']].map(function(f){return '<div><label class="lbl">'+f[0]+'</label><input class="if" type="number" step="0.1" id="'+f[1]+'" style="margin-top:4px"></div>';}).join('')+
+    '<div><label class="lbl">Energy Level</label><div style="display:flex;gap:6px;margin-top:6px" id="enr">'+[1,2,3,4,5].map(function(n){return '<button onclick="setEn('+n+')" id="en'+n+'" style="font-size:18px;cursor:pointer;background:none;border:none;opacity:0.25">&#9889;</button>';}).join('')+'</div></div></div>'+
+    '<input type="hidden" id="se" value="3"><div style="margin-top:10px"><label class="lbl">Notes</label><input class="if" id="sn" style="margin-top:4px" placeholder="How are you feeling? Any changes?"></div>'+
+    '<button class="bp" style="width:100%;margin-top:16px;padding:12px 0" onclick="subStat()">Save Measurements</button>');
+  setEn(3);
+}
+function setEn(n){document.getElementById('se').value=n;for(var i=1;i<=5;i++){var e=document.getElementById('en'+i);if(e)e.style.opacity=i<=n?'1':'0.25';}}
+function subStat(){
+  var w=document.getElementById('sw').value,bf=document.getElementById('sbf').value,wa=document.getElementById('swa').value;
+  if(!w&&!bf&&!wa){alert('Enter at least one measurement');return;}
+  S.body.push({date:S.date,weight:w,bf:bf,waist:wa,hips:document.getElementById('shi').value,chest:document.getElementById('sch').value,arm:document.getElementById('sar').value,thigh:document.getElementById('sth').value,energy:parseInt(document.getElementById('se').value)||3,notes:document.getElementById('sn').value});
+  sv();closeM();toast('Measurements saved! &#128207;');render();
+}
+function delBody(i){S.body.splice(i,1);sv();render();}
+
+// VIAL MODAL
+function openVial(){
+  var po=PL.map(function(p){return '<option value="'+p.name+'">'+p.name+'</option>';}).join('');
+  openM(MH('&#129514; Add Vial to Inventory')+
+    '<div style="display:flex;flex-direction:column;gap:12px">'+
+    '<div><label class="lbl">Peptide</label><select class="if" id="vp" style="margin-top:4px"><option value="">Select...</option>'+po+'<option value="Custom">Custom / Not Listed</option></select></div>'+
+    '<div class="g2"><div><label class="lbl">Vial Size (mg)</label><input class="if" type="number" id="vm" style="margin-top:4px"></div>'+
+    '<div><label class="lbl">BAC Water (mL)</label><input class="if" type="number" id="vw" style="margin-top:4px"></div>'+
+    '<div><label class="lbl">Per-Dose (mcg)</label><input class="if" type="number" id="vd" style="margin-top:4px" placeholder="e.g. 250"></div>'+
+    '<div><label class="lbl">Days Stable</label><input class="if" type="number" id="vs" value="28" style="margin-top:4px"></div>'+
+    '<div><label class="lbl">Vendor</label><input class="if" id="vv" style="margin-top:4px"></div>'+
+    '<div><label class="lbl">Batch #</label><input class="if" id="vb" style="margin-top:4px"></div></div>'+
+    '<div><label class="lbl">Reconstitution Date</label><input type="date" class="if" id="vdt" value="'+td()+'" style="margin-top:4px"></div>'+
+    '<div><label class="lbl">Notes</label><input class="if" id="vn" style="margin-top:4px" placeholder="Storage, source..."></div></div>'+
+    '<button class="bp" style="width:100%;margin-top:16px;padding:12px 0" onclick="subVial()">Add Vial</button>');
+}
+function subVial(){
+  var n=document.getElementById('vp').value;
+  if(!n){alert('Select a peptide');return;}
+  S.vials.push({pepName:n,vialMg:document.getElementById('vm').value,waterMl:document.getElementById('vw').value,doseMcg:document.getElementById('vd').value,daysStable:document.getElementById('vs').value,vendor:document.getElementById('vv').value,batchNum:document.getElementById('vb').value,reconDate:document.getElementById('vdt').value,notes:document.getElementById('vn').value,dosesUsed:0});
+  sv();closeM();toast('Vial added! &#129514;');render();
+}
+function delVial(i){S.vials.splice(i,1);sv();render();}
+function mDose(i){S.vials[i].dosesUsed=(S.vials[i].dosesUsed||0)+1;sv();toast('Dose used &#10003;');render();}
+
+// JOURNAL MODAL
+function openJrn(){
+  var pb=S.protocol.map(function(p){return '<button onclick="tJP(\''+p.name+'\')" id="jp_'+p.id+'" style="padding:5px 10px;border-radius:8px;font-size:11px;cursor:pointer;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:#94a3b8;font-family:inherit;margin:2px">'+p.name+'</button>';}).join('');
+  window._jp=[];window._jr=0;
+  openM(MH('&#128211; New Journal Entry &mdash; '+S.date)+
+    '<div style="display:flex;flex-direction:column;gap:12px">'+
+    '<div class="g2" style="gap:10px"><div><label class="lbl">Title</label><input class="if" id="jt" style="margin-top:4px" placeholder="e.g. Week 4 - knee pain much better"></div><div><label class="lbl">Week #</label><input class="if" type="number" id="jw" style="margin-top:4px"></div></div>'+
+    '<div><label class="lbl">Active Peptides</label><div style="display:flex;flex-wrap:wrap;gap:4px;margin-top:6px">'+pb+'</div></div>'+
+    '<div><label class="lbl">Entry</label><textarea class="if" id="jb" style="margin-top:4px;min-height:100px" placeholder="How are you feeling? What changes have you noticed?"></textarea></div>'+
+    '<div class="g2" style="gap:10px"><div><label class="lbl">Side Effects</label><input class="if" id="jse" style="margin-top:4px" placeholder="None, or describe..."></div><div><label class="lbl">Improvements</label><input class="if" id="jim" style="margin-top:4px" placeholder="Pain down, energy up..."></div></div>'+
+    '<div style="display:flex;gap:20px;align-items:center"><div><label class="lbl">Energy</label><div style="display:flex;gap:4px;margin-top:5px">'+[1,2,3,4,5].map(function(n){return '<button onclick="setJE('+n+')" id="je'+n+'" style="font-size:18px;cursor:pointer;background:none;border:none;opacity:'+(n<=3?'1':'0.25')+'">&#9889;</button>';}).join('')+'</div></div>'+
+    '<div><label class="lbl">Rating</label><div style="display:flex;gap:3px;margin-top:5px">'+[1,2,3,4,5].map(function(n){return '<button onclick="setJR('+n+')" id="jrat'+n+'" style="font-size:18px;cursor:pointer;background:none;border:none;color:#2a3a5c">&#11088;</button>';}).join('')+'</div></div></div></div>'+
+    '<input type="hidden" id="jen" value="3"><input type="hidden" id="jrn" value="0">'+
+    '<button class="bp" style="width:100%;margin-top:16px;padding:12px 0" onclick="subJrn()">Save Entry</button>');
+}
+function tJP(name){var i=window._jp.indexOf(name);if(i>=0)window._jp.splice(i,1);else window._jp.push(name);document.querySelectorAll('[id^="jp_"]').forEach(function(b){var n=b.textContent;b.style.background=window._jp.indexOf(n)>=0?'rgba(0,212,170,0.2)':'rgba(255,255,255,0.06)';b.style.color=window._jp.indexOf(n)>=0?'#00d4aa':'#94a3b8';});}
+function setJE(n){document.getElementById('jen').value=n;for(var i=1;i<=5;i++){var e=document.getElementById('je'+i);if(e)e.style.opacity=i<=n?'1':'0.25';}}
+function setJR(n){window._jr=n;document.getElementById('jrn').value=n;for(var i=1;i<=5;i++){var s=document.getElementById('jrat'+i);if(s)s.style.color=i<=n?'#f59e0b':'#2a3a5c';}}
+function subJrn(){
+  var body=document.getElementById('jb').value;
+  if(!body){alert('Write something first');return;}
+  S.journal.push({date:S.date,title:document.getElementById('jt').value,week:document.getElementById('jw').value,body:body,peptides:window._jp.slice(),sideEffects:document.getElementById('jse').value,improvements:document.getElementById('jim').value,energy:parseInt(document.getElementById('jen').value)||3,rating:parseInt(document.getElementById('jrn').value)||0});
+  sv();closeM();toast('Entry saved! &#128211;');render();
+}
+function delJrn(i){S.journal.splice(i,1);sv();render();}
+
+// LAB MODAL
+function openLab(){
+  var cm=['IGF-1','Testosterone (Total)','Testosterone (Free)','LH','FSH','Estradiol','Cortisol','HbA1c','Fasting Glucose','Insulin','TSH','LDL','HDL','Triglycerides','hsCRP','Vitamin D','Ferritin','ALT','AST','Creatinine'];
+  window._lm=[{name:'IGF-1',value:'',unit:'ng/mL',range:'115-307'}];
+  function rLM(){return window._lm.map(function(m,i){return '<div style="padding:12px 14px;border-radius:10px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);margin-bottom:8px"><div style="display:grid;grid-template-columns:2fr 1fr 1fr auto;gap:8px;align-items:end"><div><label class="lbl">Marker</label><input list="ldl" class="if" style="margin-top:4px" value="'+m.name+'" oninput="window._lm['+i+'].name=this.value"></div><div><label class="lbl">Value</label><input class="if" style="margin-top:4px" value="'+m.value+'" oninput="window._lm['+i+'].value=this.value"></div><div><label class="lbl">Unit</label><input class="if" style="margin-top:4px" value="'+m.unit+'" oninput="window._lm['+i+'].unit=this.value"></div><button class="bd" style="margin-top:20px;padding:8px 10px" onclick="window._lm.splice('+i+',1);document.getElementById(\'lmr\').innerHTML=window._rLM()">&#10005;</button></div><input class="if" style="margin-top:8px;font-size:12px" value="'+m.range+'" placeholder="Reference range e.g. 115-307" oninput="window._lm['+i+'].range=this.value"></div>';}).join('');}
+  window._rLM=rLM;
+  openM(MH('&#129656; Log Lab Results &mdash; '+S.date)+
+    '<datalist id="ldl">'+cm.map(function(m){return '<option value="'+m+'"></option>';}).join('')+'</datalist>'+
+    '<div id="lmr" style="max-height:320px;overflow-y:auto">'+rLM()+'</div>'+
+    '<button onclick="window._lm.push({name:\'\',value:\'\',unit:\'\',range:\'\'});document.getElementById(\'lmr\').innerHTML=window._rLM()" style="width:100%;padding:9px 0;border-radius:9px;background:rgba(255,255,255,0.05);border:1px dashed rgba(255,255,255,0.15);color:#64748b;cursor:pointer;font-family:inherit;margin-top:0">+ Add Marker</button>'+
+    '<div style="margin-top:12px"><label class="lbl">Notes</label><input class="if" id="lno" style="margin-top:4px" placeholder="Fasted, morning draw, protocol week..."></div>'+
+    '<button class="bp" style="width:100%;margin-top:16px;padding:12px 0" onclick="subLab()">Save Lab Results</button>');
+}
+function subLab(){
+  var v=window._lm.filter(function(m){return m.value;});
+  if(!v.length){alert('Enter at least one value');return;}
+  S.labs.push({date:S.date,markers:v,notes:document.getElementById('lno').value});
+  sv();closeM();toast('Lab results saved! &#129656;');render();
+}
+function delLab(i){S.labs.splice(i,1);sv();render();}
+
+// PROTOCOL HELPERS
+function upProt(i,f,v){S.protocol[i][f]=v;sv();}
+function tDay(i,d){var days=S.protocol[i].days||[];var idx=days.indexOf(d);if(idx>=0)days.splice(idx,1);else days.push(d);S.protocol[i].days=days;sv();render();}
+function tAct(i){S.protocol[i].active=!S.protocol[i].active;sv();render();}
+function rmProt(i){S.protocol.splice(i,1);sv();toast('Removed');render();}
+function setLF(c){S.libF=c;render();}
+function togExp(id){S.exp=S.exp===id?null:id;render();}
+function qAdd(pepId){
+  if(S.protocol.some(function(p){return p.id===pepId;})){toast('Already in protocol!','w');return;}
+  var pep=gp(pepId);var d=pep.dose.split('-')[0].replace(/[^\d.]/g,'');
+  S.protocol.push({id:pepId,name:pep.name,dose:d,unit:pep.dose.toLowerCase().indexOf('mg')>=0?'mg':'mcg',route:pep.routes[0],days:['Mon','Wed','Fri'],startDate:td(),notes:'',active:true,vialMg:'',waterMl:''});
+  sv();toast(pep.name+' added! &#127881;');render();
+}
+
+// CSV EXPORT
+function dlCSV(fn,rows){var csv=rows.map(function(r){return r.map(function(c){return '"'+String(c||'').replace(/"/g,'\"\'\"')+'"';}).join(',');}).join('\n');var a=document.createElement('a');a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(csv);a.download=fn;a.click();}
+function expDL(){var rows=[['Date','Peptide','Dose','Unit','Site','Mood','Side Effects','Improvements','Rating','Notes']];Object.entries(S.logs).forEach(function(e){var k=e[0],l=e[1];if(!l.taken)return;var parts=k.split('_');var pid=parts[0];var dt=parts[1];var pr=S.protocol.find(function(p){return p.id===pid;});if(pr)rows.push([dt,pr.name,l.actualDose||pr.dose,pr.unit,l.siteUsed||'',l.mood||'',l.sideEffects||'',l.improvements||'',l.rating||'',l.notes||'']);});dlCSV('peptide_dose_log.csv',rows);toast('Dose log exported! &#128228;');}
+function expBD(){var rows=[['Date','Weight','BF%','Waist','Hips','Chest','Arm','Thigh','Energy','Notes']];S.body.forEach(function(s){rows.push([s.date,s.weight,s.bf,s.waist,s.hips,s.chest,s.arm,s.thigh,s.energy,s.notes||'']);});dlCSV('body_measurements.csv',rows);toast('Measurements exported! &#128228;');}
+function expPR(){var rows=[['Peptide','Category','Dose','Unit','Route','Frequency','Days','Start Date','Notes']];S.protocol.forEach(function(p){var pep=gp(p.id);rows.push([p.name,pep?pep.cat:'',p.dose,p.unit,p.route,pep?pep.freq:'',(p.days||[]).join(', '),p.startDate,p.notes||'']);});dlCSV('peptide_protocol.csv',rows);toast('Protocol exported! &#128228;');}
+function expLB(){var rows=[['Date','Marker','Value','Unit','Reference Range','Notes']];S.labs.forEach(function(e){(e.markers||[]).forEach(function(m){rows.push([e.date,m.name,m.value,m.unit,m.range||'',e.notes||'']);});});dlCSV('lab_results.csv',rows);toast('Labs exported! &#128228;');}
+
+// INIT
+window._rc={};window._icA='';window._icB='';
+render();
+
+</script>
+</body>
+</html>
