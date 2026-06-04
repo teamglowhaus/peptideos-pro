@@ -708,30 +708,63 @@ function rTL(){
 // ── RECONSTITUTION HELPER ─────────────────────────────────────
 function drawSyringe(filledUnits,label,fillColor){
   var pct=Math.min(Math.max(filledUnits/100,0),1);
-  var bX=34,bY=14,bW=158,bH=32;
+  var bX=52,bY=32,bW=290,bH=46;
   var fillW=Math.round(pct*bW);
   var fc=fillColor||'rgba(0,212,170,0.45)';
-  var ticks='';
-  [25,50,75].forEach(function(u){
+  var marks='';
+  // Minor ticks every 2 units
+  for(var u=2;u<=98;u+=2){
+    if(u%10===0)continue;
     var tx=bX+(u/100)*bW;
-    ticks+='<line x1="'+tx+'" y1="'+(bY+bH-7)+'" x2="'+tx+'" y2="'+(bY+bH)+'" stroke="#475569" stroke-width="1.5"/>';
-    ticks+='<text x="'+tx+'" y="'+(bY+bH+11)+'" text-anchor="middle" fill="#64748b" font-size="9">'+u+'</text>';
-  });
-  ticks+='<text x="'+bX+'" y="'+(bY+bH+11)+'" text-anchor="middle" fill="#64748b" font-size="9">0</text>';
-  ticks+='<text x="'+(bX+bW)+'" y="'+(bY+bH+11)+'" text-anchor="middle" fill="#64748b" font-size="9">100</text>';
-  var fillLineX=bX+fillW;
-  var marker=(pct>0&&pct<1)?'<line x1="'+fillLineX+'" y1="'+(bY-5)+'" x2="'+fillLineX+'" y2="'+(bY+bH+5)+'" stroke="#00d4aa" stroke-width="2" stroke-dasharray="3,2"/>':'';
-  return '<div style="margin:8px auto 18px;max-width:340px;text-align:center">'+
-    '<div style="font-size:12px;font-weight:700;color:#94a3b8;margin-bottom:6px">'+label+'</div>'+
-    '<svg width="100%" viewBox="0 0 240 66" style="overflow:visible;display:block;margin:0 auto">'+
-    '<polygon points="0,29 '+bX+','+bY+' '+bX+','+(bY+bH)+'" fill="#64748b"/>'+
-    '<rect x="'+bX+'" y="'+bY+'" width="'+bW+'" height="'+bH+'" rx="4" fill="rgba(255,255,255,0.04)" stroke="#475569" stroke-width="1.5"/>'+
-    (fillW>1?'<rect x="'+(bX+1)+'" y="'+(bY+1)+'" width="'+(fillW-1)+'" height="'+(bH-2)+'" rx="3" fill="'+fc+'"/>':'')+
-    marker+ticks+
-    '<rect x="'+(bX+bW)+'" y="'+(bY+bH/2-2)+'" width="24" height="4" rx="2" fill="#475569"/>'+
-    '<rect x="'+(bX+bW+20)+'" y="'+(bY-5)+'" width="8" height="'+(bH+10)+'" rx="2" fill="#374151"/>'+
-    '<rect x="'+(bX+bW+19)+'" y="'+(bY+bH/2-7)+'" width="10" height="14" rx="2" fill="#4b5563"/>'+
-    '</svg></div>';
+    marks+='<line x1="'+tx+'" y1="'+(bY+bH)+'" x2="'+tx+'" y2="'+(bY+bH+7)+'" stroke="#2d3748" stroke-width="1.2"/>';
+  }
+  // Major ticks every 10 units with labels
+  for(var u=0;u<=100;u+=10){
+    var tx=bX+(u/100)*bW;
+    marks+='<line x1="'+tx+'" y1="'+(bY+bH)+'" x2="'+tx+'" y2="'+(bY+bH+13)+'" stroke="#475569" stroke-width="1.8"/>';
+    marks+='<text x="'+tx+'" y="'+(bY+bH+24)+'" text-anchor="middle" fill="#64748b" font-size="10" font-family="monospace">'+u+'</text>';
+  }
+  // Inside-barrel minor lines for realism
+  for(var u=5;u<=95;u+=5){
+    var tx=bX+(u/100)*bW;
+    marks+='<line x1="'+tx+'" y1="'+bY+'" x2="'+tx+'" y2="'+(bY+6)+'" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>';
+    marks+='<line x1="'+tx+'" y1="'+(bY+bH-6)+'" x2="'+tx+'" y2="'+(bY+bH)+'" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>';
+  }
+  // Fill indicator at exact position
+  var fillX=bX+fillW;
+  var indicator='';
+  if(pct>0){
+    var lbgW=46,lbgH=18,lbgX=Math.max(bX,Math.min(fillX-lbgW/2,bX+bW-lbgW));
+    indicator=
+      '<line x1="'+fillX+'" y1="'+(bY-12)+'" x2="'+fillX+'" y2="'+(bY+bH+2)+'" stroke="#00d4aa" stroke-width="2.5" stroke-dasharray="4,3"/>'+
+      '<polygon points="'+(fillX-6)+','+(bY-12)+' '+(fillX+6)+','+(bY-12)+' '+fillX+','+(bY-4)+'" fill="#00d4aa"/>'+
+      '<rect x="'+lbgX+'" y="'+(bY-30)+'" width="'+lbgW+'" height="'+lbgH+'" rx="5" fill="#00d4aa"/>'+
+      '<text x="'+(lbgX+lbgW/2)+'" y="'+(bY-17)+'" text-anchor="middle" fill="#051a14" font-size="11" font-weight="900" font-family="monospace">'+filledUnits+'u</text>';
+  }
+  return '<div style="margin:10px auto 28px;text-align:center;padding:0 8px">'+
+    '<div style="font-size:12px;font-weight:700;color:#94a3b8;margin-bottom:10px">'+label+'</div>'+
+    '<svg width="100%" viewBox="0 '+(bY-34)+' '+(bX+bW+52)+' '+(bH+70)+'" style="overflow:visible;display:block;margin:0 auto">'+
+    // needle
+    '<polygon points="0,'+(bY+bH/2)+' '+bX+','+bY+' '+bX+','+(bY+bH)+'" fill="#64748b"/>'+
+    '<line x1="0" y1="'+(bY+bH/2)+'" x2="'+bX+'" y2="'+(bY+bH/2)+'" stroke="#94a3b8" stroke-width="1.5"/>'+
+    // barrel
+    '<rect x="'+bX+'" y="'+bY+'" width="'+bW+'" height="'+bH+'" rx="5" fill="rgba(255,255,255,0.03)" stroke="#4b5563" stroke-width="2"/>'+
+    // fill liquid
+    (fillW>2?'<rect x="'+(bX+1)+'" y="'+(bY+1)+'" width="'+(fillW-2)+'" height="'+(bH-2)+'" rx="4" fill="'+fc+'"/>':'')+
+    // shine
+    '<rect x="'+(bX+2)+'" y="'+(bY+3)+'" width="'+(bW-4)+'" height="6" rx="3" fill="rgba(255,255,255,0.06)"/>'+
+    // marks and indicator
+    marks+indicator+
+    // plunger rod
+    '<rect x="'+(bX+bW)+'" y="'+(bY+bH/2-3)+'" width="30" height="6" rx="3" fill="#374151"/>'+
+    // plunger gasket
+    '<rect x="'+(bX+bW+26)+'" y="'+(bY-4)+'" width="10" height="'+(bH+8)+'" rx="3" fill="#1f2937"/>'+
+    '<rect x="'+(bX+bW+28)+'" y="'+(bY+2)+'" width="6" height="'+(bH-4)+'" rx="2" fill="#374151"/>'+
+    // plunger thumb ring
+    '<rect x="'+(bX+bW+34)+'" y="'+(bY-8)+'" width="14" height="'+(bH+16)+'" rx="4" fill="#111827" stroke="#374151" stroke-width="1.5"/>'+
+    '</svg>'+
+    '<div style="font-size:11px;color:#64748b;margin-top:2px">U-100 insulin syringe &nbsp;|&nbsp; each small line = 2 units &nbsp;|&nbsp; each large line = 10 units</div>'+
+    '</div>';
 }
 
 function updateRC(){
