@@ -613,7 +613,7 @@ function rCA(){
     '<p style="font-size:11px;color:#475569;margin-top:12px;line-height:1.5">&#9888; Inject BAC water slowly along vial wall. Swirl gently, never shake. Refrigerate. Stable 28 days.</p></div>'+
     '<div>'+(qc?'<div class="card" style="margin-bottom:16px"><div class="st">&#9883; Your Protocol Quick Calc</div><div style="margin-top:10px">'+qc+'</div></div>':'')+
     '<div class="card" style="margin-bottom:16px"><div class="st">&#128161; Popular Stacks</div><div style="margin-top:10px">'+stacks.map(function(s){return '<div style="padding:9px 11px;border-radius:9px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);margin-bottom:7px"><div style="font-weight:600;font-size:12px;margin-bottom:4px">'+s.n+'</div><div style="font-size:11px;color:#00d4aa;margin-bottom:2px">'+s.p+'</div><div style="font-size:11px;color:#64748b">'+s.d+'</div></div>';}).join('')+'</div></div>'+
-    '<div class="card"><div class="st">&#128137; Injection Site Rotation</div><p style="font-size:12px;color:#64748b;margin:4px 0 12px">Tap a site to mark it as used today. Rotate to prevent lipodystrophy.</p><div style="display:grid;grid-template-columns:1fr 1fr;gap:6px" id="site-grid">'+sites.map(function(s){var hist=JSON.parse(localStorage.getItem('pep_sites')||'{}');var last=hist[s];var daysAgo=last?Math.floor((Date.now()-last)/86400000):-1;var isToday=daysAgo===0;var recent=daysAgo>=0&&daysAgo<=2;return '<button onclick="logSite(\''+s+'\')" style="padding:9px 10px;border-radius:9px;font-size:12px;font-weight:600;text-align:center;cursor:pointer;border:1.5px solid '+(isToday?'var(--gold)':recent?'rgba(212,168,67,0.3)':'rgba(255,255,255,0.08)')+';background:'+(isToday?'rgba(212,168,67,0.18)':'rgba(255,255,255,0.03)')+';color:'+(isToday?'var(--gold)':'#94a3b8')+';transition:all 0.18s;font-family:inherit">'+s+(isToday?' ✓':daysAgo===1?' <span style=\"font-size:10px;opacity:0.7\">1d ago</span>':daysAgo===2?' <span style=\"font-size:10px;opacity:0.7\">2d ago</span>':'')+'</button>';}).join('')+'</div><p style="font-size:11px;color:#475569;margin-top:10px">Keep a 2-finger gap between sites. Gold = used today.</p></div>'+
+    '<div class="card"><div class="st">&#128137; Injection Site Rotation</div><p style="font-size:12px;color:#64748b;margin:4px 0 12px">Tap a site to mark it as used today. Rotate to prevent lipodystrophy.</p><div style="display:grid;grid-template-columns:1fr 1fr;gap:6px" id="site-grid">'+sites.map(function(s){var hist=JSON.parse(localStorage.getItem('pep_sites')||'{}');var entry=hist[s];var lastTs=siteLastTs(entry);var daysAgo=lastTs>=0?Math.floor((Date.now()-lastTs)/86400000):-1;var isToday=daysAgo===0;var recent=daysAgo>=0&&daysAgo<=2;var pepLabel=siteLastPep(entry);var pepStr=(pepLabel&&pepLabel!=='Manual')?' <span style=\"font-size:10px;opacity:0.75;display:block;margin-top:1px\">'+pepLabel+'</span>':'';return '<button onclick="logSite(\''+s+'\')" style="padding:9px 10px;border-radius:9px;font-size:12px;font-weight:600;text-align:center;cursor:pointer;border:1.5px solid '+(isToday?'var(--gold)':recent?'rgba(212,168,67,0.3)':'rgba(255,255,255,0.08)')+';background:'+(isToday?'rgba(212,168,67,0.18)':'rgba(255,255,255,0.03)')+';color:'+(isToday?'var(--gold)':'#94a3b8')+';transition:all 0.18s;font-family:inherit;line-height:1.3">'+s+(isToday?' ✓':daysAgo===1?' <span style=\"font-size:10px;opacity:0.7\">1d ago</span>':daysAgo===2?' <span style=\"font-size:10px;opacity:0.7\">2d ago</span>':'')+pepStr+'</button>';}).join('')+'</div><p style="font-size:11px;color:#475569;margin-top:10px">Keep a 2-finger gap between sites. Gold = used today.</p></div>'+
     '</div></div></div>';
 }
 
@@ -1114,24 +1114,52 @@ function openLogModal(pepId){
 function setSt(n){document.getElementById('lr').value=n;for(var i=1;i<=5;i++){var s=document.getElementById('st'+i);if(s)s.style.color=i<=n?'#f59e0b':'#374151';}}
 function subLog(pepId){
   var mood='';document.querySelectorAll('.mdb').forEach(function(b){if(b.style.color==='rgb(0, 212, 170)')mood=b.getAttribute('data-m');});
-  S.logs[pepId+'_'+S.date]={taken:true,actualDose:document.getElementById('ld').value,siteUsed:document.getElementById('ls').value,mood:mood,sideEffects:document.getElementById('lse').value,improvements:document.getElementById('lim').value,notes:document.getElementById('ln').value,rating:parseInt(document.getElementById('lr').value)||0,ts:new Date().toISOString()};
+  var site=document.getElementById('ls').value;
+  S.logs[pepId+'_'+S.date]={taken:true,actualDose:document.getElementById('ld').value,siteUsed:site,mood:mood,sideEffects:document.getElementById('lse').value,improvements:document.getElementById('lim').value,notes:document.getElementById('ln').value,rating:parseInt(document.getElementById('lr').value)||0,ts:new Date().toISOString()};
+  // sync to site rotation tracker
+  if(site){
+    var pep=gp(pepId);
+    var hist=JSON.parse(localStorage.getItem('pep_sites')||'{}');
+    if(!Array.isArray(hist[site]))hist[site]=[];
+    hist[site].push({ts:Date.now(),pepName:pep?pep.name:pepId,date:S.date});
+    localStorage.setItem('pep_sites',JSON.stringify(hist));
+  }
   sv();closeM();toast('Logged! &#9989;');render();
 }
 function unlog(pepId){var k=pepId+'_'+S.date;if(S.logs[k]){S.logs[k].taken=false;sv();render();}}
 
+function siteLastTs(entry){
+  // entry can be a number (old format) or array of {ts,...} objects (new format)
+  if(!entry)return -1;
+  if(Array.isArray(entry)){if(!entry.length)return -1;return entry[entry.length-1].ts;}
+  return entry;
+}
+function siteLastPep(entry){
+  if(!entry||!Array.isArray(entry)||!entry.length)return '';
+  return entry[entry.length-1].pepName||'';
+}
 function logSite(site){
   var hist=JSON.parse(localStorage.getItem('pep_sites')||'{}');
-  var daysAgo=hist[site]?Math.floor((Date.now()-hist[site])/86400000):-1;
-  if(daysAgo===0){delete hist[site];}else{hist[site]=Date.now();}
+  var lastTs=siteLastTs(hist[site]);
+  var daysAgo=lastTs>=0?Math.floor((Date.now()-lastTs)/86400000):-1;
+  if(daysAgo===0){
+    // untoggle — remove last entry
+    if(Array.isArray(hist[site])){hist[site].pop();if(!hist[site].length)delete hist[site];}
+    else{delete hist[site];}
+  }else{
+    if(!Array.isArray(hist[site]))hist[site]=[];
+    hist[site].push({ts:Date.now(),pepName:'Manual',date:S.date||td()});
+  }
   localStorage.setItem('pep_sites',JSON.stringify(hist));
   // refresh just the site grid in place
   var grid=document.getElementById('site-grid');
   if(grid){
     var sites=['Left Abdomen','Right Abdomen','Left Thigh','Right Thigh','Left Deltoid','Right Deltoid','Left Glute','Right Glute','Navel Area','Flank L','Flank R','Upper Arm'];
     grid.innerHTML=sites.map(function(s){
-      var last=hist[s];var daysAgo=last?Math.floor((Date.now()-last)/86400000):-1;
+      var entry=hist[s];var lastTs=siteLastTs(entry);var daysAgo=lastTs>=0?Math.floor((Date.now()-lastTs)/86400000):-1;
       var isToday=daysAgo===0;var recent=daysAgo>=0&&daysAgo<=2;
-      return '<button onclick="logSite(\''+s+'\')" style="padding:9px 10px;border-radius:9px;font-size:12px;font-weight:600;text-align:center;cursor:pointer;border:1.5px solid '+(isToday?'var(--gold)':recent?'rgba(212,168,67,0.3)':'rgba(255,255,255,0.08)')+';background:'+(isToday?'rgba(212,168,67,0.18)':'rgba(255,255,255,0.03)')+';color:'+(isToday?'var(--gold)':'#94a3b8')+';transition:all 0.18s;font-family:inherit">'+s+(isToday?' ✓':daysAgo===1?' <span style="font-size:10px;opacity:0.7">1d ago</span>':daysAgo===2?' <span style="font-size:10px;opacity:0.7">2d ago</span>':'')+'</button>';
+      var pepLabel=siteLastPep(entry);var pepStr=(pepLabel&&pepLabel!=='Manual')?' <span style="font-size:10px;opacity:0.75;display:block;margin-top:1px">'+pepLabel+'</span>':'';
+      return '<button onclick="logSite(\''+s+'\')" style="padding:9px 10px;border-radius:9px;font-size:12px;font-weight:600;text-align:center;cursor:pointer;border:1.5px solid '+(isToday?'var(--gold)':recent?'rgba(212,168,67,0.3)':'rgba(255,255,255,0.08)')+';background:'+(isToday?'rgba(212,168,67,0.18)':'rgba(255,255,255,0.03)')+';color:'+(isToday?'var(--gold)':'#94a3b8')+';transition:all 0.18s;font-family:inherit;line-height:1.3">'+s+(isToday?' ✓':daysAgo===1?' <span style="font-size:10px;opacity:0.7">1d ago</span>':daysAgo===2?' <span style="font-size:10px;opacity:0.7">2d ago</span>':'')+pepStr+'</button>';
     }).join('');
   }
   toast('&#128137; '+site+' logged!');
