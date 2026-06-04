@@ -131,7 +131,6 @@ td{padding:8px 10px;border-bottom:1px solid rgba(255,255,255,0.04)}
       <button class="tb" onclick="go('jn')">&#128211; Journal</button>
       <button class="tb" onclick="go('lx')">&#129656; Labs</button>
       <button class="tb" onclick="go('tl')">&#128295; Tools</button>
-      <button class="tb" onclick="go('rc')">&#128137; Recon</button>
     </nav>
   </div>
 </div>
@@ -153,7 +152,6 @@ td{padding:8px 10px;border-bottom:1px solid rgba(255,255,255,0.04)}
   <button class="mi" onclick="go('jn');closeDrawer()">&#128211; Journal</button>
   <button class="mi" onclick="go('lx');closeDrawer()">&#129656; Labs</button>
   <button class="mi" onclick="go('tl');closeDrawer()">&#128295; Tools</button>
-  <button class="mi" onclick="go('rc');closeDrawer()">&#128137; Reconstitution</button>
 </div>
 
 <div id="main"></div>
@@ -330,8 +328,7 @@ function render(){
   else if(t==='iv')el.innerHTML=rIV();
   else if(t==='jn')el.innerHTML=rJN();
   else if(t==='lx')el.innerHTML=rLX();
-  else if(t==='tl')el.innerHTML=rTL();
-  else if(t==='rc'){el.innerHTML=rRC();setTimeout(updateRC,50);}
+  else if(t==='tl'){el.innerHTML=rTL();setTimeout(updateRC,50);}
   if(isLibSearch){var ni=el.querySelector('input.if');if(ni){ni.focus();try{ni.setSelectionRange(sPos,sPos);}catch(e){}}}
 }
 function H1(t){return '<h1 style="font-family:\'Space Grotesk\',sans-serif;font-size:26px;font-weight:700;margin-bottom:6px">'+t+'</h1>';}
@@ -701,6 +698,25 @@ function rTL(){
     '2. Transfer the file to your new device (AirDrop, email, Google Drive, etc.)<br>'+
     '3. Open the app on your new device, tap <em>Restore From Backup</em>, and select the file'+
     '</div></div>'+
+    '<div class="card" style="margin-bottom:16px"><div class="st">&#128137; Reconstitution Helper</div>'+
+    '<p style="font-size:12px;color:#64748b;margin-bottom:14px">Visual syringe guide — enter your vial and water amount to see exactly how many units to draw</p>'+
+    '<div style="padding:10px 12px;border-radius:8px;background:rgba(245,158,11,0.06);border:1px solid rgba(245,158,11,0.2);font-size:11px;color:#f59e0b;margin-bottom:14px">&#9888; Volume conversion only — not medical dosing advice. Always follow your prescriber\'s instructions.</div>'+
+    '<div class="g2" style="gap:12px;margin-bottom:4px">'+
+    '<div><label class="lbl">Vial Size (mg)</label><input type="number" class="if" id="rc-vial" placeholder="e.g. 5" min="0.01" step="0.1" oninput="updateRC()" style="margin-top:4px"></div>'+
+    '<div><label class="lbl">Water to Add</label><div style="display:flex;gap:8px;margin-top:4px">'+
+    '<input type="number" class="if" id="rc-dil" placeholder="e.g. 2" min="0.01" step="0.01" oninput="updateRC()" style="flex:1">'+
+    '<select class="if" id="rc-unit" onchange="updateRC()" style="width:80px"><option value="ml">mL</option><option value="units">Units</option></select>'+
+    '</div></div></div>'+
+    '<div id="rc-results" style="margin-top:14px"></div>'+
+    '<div style="margin-top:16px;border-top:1px solid rgba(255,255,255,0.07);padding-top:14px">'+
+    '<div style="font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px">Quick Reference</div>'+
+    '<div class="g2" style="gap:10px">'+
+    '<div><div style="font-size:11px;color:#64748b;margin-bottom:6px">mL → Units (U-100)</div>'+
+    [['0.5','50'],['1','100'],['1.5','150'],['2','200'],['2.5','250'],['3','300']].map(function(r){return '<div style="display:flex;justify-content:space-between;font-size:12px;padding:4px 0;border-bottom:1px solid rgba(255,255,255,0.04)"><span style="color:#94a3b8">'+r[0]+' mL</span><span style="color:#00d4aa;font-weight:700">'+r[1]+' units</span></div>';}).join('')+
+    '</div>'+
+    '<div><div style="font-size:11px;color:#64748b;margin-bottom:6px">mg → mcg</div>'+
+    [['0.25','250'],['0.5','500'],['1','1,000'],['2','2,000'],['5','5,000'],['10','10,000']].map(function(r){return '<div style="display:flex;justify-content:space-between;font-size:12px;padding:4px 0;border-bottom:1px solid rgba(255,255,255,0.04)"><span style="color:#94a3b8">'+r[0]+' mg</span><span style="color:#c084fc;font-weight:700">'+r[1]+' mcg</span></div>';}).join('')+
+    '</div></div></div></div>'+
     '<div class="card" style="margin-bottom:16px"><div class="st">&#128228; Export Data</div><p style="font-size:12px;color:#64748b;margin-bottom:12px">Download your data as CSV to share with your healthcare provider</p>'+ebts+'</div>'+
     '</div>';
 }
