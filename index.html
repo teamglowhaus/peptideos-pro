@@ -4,34 +4,35 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>PeptideOS Pro</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:    #0c0a07;
-  --s1:    #161210;
-  --s2:    #1e1914;
-  --s3:    #251f18;
+  --bg:    #04091a;
+  --s1:    #080f24;
+  --s2:    #0d1630;
+  --s3:    #111d3a;
   --gold:  #d4a843;
   --gold2: #b8902e;
-  --rose:  #d4737e;
+  --gold3: #f0c866;
+  --rose:  #e07080;
   --teal:  #2ec4a0;
   --red:   #e07070;
-  --text:  #f0e8d8;
-  --t2:    #8a7660;
-  --t3:    #3a2e22;
-  --bdr:   rgba(212,168,67,0.15);
-  --bdr2:  rgba(255,255,255,0.06);
+  --text:  #eef2f8;
+  --t2:    #6a80a8;
+  --t3:    #1e2e4a;
+  --bdr:   rgba(212,168,67,0.18);
+  --bdr2:  rgba(255,255,255,0.07);
 }
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:var(--bg);color:var(--text);font-family:'Inter','Segoe UI',sans-serif;min-height:100vh;font-size:15px;line-height:1.55}
-::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:#080604}::-webkit-scrollbar-thumb{background:var(--gold2);border-radius:4px}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:#02060f}::-webkit-scrollbar-thumb{background:var(--gold2);border-radius:4px}
 a{color:var(--gold);text-decoration:none}
 
 /* ══ HEADER — centered logo + nav row ══ */
-#hdr{background:rgba(12,10,7,0.97);border-bottom:1px solid var(--bdr);position:sticky;top:0;z-index:50;backdrop-filter:blur(32px)}
+#hdr{background:rgba(4,9,26,0.97);border-bottom:1px solid var(--bdr);position:sticky;top:0;z-index:50;backdrop-filter:blur(32px)}
 #hdr-brand{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px 16px 12px;gap:5px}
 #logo-ic{width:58px;height:58px;background:linear-gradient(135deg,#d4a843,#b05070);border-radius:18px;display:flex;align-items:center;justify-content:center;font-size:28px;box-shadow:0 4px 28px rgba(212,168,67,0.4),0 0 0 1px rgba(212,168,67,0.2);margin-bottom:8px}
-#logo-nm{font-family:'Playfair Display',Georgia,serif;font-weight:900;font-size:30px;color:var(--text);letter-spacing:-0.5px;line-height:1}
+#logo-nm{font-family:'Cinzel',Georgia,serif;font-weight:900;font-size:30px;color:var(--text);letter-spacing:-0.5px;line-height:1}
 #logo-sb{font-family:'Inter',sans-serif;font-size:10px;color:var(--t2);letter-spacing:2.5px;text-transform:uppercase;font-weight:500}
 #hdr-nav-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;padding:8px 12px 16px;scrollbar-width:none}
 #hdr-nav-wrap::-webkit-scrollbar{display:none}
@@ -43,13 +44,13 @@ a{color:var(--gold);text-decoration:none}
 #logo{display:none}
 
 /* ══ MOBILE NAV ══ */
-#mnav{display:none;position:fixed;bottom:0;left:0;right:0;z-index:60;background:rgba(12,10,7,0.99);border-top:1px solid var(--bdr);padding:6px 0 10px;backdrop-filter:blur(32px)}
+#mnav{display:none;position:fixed;bottom:0;left:0;right:0;z-index:60;background:rgba(4,9,26,0.99);border-top:1px solid var(--bdr);padding:6px 0 10px;backdrop-filter:blur(32px)}
 .mt{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:6px 4px;cursor:pointer;background:none;border:none;color:var(--t2);font-size:10px;font-weight:700;font-family:'Inter',sans-serif;min-height:56px;transition:all 0.18s}
 .mt-ic{font-size:22px;line-height:1;transition:all 0.18s}
 .mt.on{color:var(--gold)}
 .mt.on .mt-ic{filter:drop-shadow(0 0 6px rgba(212,168,67,0.8))}
 #mnav-in{display:flex;justify-content:space-around}
-#mdraw{display:none;position:fixed;bottom:72px;left:0;right:0;z-index:59;background:#100d0a;border-top:1px solid var(--bdr);padding:14px;grid-template-columns:1fr 1fr;gap:9px;backdrop-filter:blur(32px)}
+#mdraw{display:none;position:fixed;bottom:72px;left:0;right:0;z-index:59;background:#060c20;border-top:1px solid var(--bdr);padding:14px;grid-template-columns:1fr 1fr;gap:9px;backdrop-filter:blur(32px)}
 #mdraw.open{display:grid}
 .mi{display:flex;align-items:center;gap:11px;padding:14px 15px;border-radius:12px;background:var(--s1);border:1px solid var(--bdr);cursor:pointer;font-family:'Inter',sans-serif;color:var(--text);font-size:13px;font-weight:600;transition:all 0.18s}
 .mi.on{background:rgba(212,168,67,0.12);color:var(--gold);border-color:rgba(212,168,67,0.3)}
@@ -76,7 +77,7 @@ a{color:var(--gold);text-decoration:none}
 .if{background:var(--s2);border:1px solid rgba(212,168,67,0.14);border-radius:10px;padding:13px 15px;color:var(--text);font-size:15px;font-family:'Inter',sans-serif;outline:none;width:100%;-webkit-appearance:none;transition:all 0.18s}
 .if:focus{border-color:rgba(212,168,67,0.5);background:rgba(212,168,67,0.05);box-shadow:0 0 0 3px rgba(212,168,67,0.1)}
 select.if{cursor:pointer;pointer-events:auto;position:relative;z-index:2}
-select.if option{background:#161210}
+select.if option{background:#080f24}
 textarea.if{resize:vertical;min-height:85px}
 
 /* ══ DAY BUTTONS ══ */
@@ -85,7 +86,7 @@ textarea.if{resize:vertical;min-height:85px}
 
 /* ══ TYPOGRAPHY ══ */
 .lbl{font-size:11px;color:var(--t2);font-weight:600;text-transform:uppercase;letter-spacing:1.2px;display:block;margin-bottom:6px;font-family:'Inter',sans-serif}
-.st{font-family:'Playfair Display',Georgia,serif;font-weight:700;font-size:18px;margin-bottom:14px;color:var(--text);letter-spacing:-0.2px}
+.st{font-family:'Cinzel',Georgia,serif;font-weight:700;font-size:18px;margin-bottom:14px;color:var(--text);letter-spacing:-0.2px}
 
 /* ══ LAYOUT ══ */
 .g2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
@@ -141,26 +142,26 @@ td{padding:9px 10px;border-bottom:1px solid rgba(255,255,255,0.04)}
 </head>
 <body>
 
-<div id="pwgate" style="position:fixed;inset:0;background:#0c0a07;z-index:300;display:flex;align-items:center;justify-content:center;padding:16px">
-  <div style="background:#161210;border:1px solid rgba(212,168,67,0.2);border-radius:22px;max-width:420px;width:100%;padding:42px 34px;text-align:center;box-shadow:0 32px 80px rgba(0,0,0,0.85)">
+<div id="pwgate" style="position:fixed;inset:0;background:#04091a;z-index:300;display:flex;align-items:center;justify-content:center;padding:16px">
+  <div style="background:#080f24;border:1px solid rgba(212,168,67,0.2);border-radius:22px;max-width:420px;width:100%;padding:42px 34px;text-align:center;box-shadow:0 32px 80px rgba(0,0,0,0.85)">
     <div style="width:62px;height:62px;background:linear-gradient(135deg,#d4a843,#b05070);border-radius:18px;display:flex;align-items:center;justify-content:center;font-size:30px;margin:0 auto 20px;box-shadow:0 4px 28px rgba(212,168,67,0.4)">&#128081;</div>
-    <h1 id="pw-title" style="font-family:'Playfair Display',Georgia,serif;font-weight:900;font-size:28px;color:#f0e8d8;letter-spacing:-0.4px;margin-bottom:6px">PeptideOS Pro</h1>
+    <h1 id="pw-title" style="font-family:'Cinzel',Georgia,serif;font-weight:900;font-size:28px;color:#f0e8d8;letter-spacing:-0.4px;margin-bottom:6px">PeptideOS Pro</h1>
     <p style="font-family:'Inter',sans-serif;font-size:10px;color:#8a7660;text-transform:uppercase;letter-spacing:2.5px;margin-bottom:16px">The Complete Protocol OS</p>
-    <p id="pw-sub" style="color:#5a4a35;font-size:14px;margin-bottom:28px;font-family:'Inter',sans-serif">Create a personal password to protect your data</p>
+    <p id="pw-sub" style="color:#3a5070;font-size:14px;margin-bottom:28px;font-family:'Inter',sans-serif">Create a personal password to protect your data</p>
     <input type="password" id="pwi" placeholder="Create password" class="if" style="margin-bottom:12px" onkeydown="if(event.key==='Enter')chkPW()">
     <input type="password" id="pwi2" placeholder="Confirm password" class="if" style="margin-bottom:12px" onkeydown="if(event.key==='Enter')chkPW()">
     <div id="pwe" style="color:#e07070;font-size:13px;min-height:20px;margin-bottom:10px;font-family:'Inter',sans-serif"></div>
     <button id="pw-btn" onclick="chkPW()" class="bp" style="width:100%;font-size:16px">Unlock My Protocol &#8594;</button>
-    <p style="font-size:11px;color:#2e2218;margin-top:18px;font-family:'Inter',sans-serif">Password stored only on this device &mdash; cannot be recovered.</p>
+    <p style="font-size:11px;color:#1a2840;margin-top:18px;font-family:'Inter',sans-serif">Password stored only on this device &mdash; cannot be recovered.</p>
   </div>
 </div>
 
 <div id="disc">
-  <div style="background:#161210;border:1px solid rgba(212,168,67,0.2);border-radius:22px;max-width:560px;width:100%;max-height:92vh;overflow-y:auto;padding:34px 28px;font-family:'Inter',sans-serif">
+  <div style="background:#080f24;border:1px solid rgba(212,168,67,0.2);border-radius:22px;max-width:560px;width:100%;max-height:92vh;overflow-y:auto;padding:34px 28px;font-family:'Inter',sans-serif">
     <div style="text-align:center;margin-bottom:24px">
       <div style="font-size:38px;margin-bottom:12px">&#9888;&#65039;</div>
-      <h2 style="font-family:'Playfair Display',Georgia,serif;font-weight:900;font-size:24px;color:#d4a843;letter-spacing:-0.3px;margin-bottom:8px">Research Use Only</h2>
-      <div style="font-size:10px;color:#5a4a35;text-transform:uppercase;letter-spacing:2px">Read and accept before continuing</div>
+      <h2 style="font-family:'Cinzel',Georgia,serif;font-weight:900;font-size:24px;color:#d4a843;letter-spacing:-0.3px;margin-bottom:8px">Research Use Only</h2>
+      <div style="font-size:10px;color:#2a4060;text-transform:uppercase;letter-spacing:2px">Read and accept before continuing</div>
     </div>
     <div style="background:rgba(212,168,67,0.05);border:1px solid rgba(212,168,67,0.15);border-radius:12px;padding:20px;margin-bottom:20px;font-size:13px;color:#c8b898;line-height:1.9">
       <p style="margin-bottom:10px"><strong style="color:#d4a843">FOR RESEARCH AND INFORMATIONAL PURPOSES ONLY.</strong> PeptideOS Pro is a personal research logging and reference tool. All information is provided strictly for educational and documentation purposes.</p>
@@ -171,7 +172,7 @@ td{padding:9px 10px;border-bottom:1px solid rgba(255,255,255,0.04)}
     <button onclick="acceptDisc()" style="width:100%;padding:16px 0;border-radius:11px;background:#d4a843;color:#0c0a07;border:none;font-family:'Inter',sans-serif;font-weight:700;font-size:16px;cursor:pointer;box-shadow:0 4px 22px rgba(212,168,67,0.4);letter-spacing:0.1px">
       I Understand &mdash; I Am 18+ &amp; Using This for Research Only
     </button>
-    <p style="font-size:11px;color:#2e2218;text-align:center;margin-top:12px">By clicking above you confirm you have read, understood, and agree to the disclaimer above.</p>
+    <p style="font-size:11px;color:#1a2840;text-align:center;margin-top:12px">By clicking above you confirm you have read, understood, and agree to the disclaimer above.</p>
   </div>
 </div>
 
