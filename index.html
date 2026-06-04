@@ -549,6 +549,101 @@ function rCA(){
 
 function rPG(){
   var g=S.goals;
+  var heightIn=parseFloat(g.height||0);
+  var sorted=[...S.body].filter(function(s){return s.weight&&!isNaN(parseFloat(s.weight));}).sort(function(a,b){return a.date<b.date?-1:1;});
+  var curW=sorted.length?parseFloat(sorted[sorted.length-1].weight):0;
+  var startW=sorted.length?parseFloat(sorted[0].weight):0;
+  var totalChange=sorted.length>=2?curW-startW:0;
+  var bmi=heightIn>0&&curW>0?(curW/(heightIn*heightIn)*703):0;
+  var bmiCat=bmi>=30?'Obese':bmi>=25?'Overweight':bmi>=18.5?'Normal':bmi>0?'Underweight':'';
+  var bmiCol=bmi>=30?'#f87171':bmi>=25?'#f59e0b':bmi>=18.5?'#00d4aa':bmi>0?'#60a5fa':'#64748b';
+
+  // ── Stats row ──
+  var statsHTML='';
+  if(sorted.length>=1){
+    var weekData=sorted.filter(function(d){return new Date(d.date)>=new Date(Date.now()-7*86400000);});
+    var weekChange=weekData.length>=2?parseFloat(weekData[weekData.length-1].weight)-parseFloat(weekData[0].weight):null;
+    statsHTML='<div class="g4" style="gap:10px;margin-bottom:16px">'+
+      [{v:curW>0?curW.toFixed(1)+' lbs':'--',l:'Current Weight',c:'#e2e8f0'},
+       {v:sorted.length>=2?(totalChange<0?'&#8595; ':'&#8593; ')+Math.abs(totalChange).toFixed(1)+' lbs':'--',l:'Total Change',c:sorted.length>=2?(totalChange<0?'#00d4aa':'#f87171'):'#64748b'},
+       {v:weekChange!==null?(weekChange<=0?'&#8595; ':'&#8593; ')+Math.abs(weekChange).toFixed(1)+' lbs':'--',l:'This Week',c:weekChange!==null?(weekChange<=0?'#00d4aa':'#f87171'):'#64748b'},
+       {v:bmi>0?bmi.toFixed(1):heightIn>0?'--':'Add height',l:'BMI',c:bmiCol}].map(function(s){
+        return '<div class="card" style="margin-bottom:0;text-align:center;padding:14px 8px"><div style="font-size:18px;font-weight:800;color:'+s.c+'">'+s.v+'</div><div style="font-size:11px;color:#64748b;margin-top:3px">'+s.l+'</div></div>';
+      }).join('')+'</div>';
+  }
+
+  // ── Weight trend graph ──
+  var graphHTML='';
+  if(sorted.length>=2){
+    var ws=sorted.map(function(d){return parseFloat(d.weight);});
+    var minW=Math.min.apply(null,ws),maxW=Math.max.apply(null,ws);
+    var rng=maxW-minW||2,pad=rng*0.18;
+    var lo=minW-pad,hi=maxW+pad;
+    var GW=560,GH=160,PL=42,PR=14,PT=14,PB=34;
+    var cW=GW-PL-PR,cH=GH-PT-PB,n=sorted.length;
+    var xS=function(i){return PL+(n<2?cW/2:i*(cW/(n-1)));};
+    var yS=function(w){return PT+cH-(((w-lo)/(hi-lo))*cH);};
+    var pts=sorted.map(function(d,i){return xS(i).toFixed(1)+','+yS(parseFloat(d.weight)).toFixed(1);}).join(' ');
+    var apts=pts+' '+(GW-PR)+','+(PT+cH)+' '+PL+','+(PT+cH);
+    var grid='',ylbls='';
+    var ystep=Math.max(1,Math.round(rng/3));
+    for(var yv=Math.floor(lo/ystep)*ystep;yv<=hi+ystep;yv+=ystep){
+      if(yv<lo)continue;
+      var yy=yS(yv);
+      grid+='<line x1="'+PL+'" y1="'+yy.toFixed(1)+'" x2="'+(GW-PR)+'" y2="'+yy.toFixed(1)+'" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>';
+      ylbls+='<text x="'+(PL-4)+'" y="'+(yy+3).toFixed(1)+'" text-anchor="end" fill="#475569" font-size="9">'+yv.toFixed(0)+'</text>';
+    }
+    var xlbls='';
+    var xst=Math.max(1,Math.ceil(n/5));
+    sorted.forEach(function(d,i){if(i%xst===0||i===n-1)xlbls+='<text x="'+xS(i).toFixed(1)+'" y="'+(GH-4)+'" text-anchor="middle" fill="#475569" font-size="9">'+d.date.slice(5)+'</text>';});
+    var goalLine='';
+    if(g.weight){var gw=parseFloat(g.weight);if(gw>=lo&&gw<=hi){var gy=yS(gw);goalLine='<line x1="'+PL+'" y1="'+gy.toFixed(1)+'" x2="'+(GW-PR)+'" y2="'+gy.toFixed(1)+'" stroke="rgba(245,158,11,0.55)" stroke-width="1.5" stroke-dasharray="6,4"/><text x="'+(GW-PR-2)+'" y="'+(gy-4).toFixed(1)+'" text-anchor="end" fill="#f59e0b" font-size="9">Goal</text>';}}
+    var dots=sorted.map(function(d,i){var isL=i===n-1;return '<circle cx="'+xS(i).toFixed(1)+'" cy="'+yS(parseFloat(d.weight)).toFixed(1)+'" r="'+(isL?5.5:3)+'" fill="'+(isL?'#00d4aa':'rgba(59,130,246,0.85)')+'" stroke="#0a0f1a" stroke-width="'+(isL?2:1.5)+'"/>';}).join('');
+    graphHTML='<div class="card" style="margin-bottom:16px">'+
+      '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">'+
+      '<div class="st" style="margin-bottom:0">&#128200; Weight Trend</div>'+
+      '<div style="font-size:11px;color:#64748b">&#9679; latest &nbsp; &#9675; prior &nbsp; - - goal</div>'+
+      '</div>'+
+      '<svg width="100%" viewBox="0 0 '+GW+' '+GH+'" style="display:block;overflow:visible">'+
+      grid+ylbls+xlbls+goalLine+
+      '<polygon points="'+apts+'" fill="rgba(59,130,246,0.07)"/>'+
+      '<polyline points="'+pts+'" fill="none" stroke="#3b82f6" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/>'+
+      dots+'</svg>'+
+      (totalChange!==0?'<div style="margin-top:8px;font-size:12px;color:'+(totalChange<0?'#00d4aa':'#f87171')+';font-weight:600">'+
+      (totalChange<0?'&#8595; Lost ':'&#8593; Gained ')+Math.abs(totalChange).toFixed(1)+' lbs since '+sorted[0].date+'</div>':'')+
+      '</div>';
+  }
+
+  // ── BMI card ──
+  var bmiHTML='<div class="card" style="margin-bottom:16px">'+
+    '<div class="st" style="margin-bottom:12px">&#9878; BMI Calculator</div>'+
+    '<div class="g2" style="gap:12px;margin-bottom:14px">'+
+    '<div><label class="lbl">Your Height (inches)</label>'+
+    '<input class="if" type="number" placeholder="e.g. 65" min="36" max="96" value="'+(g.height||'')+'" onchange="S.goals.height=this.value;sv();render()" style="margin-top:4px">'+
+    '<div style="font-size:11px;color:#475569;margin-top:5px">5\'0"=60 &nbsp;&#183;&nbsp; 5\'4"=64 &nbsp;&#183;&nbsp; 5\'8"=68 &nbsp;&#183;&nbsp; 6\'0"=72 &nbsp;&#183;&nbsp; 6\'2"=74</div></div>'+
+    '<div><label class="lbl">Current Weight</label>'+
+    '<div style="background:rgba(255,255,255,0.04);border-radius:10px;padding:14px;margin-top:4px;text-align:center">'+
+    '<div style="font-size:28px;font-weight:900;color:#e2e8f0">'+(curW>0?curW.toFixed(1):'--')+'</div>'+
+    '<div style="font-size:11px;color:#64748b;margin-top:2px">lbs &nbsp;&#183;&nbsp; most recent log</div>'+
+    '</div></div></div>'+
+    (bmi>0?
+    '<div style="padding:16px;border-radius:12px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08)">'+
+    '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">'+
+    '<div><div style="font-size:38px;font-weight:900;color:'+bmiCol+';line-height:1">'+bmi.toFixed(1)+'</div><div style="font-size:11px;color:#64748b;margin-top:4px">Body Mass Index</div></div>'+
+    '<div style="text-align:right"><div style="font-size:22px;font-weight:800;color:'+bmiCol+'">'+bmiCat+'</div><div style="font-size:11px;color:#64748b;margin-top:4px">BMI Category</div></div></div>'+
+    '<div style="position:relative;height:14px;border-radius:7px;background:linear-gradient(to right,#60a5fa 0%,#60a5fa 25%,#00d4aa 25%,#00d4aa 50%,#f59e0b 50%,#f59e0b 70%,#f87171 70%,#f87171 100%);margin-bottom:6px;overflow:visible">'+
+    '<div style="position:absolute;top:-5px;left:'+Math.min(97,Math.max(1,((bmi-15)/25*100))).toFixed(1)+'%;transform:translateX(-50%);width:5px;height:24px;background:#fff;border-radius:3px;box-shadow:0 0 8px rgba(0,0,0,0.6)"></div></div>'+
+    '<div style="display:flex;justify-content:space-between;font-size:10px;color:#475569;margin-bottom:12px"><span>&lt;18.5</span><span>18.5</span><span>25</span><span>30+</span></div>'+
+    '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px">'+
+    [['&lt;18.5','Underweight','#60a5fa'],[' 18.5–24.9','Normal','#00d4aa'],['25–29.9','Overweight','#f59e0b'],['30+','Obese','#f87171']].map(function(r,i){
+      var active=[bmi<18.5,bmi>=18.5&&bmi<25,bmi>=25&&bmi<30,bmi>=30][i];
+      return '<div style="padding:8px 4px;border-radius:8px;text-align:center;background:'+(active?r[2]+'22':'rgba(255,255,255,0.03)')+';border:1px solid '+(active?r[2]+'55':'rgba(255,255,255,0.06)')+'">'+
+        '<div style="font-size:11px;font-weight:700;color:'+r[2]+'">'+r[0]+'</div>'+
+        '<div style="font-size:10px;color:#64748b;margin-top:2px">'+r[1]+'</div></div>';
+    }).join('')+'</div></div>':
+    '<div style="padding:14px;border-radius:10px;background:rgba(255,255,255,0.03);font-size:13px;color:#64748b;text-align:center">Enter your height above and log a weight entry to calculate your BMI</div>')+
+    '</div>';
+
   var gins=[{l:'Target Weight (lbs)',k:'weight'},{l:'Target BF%',k:'bf'},{l:'Target Waist (in)',k:'waist'}].map(function(gi){
     var prog=S.body.length&&S.body[S.body.length-1][gi.k]&&g[gi.k]?'<div style="font-size:11px;margin-top:4px;color:'+(parseFloat(S.body[S.body.length-1][gi.k])<=parseFloat(g[gi.k])?'#00d4aa':'#f59e0b')+'">'+(parseFloat(S.body[S.body.length-1][gi.k])-parseFloat(g[gi.k])).toFixed(1)+' to go</div>':'';
     return '<div><label class="lbl">'+gi.l+'</label><input class="if" style="margin-top:4px" placeholder="e.g. 160" value="'+(g[gi.k]||'')+'" onchange="S.goals.'+gi.k+'=this.value;sv()">'+prog+'</div>';
@@ -558,12 +653,21 @@ function rPG(){
     var pv=oi>0?S.body[oi-1]:null;
     var wd=pv&&s.weight&&pv.weight?(parseFloat(s.weight)-parseFloat(pv.weight)).toFixed(1):null;
     var ee=s.energy?['&#128564;','&#128528;','&#128522;','&#128640;','&#9889;'][s.energy-1]:'--';
-    return '<tr><td style="font-weight:600">'+s.date+'</td><td>'+( s.weight||'--')+(wd?'<span style="font-size:10px;margin-left:4px;color:'+(parseFloat(wd)<0?'#00d4aa':'#f87171')+'">'+(parseFloat(wd)<0?'&#8595;':'&#8593;')+Math.abs(wd)+'</span>':'')+'</td><td>'+(s.bf||'--')+'</td><td>'+(s.waist||'--')+'</td><td>'+(s.hips||'--')+'</td><td>'+(s.chest||'--')+'</td><td>'+(s.arm||'--')+'</td><td>'+(s.thigh||'--')+'</td><td>'+ee+'</td><td style="color:#64748b;font-size:11px;max-width:100px">'+(s.notes||'')+'</td><td><button class="bd" style="font-size:10px;padding:3px 8px" onclick="delBody('+oi+')">&#10005;</button></td></tr>';
+    var entryBmi=heightIn>0&&s.weight?(parseFloat(s.weight)/(heightIn*heightIn)*703).toFixed(1):'--';
+    var bmiC=entryBmi!=='--'?(parseFloat(entryBmi)>=30?'#f87171':parseFloat(entryBmi)>=25?'#f59e0b':parseFloat(entryBmi)>=18.5?'#00d4aa':'#60a5fa'):'#64748b';
+    return '<tr><td style="font-weight:600">'+s.date+'</td>'+
+      '<td>'+(s.weight||'--')+(wd?'<span style="font-size:10px;margin-left:4px;color:'+(parseFloat(wd)<0?'#00d4aa':'#f87171')+'">'+(parseFloat(wd)<0?'&#8595;':'&#8593;')+Math.abs(wd)+'</span>':'')+'</td>'+
+      '<td style="color:'+bmiC+';font-weight:600">'+entryBmi+'</td>'+
+      '<td>'+(s.bf||'--')+'</td><td>'+(s.waist||'--')+'</td><td>'+(s.hips||'--')+'</td><td>'+(s.chest||'--')+'</td><td>'+(s.arm||'--')+'</td><td>'+(s.thigh||'--')+'</td>'+
+      '<td>'+ee+'</td><td style="color:#64748b;font-size:11px;max-width:100px">'+(s.notes||'')+'</td>'+
+      '<td><button class="bd" style="font-size:10px;padding:3px 8px" onclick="delBody('+oi+')">&#10005;</button></td></tr>';
   }).join('');
-  return '<div>'+PH('Progress Tracker','Weight, measurements and transformation tracking','<button class="bp" onclick="openStat()">+ Log Measurements</button>')+
-    '<div class="card" style="margin-bottom:20px"><div class="st">&#127919; Goals</div><div class="g4" style="gap:10px;margin-top:12px">'+gins+'<div><label class="lbl">Protocol Goal</label><input class="if" style="margin-top:4px" placeholder="e.g. Heal knee, lose 20 lbs" value="'+(g.notes||'')+'" onchange="S.goals.notes=this.value;sv()"></div></div></div>'+
-    (S.body.length===0?'<div class="card" style="padding:40px;text-align:center"><div style="font-size:40px;margin-bottom:12px">&#128207;</div><p style="color:#64748b">No measurements logged yet.</p></div>':
-    '<div class="card"><div class="st">&#128202; Measurement History ('+S.body.length+' entries)</div><div class="ts"><table><thead><tr><th>Date</th><th>Weight</th><th>BF%</th><th>Waist</th><th>Hips</th><th>Chest</th><th>Arm</th><th>Thigh</th><th>Energy</th><th>Notes</th><th></th></tr></thead><tbody>'+rows+'</tbody></table></div></div>')+
+  return '<div>'+PH('Progress Tracker','Weight trend, BMI and body measurements','<button class="bp" onclick="openStat()">+ Log Measurements</button>')+
+    statsHTML+graphHTML+bmiHTML+
+    '<div class="card" style="margin-bottom:20px"><div class="st">&#127919; Goals</div><div class="g4" style="gap:10px;margin-top:12px">'+gins+
+    '<div><label class="lbl">Protocol Goal</label><input class="if" style="margin-top:4px" placeholder="e.g. Heal knee, lose 20 lbs" value="'+(g.notes||'')+'" onchange="S.goals.notes=this.value;sv()"></div></div></div>'+
+    (S.body.length===0?'<div class="card" style="padding:40px;text-align:center"><div style="font-size:40px;margin-bottom:12px">&#128207;</div><p style="color:#64748b">No measurements logged yet. Tap + Log Measurements to start.</p></div>':
+    '<div class="card"><div class="st">&#128202; Measurement History ('+S.body.length+')</div><div class="ts"><table><thead><tr><th>Date</th><th>Weight</th><th>BMI</th><th>BF%</th><th>Waist</th><th>Hips</th><th>Chest</th><th>Arm</th><th>Thigh</th><th>Energy</th><th>Notes</th><th></th></tr></thead><tbody>'+rows+'</tbody></table></div></div>')+
     '</div>';
 }
 
