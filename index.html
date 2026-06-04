@@ -152,7 +152,8 @@ td{padding:9px 10px;border-bottom:1px solid rgba(255,255,255,0.04)}
     <input type="password" id="pwi2" placeholder="Confirm password" class="if" style="margin-bottom:12px" onkeydown="if(event.key==='Enter')chkPW()">
     <div id="pwe" style="color:#e07070;font-size:13px;min-height:20px;margin-bottom:10px;font-family:'Inter',sans-serif"></div>
     <button id="pw-btn" onclick="chkPW()" class="bp" style="width:100%;font-size:16px">Unlock My Protocol &#8594;</button>
-    <p style="font-size:11px;color:#1a2840;margin-top:18px;font-family:'Inter',sans-serif">Password stored only on this device &mdash; cannot be recovered.</p>
+    <p style="font-size:11px;color:#1a2840;margin-top:18px;font-family:'Inter',sans-serif">Password stored only on this device.</p>
+    <button onclick="forgotPW()" style="background:none;border:none;color:#6a80a8;font-size:12px;cursor:pointer;margin-top:10px;font-family:'Inter',sans-serif;text-decoration:underline;padding:0">Forgot password?</button>
   </div>
 </div>
 
@@ -607,7 +608,7 @@ function rCA(){
     '<p style="font-size:11px;color:#475569;margin-top:12px;line-height:1.5">&#9888; Inject BAC water slowly along vial wall. Swirl gently, never shake. Refrigerate. Stable 28 days.</p></div>'+
     '<div>'+(qc?'<div class="card" style="margin-bottom:16px"><div class="st">&#9883; Your Protocol Quick Calc</div><div style="margin-top:10px">'+qc+'</div></div>':'')+
     '<div class="card" style="margin-bottom:16px"><div class="st">&#128161; Popular Stacks</div><div style="margin-top:10px">'+stacks.map(function(s){return '<div style="padding:9px 11px;border-radius:9px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);margin-bottom:7px"><div style="font-weight:600;font-size:12px;margin-bottom:4px">'+s.n+'</div><div style="font-size:11px;color:#00d4aa;margin-bottom:2px">'+s.p+'</div><div style="font-size:11px;color:#64748b">'+s.d+'</div></div>';}).join('')+'</div></div>'+
-    '<div class="card"><div class="st">&#128137; Injection Site Rotation</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:10px">'+sites.map(function(s){return '<div style="padding:7px 10px;border-radius:7px;font-size:11px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);text-align:center;color:#94a3b8">'+s+'</div>';}).join('')+'</div><p style="font-size:11px;color:#475569;margin-top:10px">Rotate sites to prevent lipodystrophy. Keep a 2-finger gap between sites.</p></div>'+
+    '<div class="card"><div class="st">&#128137; Injection Site Rotation</div><p style="font-size:12px;color:#64748b;margin:4px 0 12px">Tap a site to mark it as used today. Rotate to prevent lipodystrophy.</p><div style="display:grid;grid-template-columns:1fr 1fr;gap:6px" id="site-grid">'+sites.map(function(s){var hist=JSON.parse(localStorage.getItem('pep_sites')||'{}');var last=hist[s];var daysAgo=last?Math.floor((Date.now()-last)/86400000):-1;var isToday=daysAgo===0;var recent=daysAgo>=0&&daysAgo<=2;return '<button onclick="logSite(\''+s+'\')" style="padding:9px 10px;border-radius:9px;font-size:12px;font-weight:600;text-align:center;cursor:pointer;border:1.5px solid '+(isToday?'var(--gold)':recent?'rgba(212,168,67,0.3)':'rgba(255,255,255,0.08)')+';background:'+(isToday?'rgba(212,168,67,0.18)':'rgba(255,255,255,0.03)')+';color:'+(isToday?'var(--gold)':'#94a3b8')+';transition:all 0.18s;font-family:inherit">'+s+(isToday?' ✓':daysAgo===1?' <span style=\"font-size:10px;opacity:0.7\">1d ago</span>':daysAgo===2?' <span style=\"font-size:10px;opacity:0.7\">2d ago</span>':'')+'</button>';}).join('')+'</div><p style="font-size:11px;color:#475569;margin-top:10px">Keep a 2-finger gap between sites. Gold = used today.</p></div>'+
     '</div></div></div>';
 }
 
@@ -1112,6 +1113,30 @@ function subLog(pepId){
   sv();closeM();toast('Logged! &#9989;');render();
 }
 function unlog(pepId){var k=pepId+'_'+S.date;if(S.logs[k]){S.logs[k].taken=false;sv();render();}}
+
+function logSite(site){
+  var hist=JSON.parse(localStorage.getItem('pep_sites')||'{}');
+  hist[site]=Date.now();
+  localStorage.setItem('pep_sites',JSON.stringify(hist));
+  // refresh just the site grid in place
+  var grid=document.getElementById('site-grid');
+  if(grid){
+    var sites=['Left Abdomen','Right Abdomen','Left Thigh','Right Thigh','Left Deltoid','Right Deltoid','Left Glute','Right Glute','Navel Area','Flank L','Flank R','Upper Arm'];
+    grid.innerHTML=sites.map(function(s){
+      var last=hist[s];var daysAgo=last?Math.floor((Date.now()-last)/86400000):-1;
+      var isToday=daysAgo===0;var recent=daysAgo>=0&&daysAgo<=2;
+      return '<button onclick="logSite(\''+s+'\')" style="padding:9px 10px;border-radius:9px;font-size:12px;font-weight:600;text-align:center;cursor:pointer;border:1.5px solid '+(isToday?'var(--gold)':recent?'rgba(212,168,67,0.3)':'rgba(255,255,255,0.08)')+';background:'+(isToday?'rgba(212,168,67,0.18)':'rgba(255,255,255,0.03)')+';color:'+(isToday?'var(--gold)':'#94a3b8')+';transition:all 0.18s;font-family:inherit">'+s+(isToday?' ✓':daysAgo===1?' <span style="font-size:10px;opacity:0.7">1d ago</span>':daysAgo===2?' <span style="font-size:10px;opacity:0.7">2d ago</span>':'')+'</button>';
+    }).join('');
+  }
+  toast('&#128137; '+site+' logged!');
+}
+
+function forgotPW(){
+  if(confirm('Remove your password lock?\n\nYour data will NOT be deleted — you\'ll just create a new password next time you open the app.')){
+    try{localStorage.removeItem('pep_pw');}catch(e){}
+    location.reload();
+  }
+}
 
 // STAT MODAL
 function openStat(){
