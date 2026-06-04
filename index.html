@@ -1121,7 +1121,8 @@ function unlog(pepId){var k=pepId+'_'+S.date;if(S.logs[k]){S.logs[k].taken=false
 
 function logSite(site){
   var hist=JSON.parse(localStorage.getItem('pep_sites')||'{}');
-  hist[site]=Date.now();
+  var daysAgo=hist[site]?Math.floor((Date.now()-hist[site])/86400000):-1;
+  if(daysAgo===0){delete hist[site];}else{hist[site]=Date.now();}
   localStorage.setItem('pep_sites',JSON.stringify(hist));
   // refresh just the site grid in place
   var grid=document.getElementById('site-grid');
