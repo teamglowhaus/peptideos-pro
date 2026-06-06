@@ -751,7 +751,7 @@ function rIV(){
     var ec=dl<7?'#f87171':dl<14?'#f59e0b':'#00d4aa';
     return '<div class="card" style="border-color:'+(dl<7?'rgba(239,68,68,0.4)':dl<14?'rgba(245,158,11,0.4)':'rgba(255,255,255,0.07)')+'">'+
       '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px"><div><div style="font-weight:700;font-size:15px">'+v.pepName+'</div><div style="font-size:11px;color:#64748b">'+v.vialMg+'mg &middot; '+(v.vendor||'No vendor')+'</div>'+(v.batchNum?'<div style="font-size:11px;color:#64748b">Batch: '+v.batchNum+'</div>':'')+'</div>'+
-      '<button class="bd" style="font-size:10px;padding:3px 8px" onclick="delVial('+i+')">&#10005;</button></div>'+
+      '<div style="display:flex;gap:6px"><button class="bs" style="font-size:11px;padding:4px 10px" onclick="openEditVial('+i+')">&#9999; Edit</button><button class="bd" style="font-size:10px;padding:3px 8px" onclick="delVial('+i+')">&#10005;</button></div></div>'+
       '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:12px">'+
       '<div style="background:rgba(255,255,255,0.04);border-radius:8px;padding:8px 10px"><div style="color:#64748b;font-size:10px;margin-bottom:2px">EXPIRES</div><div style="font-weight:700;color:'+ec+'">'+(dl>0?dl+'d':'EXPIRED')+'</div><div style="font-size:10px;color:#64748b">'+exp.toLocaleDateString()+'</div></div>'+
       (rm!=null?'<div style="background:rgba(255,255,255,0.04);border-radius:8px;padding:8px 10px"><div style="color:#64748b;font-size:10px;margin-bottom:2px">DOSES LEFT</div><div style="font-weight:700;font-size:16px">'+rm+'</div><div style="font-size:10px;color:#64748b">of '+dp+' total</div></div>':'')+
@@ -1191,23 +1191,50 @@ function subStat(){
 function delBody(i){S.body.splice(i,1);sv();render();}
 
 // VIAL MODAL
+function vialFormHTML(v){
+  var po=PL.map(function(p){return '<option value="'+p.name+'"'+(v&&v.pepName===p.name?' selected':'')+'>'+p.name+'</option>';}).join('');
+  var cur=v?v.pepName:'';
+  var isCustom=cur&&!PL.find(function(p){return p.name===cur;});
+  return '<div style="display:flex;flex-direction:column;gap:12px">'+
+    '<div><label class="lbl">Peptide</label><select class="if" id="vp" style="margin-top:4px"><option value="">Select...</option>'+po+'<option value="Custom"'+(isCustom?' selected':'')+'>Custom / Not Listed</option></select>'+
+    (isCustom?'<input class="if" id="vpcustom" style="margin-top:6px" value="'+(cur||'')+'" placeholder="Enter peptide name">':'<input class="if" id="vpcustom" style="margin-top:6px;display:none" placeholder="Enter peptide name">')+'</div>'+
+    '<div class="g2"><div><label class="lbl">Vial Size (mg)</label><input class="if" type="number" id="vm" style="margin-top:4px" value="'+(v?v.vialMg:'')+'"></div>'+
+    '<div><label class="lbl">BAC Water (mL)</label><input class="if" type="number" id="vw" style="margin-top:4px" value="'+(v?v.waterMl:'')+'"></div>'+
+    '<div><label class="lbl">Per-Dose (mcg)</label><input class="if" type="number" id="vd" style="margin-top:4px" placeholder="e.g. 250" value="'+(v?v.doseMcg:'')+'"></div>'+
+    '<div><label class="lbl">Days Stable</label><input class="if" type="number" id="vs" style="margin-top:4px" value="'+(v?v.daysStable:'28')+'"></div>'+
+    '<div><label class="lbl">Vendor</label><input class="if" id="vv" style="margin-top:4px" value="'+(v?v.vendor:'')+'"></div>'+
+    '<div><label class="lbl">Batch #</label><input class="if" id="vb" style="margin-top:4px" value="'+(v?v.batchNum:'')+'"></div></div>'+
+    '<div><label class="lbl">Reconstitution Date</label><input type="date" class="if" id="vdt" value="'+(v?v.reconDate:td())+'" style="margin-top:4px"></div>'+
+    '<div><label class="lbl">Notes</label><input class="if" id="vn" style="margin-top:4px" placeholder="Storage, source..." value="'+(v?v.notes:'')+'"></div></div>';
+}
+function vialName(){
+  var sel=document.getElementById('vp').value;
+  if(sel==='Custom'){var c=document.getElementById('vpcustom').value.trim();return c||'';}
+  return sel;
+}
 function openVial(){
-  var po=PL.map(function(p){return '<option value="'+p.name+'">'+p.name+'</option>';}).join('');
-  openM(MH('&#129514; Add Vial to Inventory')+
-    '<div style="display:flex;flex-direction:column;gap:12px">'+
-    '<div><label class="lbl">Peptide</label><select class="if" id="vp" style="margin-top:4px"><option value="">Select...</option>'+po+'<option value="Custom">Custom / Not Listed</option></select></div>'+
-    '<div class="g2"><div><label class="lbl">Vial Size (mg)</label><input class="if" type="number" id="vm" style="margin-top:4px"></div>'+
-    '<div><label class="lbl">BAC Water (mL)</label><input class="if" type="number" id="vw" style="margin-top:4px"></div>'+
-    '<div><label class="lbl">Per-Dose (mcg)</label><input class="if" type="number" id="vd" style="margin-top:4px" placeholder="e.g. 250"></div>'+
-    '<div><label class="lbl">Days Stable</label><input class="if" type="number" id="vs" value="28" style="margin-top:4px"></div>'+
-    '<div><label class="lbl">Vendor</label><input class="if" id="vv" style="margin-top:4px"></div>'+
-    '<div><label class="lbl">Batch #</label><input class="if" id="vb" style="margin-top:4px"></div></div>'+
-    '<div><label class="lbl">Reconstitution Date</label><input type="date" class="if" id="vdt" value="'+td()+'" style="margin-top:4px"></div>'+
-    '<div><label class="lbl">Notes</label><input class="if" id="vn" style="margin-top:4px" placeholder="Storage, source..."></div></div>'+
+  openM(MH('&#129514; Add Vial to Inventory')+vialFormHTML(null)+
     '<button class="bp" style="width:100%;margin-top:16px;padding:12px 0" onclick="subVial()">Add Vial</button>');
+  document.getElementById('vp').onchange=function(){document.getElementById('vpcustom').style.display=this.value==='Custom'?'':'none';};
+}
+function openEditVial(i){
+  var v=S.vials[i];
+  openM(MH('&#9999; Edit Vial')+vialFormHTML(v)+
+    '<button class="bp" style="width:100%;margin-top:16px;padding:12px 0" onclick="saveEditVial('+i+')">Save Changes</button>');
+  document.getElementById('vp').onchange=function(){document.getElementById('vpcustom').style.display=this.value==='Custom'?'':'none';};
+}
+function saveEditVial(i){
+  var n=vialName();
+  if(!n){alert('Select a peptide');return;}
+  var v=S.vials[i];
+  v.pepName=n;v.vialMg=document.getElementById('vm').value;v.waterMl=document.getElementById('vw').value;
+  v.doseMcg=document.getElementById('vd').value;v.daysStable=document.getElementById('vs').value;
+  v.vendor=document.getElementById('vv').value;v.batchNum=document.getElementById('vb').value;
+  v.reconDate=document.getElementById('vdt').value;v.notes=document.getElementById('vn').value;
+  sv();closeM();toast('Vial updated! &#9989;');render();
 }
 function subVial(){
-  var n=document.getElementById('vp').value;
+  var n=vialName();
   if(!n){alert('Select a peptide');return;}
   S.vials.push({pepName:n,vialMg:document.getElementById('vm').value,waterMl:document.getElementById('vw').value,doseMcg:document.getElementById('vd').value,daysStable:document.getElementById('vs').value,vendor:document.getElementById('vv').value,batchNum:document.getElementById('vb').value,reconDate:document.getElementById('vdt').value,notes:document.getElementById('vn').value,dosesUsed:0});
   sv();closeM();toast('Vial added! &#129514;');render();
