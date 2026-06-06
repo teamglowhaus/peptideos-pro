@@ -389,7 +389,7 @@ function render(){
   var prev=document.activeElement;
   var isLibSearch=t==='lb'&&prev&&prev.tagName==='INPUT'&&el.contains(prev);
   var sPos=isLibSearch&&prev.selectionStart!=null?prev.selectionStart:0;
-  if(t==='db')el.innerHTML=rDB();
+  if(t==='db'){el.innerHTML=rDB();setTimeout(updateRC,50);}
   else if(t==='td')el.innerHTML=rTD();
   else if(t==='pr')el.innerHTML=rPR();
   else if(t==='lb')el.innerHTML=rLB();
@@ -410,8 +410,8 @@ function rDB(){
   var tlog=Object.values(S.logs).filter(function(l){return l.taken;}).length;
   var tsched=S.protocol.filter(function(p){return p.active&&p.days&&p.days.indexOf(tday())>=0;});
   var tdone=tsched.filter(function(p){var l=gl(p.id);return l&&l.taken;}).length;
-  var lat=S.body.length?S.body[S.body.length-1]:null;
-  var stats=[{i:'&#9883;',v:act,l:'Active Peptides',c:'#00d4aa'},{i:'&#128137;',v:tlog,l:'Doses Logged',c:'#3b82f6'},{i:'&#9989;',v:tdone+'/'+tsched.length,l:"Today's Progress",c:'#f59e0b'},{i:'&#128207;',v:lat?lat.weight+' lbs':'--',l:'Current Weight',c:'#ec4899'}];
+  var streak=0;(function(){var d=new Date();for(var i=0;i<365;i++){var dt=new Date(d);dt.setDate(d.getDate()-i);var dk=dt.toISOString().slice(0,10);var any=Object.keys(S.logs).some(function(k){return k.endsWith('_'+dk)&&S.logs[k].taken;});if(any){streak++;}else if(i>0){break;}}})();
+  var stats=[{i:'&#9883;',v:act,l:'Active Peptides',c:'#00d4aa'},{i:'&#128137;',v:tlog,l:'Doses Logged',c:'#3b82f6'},{i:'&#9989;',v:tdone+'/'+tsched.length,l:"Today's Progress",c:'#f59e0b'},{i:'&#128293;',v:streak+(streak===1?' day':' days'),l:'Logging Streak',c:'#f97316'}];
   var last7=[];for(var i=6;i>=0;i--){var d=new Date();d.setDate(d.getDate()-i);last7.push(d.toISOString().slice(0,10));}
   var bars=last7.map(function(d){
     var day=new Date(d+'T12:00:00').toLocaleDateString('en-US',{weekday:'short'}).slice(0,3);
@@ -427,7 +427,7 @@ function rDB(){
   return '<div>'+H1('Dashboard')+Sub(new Date().toLocaleDateString('en-US',{weekday:'long',year:'numeric',month:'long',day:'numeric'}))+
     '<div class="g4" style="margin-bottom:22px">'+stats.map(function(s){return '<div class="card" style="text-align:center;padding:18px"><div style="font-size:22px;margin-bottom:6px">'+s.i+'</div><div style="font-size:26px;font-weight:700;color:'+s.c+';font-family:\'Space Grotesk\',sans-serif">'+s.v+'</div><div style="font-size:11px;color:#64748b;margin-top:4px">'+s.l+'</div></div>';}).join('')+'</div>'+
     '<div class="card" style="margin-bottom:16px"><div class="st">&#128200; 7-Day Adherence</div><div style="display:flex;gap:8px;align-items:flex-end;height:80px;margin-top:10px">'+bars+'</div></div>'+
-    '<div class="g2"><div class="card"><div class="st">&#9878; Weight Trend</div>'+(lat?'<div style="font-size:28px;font-weight:700;color:#e2e8f0;margin-top:10px">'+lat.weight+' <span style="font-size:14px;color:#64748b">lbs</span></div><div style="font-size:11px;color:#64748b;margin-top:4px">'+lat.date+'</div>':'<p style="color:#475569;font-size:13px;margin-top:10px">No measurements yet.</p>')+'<button class="bs" style="margin-top:12px" onclick="go(\'pg\')">View Progress &rarr;</button></div>'+
+    '<div class="g2"><div class="card"><div class="st">&#128300; Quick Recon Calculator</div><div style="margin-top:10px;display:flex;flex-direction:column;gap:8px"><div><label class="lbl">Vial Size (mg)</label><input type="number" class="if" id="rc-vial" placeholder="e.g. 5" step="0.1" oninput="updateRC()" style="margin-top:4px"></div><div><label class="lbl">BAC Water Added</label><div style="display:flex;gap:6px;margin-top:4px"><input type="number" class="if" id="rc-dil" placeholder="e.g. 2" step="0.01" oninput="updateRC()" style="flex:1"><select class="if" id="rc-unit" onchange="updateRC()" style="width:80px"><option value="ml">mL</option><option value="units">Units</option></select></div></div><div id="rc-results" style="margin-top:4px"></div><button class="bs" style="margin-top:4px;font-size:12px" onclick="go(\'tl\')">Full Calculator &rarr;</button></div></div>'+
     '<div class="card"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px"><div class="st">&#128197; Today\'s Doses</div><button class="bp" style="padding:7px 14px;font-size:12px" onclick="go(\'td\')">Log &rarr;</button></div>'+(tsched.length===0?'<p style="color:#475569;font-size:13px">No doses today.</p>':titems+(tsched.length>5?'<div style="font-size:11px;color:#475569">+'+( tsched.length-5)+' more...</div>':''))+'</div></div></div>';
 }
 
