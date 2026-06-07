@@ -190,6 +190,7 @@ td{padding:9px 10px;border-bottom:1px solid rgba(255,255,255,0.04)}
   </div>
   <div id="hdr-nav-wrap">
     <nav id="dnav">
+      <button class="tb" onclick="go('gd')" style="background:linear-gradient(135deg,#a78bfa22,#00d4aa11);border-color:#a78bfa44;color:#c4b5fd;font-weight:800">🧬 Start Here</button>
       <button class="tb on" onclick="go('db')">&#128202; Dashboard</button>
       <button class="tb" onclick="go('td')">&#9989; Today</button>
       <button class="tb" onclick="go('pr')">&#9883; Protocol</button>
@@ -220,6 +221,7 @@ td{padding:9px 10px;border-bottom:1px solid rgba(255,255,255,0.04)}
 </div>
 <div id="mbk" onclick="closeDrawer()"></div>
 <div id="mdraw">
+  <button class="mi" onclick="go('gd');closeDrawer()" style="color:#c4b5fd;font-weight:800">🧬 Start Here — Beginners Guide</button>
   <button class="mi" onclick="go('ca');closeDrawer()">&#128290; Calculator</button>
   <button class="mi" onclick="go('pg');closeDrawer()">&#128207; Progress</button>
   <button class="mi" onclick="go('iv');closeDrawer()">&#129514; Inventory</button>
@@ -409,6 +411,7 @@ function render(){
   else if(t==='jn')el.innerHTML=rJN();
   else if(t==='lx')el.innerHTML=rLX();
   else if(t==='tl'){el.innerHTML=rTL();setTimeout(updateRC,50);}
+  else if(t==='gd')el.innerHTML=rGD();
   else if(t==='wl')el.innerHTML=rWL();
   else if(t==='hy')el.innerHTML=rHY();
   else if(t==='bm')el.innerHTML=rBM();
@@ -1710,6 +1713,156 @@ function logGLPWeek(){
   localStorage.setItem('pep_glp1',JSON.stringify(cfg));toast('Week '+currentWeek+' saved!');render();
 }
 
+// ── BEGINNERS GUIDE ───────────────────────────────────────────────
+function rGD(){
+  var GC={coral:'#ff6b6b',purple:'#a78bfa',orange:'#fb923c',pink:'#f472b6',lime:'#a3e635',sky:'#38bdf8',teal:'#00d4aa',gold:'#d4a843'};
+  function gcard(bg1,bg2,icon,title,sub,body,badge){
+    return '<div style="background:linear-gradient(135deg,'+bg1+'18,'+bg2+'08);border:1px solid '+bg1+'35;border-radius:16px;padding:20px;position:relative;overflow:hidden">'+
+      (badge?'<div style="position:absolute;top:12px;right:12px;background:'+bg1+';color:#0a0f1e;font-size:0.65rem;font-weight:800;padding:3px 10px;border-radius:20px;letter-spacing:1px">'+badge+'</div>':'')+
+      '<div style="font-size:2rem;margin-bottom:8px">'+icon+'</div>'+
+      '<div style="font-weight:800;font-size:1rem;color:'+bg1+';margin-bottom:4px;letter-spacing:0.3px">'+title+'</div>'+
+      (sub?'<div style="font-size:0.75rem;color:'+bg1+'bb;margin-bottom:10px;font-weight:600">'+sub+'</div>':'')+
+      '<div style="font-size:0.82rem;color:#c8d5e8;line-height:1.65">'+body+'</div></div>';
+  }
+  function rule(n,color,icon,title,body){
+    return '<div style="display:flex;gap:14px;align-items:flex-start;padding:14px;background:'+color+'0d;border:1px solid '+color+'28;border-radius:12px;margin-bottom:10px">'+
+      '<div style="width:36px;height:36px;border-radius:10px;background:'+color+'22;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0">'+icon+'</div>'+
+      '<div><div style="font-weight:700;font-size:0.9rem;color:'+color+';margin-bottom:3px">Rule '+n+': '+title+'</div><div style="font-size:0.8rem;color:#94a3b8;line-height:1.6">'+body+'</div></div></div>';
+  }
+  function pill(text,color){return '<span style="background:'+color+'22;color:'+color+';font-size:0.68rem;font-weight:700;padding:3px 10px;border-radius:20px;letter-spacing:0.5px;display:inline-block;margin:2px">'+text+'</span>';}
+  function pepCard(icon,name,nick,color,diff,who,what,tip){
+    var dots='';for(var i=1;i<=5;i++)dots+='<span style="width:8px;height:8px;border-radius:50%;background:'+(i<=diff?color:'#1e2e4a')+';display:inline-block;margin:0 2px"></span>';
+    return '<div style="background:linear-gradient(160deg,'+color+'15 0%,#08102400 60%);border:1px solid '+color+'30;border-radius:16px;padding:18px;break-inside:avoid">'+
+      '<div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px">'+
+      '<div><div style="font-size:1.6rem;margin-bottom:4px">'+icon+'</div>'+
+      '<div style="font-weight:800;font-size:0.95rem;color:'+color+'">'+name+'</div>'+
+      '<div style="font-size:0.72rem;color:#64748b;margin-top:1px">aka "'+nick+'"</div></div>'+
+      '<div style="text-align:right"><div style="font-size:0.65rem;color:#64748b;margin-bottom:4px">DIFFICULTY</div>'+dots+'</div></div>'+
+      '<div style="font-size:0.78rem;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px">Best for</div>'+
+      '<div style="font-size:0.85rem;color:#e2e8f0;margin-bottom:10px;line-height:1.5">'+who+'</div>'+
+      '<div style="font-size:0.78rem;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px">How it works</div>'+
+      '<div style="font-size:0.82rem;color:#c8d5e8;line-height:1.6;margin-bottom:10px">'+what+'</div>'+
+      '<div style="background:'+color+'12;border-left:3px solid '+color+';padding:8px 12px;border-radius:0 8px 8px 0;font-size:0.78rem;color:'+color+';line-height:1.5">💡 '+tip+'</div></div>';
+  }
+  function faq(q,a,color){
+    return '<div style="border:1px solid '+color+'25;border-radius:12px;margin-bottom:8px;overflow:hidden">'+
+      '<div style="padding:14px 16px;font-weight:700;font-size:0.88rem;color:'+color+';cursor:pointer" onclick="var b=this.nextElementSibling;b.style.display=b.style.display===\'none\'?\'block\':\'none\'">'+q+' <span style="float:right;opacity:0.6">▾</span></div>'+
+      '<div style="display:none;padding:0 16px 14px;font-size:0.82rem;color:#94a3b8;line-height:1.7">'+a+'</div></div>';
+  }
+  function myth(m,f,color){
+    return '<div style="display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid #1e2e4a;border-radius:12px;overflow:hidden;margin-bottom:8px">'+
+      '<div style="background:#ef444412;border-right:1px solid #1e2e4a;padding:12px 14px"><div style="font-size:0.65rem;font-weight:800;color:#ef4444;letter-spacing:1px;margin-bottom:4px">❌ MYTH</div><div style="font-size:0.82rem;color:#f87171;line-height:1.5">'+m+'</div></div>'+
+      '<div style="background:'+color+'10;padding:12px 14px"><div style="font-size:0.65rem;font-weight:800;color:'+color+';letter-spacing:1px;margin-bottom:4px">✅ FACT</div><div style="font-size:0.82rem;color:'+color+';line-height:1.5">'+f+'</div></div></div>';
+  }
+
+  var goalCards=[
+    {g:'I want to heal faster',icon:'🦴',p:'BPC-157',color:GC.teal,tags:['joints','tendons','gut','recovery']},
+    {g:'I want better sleep',icon:'😴',p:'Ipamorelin + DSIP',color:GC.purple,tags:['sleep','GH pulse','recovery']},
+    {g:'I want to lose fat',icon:'🔥',p:'AOD-9604',color:GC.orange,tags:['fat loss','metabolism','no hunger']},
+    {g:'I want more muscle',icon:'💪',p:'CJC-1295 + Ipamorelin',color:GC.sky,tags:['GH','strength','lean mass']},
+    {g:'I want sharper focus',icon:'🧠',p:'Semax or Selank',color:GC.pink,tags:['BDNF','clarity','calm focus']},
+    {g:'I want to age slower',icon:'⏳',p:'Epitalon',color:GC.lime,tags:['telomeres','longevity','anti-aging']}
+  ];
+
+  return '<div style="max-width:780px;margin:0 auto;padding:20px 16px">'+
+
+  // ── HERO ──
+  '<div style="background:linear-gradient(135deg,#0d1f4a,#1a0d3e,#0d2a1a);border:1px solid rgba(255,255,255,0.08);border-radius:20px;padding:28px 24px;text-align:center;margin-bottom:28px;position:relative;overflow:hidden">'+
+  '<div style="position:absolute;inset:0;background:radial-gradient(circle at 30% 50%,#a78bfa12,transparent 60%),radial-gradient(circle at 70% 50%,#00d4aa12,transparent 60%);pointer-events:none"></div>'+
+  '<div style="font-size:2.5rem;margin-bottom:10px">🧬</div>'+
+  '<h1 style="font-family:\'Cinzel\',Georgia,serif;font-size:1.7rem;font-weight:900;color:#eef2f8;margin-bottom:8px;letter-spacing:0.5px">Peptides for Beginners</h1>'+
+  '<p style="font-size:1rem;color:#94a3b8;max-width:480px;margin:0 auto 16px;line-height:1.7">Everything you need to know — no PhD required. Plain language, zero fluff.</p>'+
+  '<div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">'+
+  pill('✓ Beginner Friendly',GC.teal)+pill('✓ Evidence-Based',GC.purple)+pill('✓ Plain English',GC.orange)+'</div></div>'+
+
+  // ── WHAT IS A PEPTIDE? ──
+  '<div style="font-family:\'Cinzel\',serif;font-size:0.75rem;font-weight:700;color:var(--t2);letter-spacing:2px;text-transform:uppercase;margin-bottom:12px">What exactly is a peptide?</div>'+
+  '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:28px">'+
+  gcard(GC.teal,'#0ea5e9','📨','A peptide is a text message','...for your body','Your body is always sending tiny chemical signals telling cells what to do — grow, heal, burn fat, sleep. Peptides are those signals, made of amino acids (the same building blocks as protein).','')+
+  gcard(GC.purple,'#f472b6','🔑','They\'re keys, not sledgehammers','Targeted. Precise. Smart.','Unlike steroids which flood your whole system, peptides work like a key in a specific lock. They trigger one process and leave everything else alone. That\'s why side effects are typically mild.','')+
+  gcard(GC.orange,'#fbbf24','🥩','You already make them','Every single day','Insulin is a peptide. So is oxytocin (the love hormone) and many others. Therapeutic peptides are synthetic versions of what your body already produces — just more of it, precisely when you want it.','')+
+  '</div>'+
+
+  // ── PICK YOUR GOAL ──
+  '<div style="font-family:\'Cinzel\',serif;font-size:0.75rem;font-weight:700;color:var(--t2);letter-spacing:2px;text-transform:uppercase;margin-bottom:12px">Pick your goal — find your starting peptide</div>'+
+  '<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:28px">'+
+  goalCards.map(function(g){
+    return '<div style="background:linear-gradient(135deg,'+g.color+'15,'+g.color+'05);border:1px solid '+g.color+'30;border-radius:14px;padding:16px;cursor:pointer" onclick="go(\'pr\')" title="Go to Protocol to add '+g.p+'">'+
+      '<div style="font-size:1.6rem;margin-bottom:6px">'+g.icon+'</div>'+
+      '<div style="font-weight:700;font-size:0.88rem;color:'+g.color+';margin-bottom:6px">'+g.g+'</div>'+
+      '<div style="font-size:0.75rem;color:#64748b;margin-bottom:8px">Best starter:</div>'+
+      '<div style="font-weight:800;font-size:0.9rem;color:#eef2f8;margin-bottom:8px">'+g.p+'</div>'+
+      '<div style="display:flex;flex-wrap:wrap;gap:4px">'+g.tags.map(function(t){return pill(t,g.color);}).join('')+'</div></div>';
+  }).join('')+
+  '</div>'+
+
+  // ── BEGINNER'S STARTING 5 ──
+  '<div style="font-family:\'Cinzel\',serif;font-size:0.75rem;font-weight:700;color:var(--t2);letter-spacing:2px;text-transform:uppercase;margin-bottom:12px">The beginner\'s starting 5</div>'+
+  '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:28px">'+
+  pepCard('🩹','BPC-157','Body\'s Repairman',GC.teal,1,'Anyone with injuries, joint pain, gut issues, or wanting faster recovery','A fragment of a protein found in stomach acid. It supercharges your body\'s natural healing pathways — more blood vessels to injury sites, accelerated tendon and ligament repair, gut lining restoration.','Most forgiving peptide for beginners. SubQ near the injury site. No PCT needed, no hormonal changes.')+
+  pepCard('😴','Ipamorelin','The Clean GH Releaser',GC.purple,2,'Anyone wanting better sleep, fat loss, lean muscle, or faster recovery','Tells your pituitary gland to release a clean pulse of growth hormone — without raising cortisol or prolactin (the bad stuff other GH peptides cause). Best taken at bedtime.','Stack with CJC-1295 for a 1+1=3 effect. Inject 30–45 min before bed on an empty stomach for maximum GH pulse.')+
+  pepCard('🌊','TB-500','The Systemic Healer',GC.sky,2,'Athletes, chronic injury sufferers, or anyone wanting full-body repair at scale','Synthetic version of Thymosin Beta-4, a protein in every cell in your body. It promotes systemic healing — moves repair signals through your whole body, not just one spot. Amazing with BPC-157.','The BPC-157 + TB-500 combo is called the "Wolverine Stack" for good reason. Best healing duo in peptide protocols.')+
+  pepCard('🏋️','CJC-1295','The GH Turbocharger',GC.orange,2,'Intermediate users wanting muscle, fat loss, and anti-aging benefits','A GHRH (growth hormone releasing hormone) analogue. It extends your natural GH pulses, raising IGF-1 over time. Always pair it with a GHRP like Ipamorelin — alone it\'s much less effective.','Always combine with Ipamorelin or another GHRP. The "DAC" version has a longer half-life and needs only 1–2x/week dosing.')+
+  pepCard('✨','Epitalon','The Anti-Aging Star',GC.lime,1,'Anyone focused on longevity, sleep quality, immune resilience, and graceful aging','A tetrapeptide that activates telomerase — the enzyme that rebuilds the ends of your chromosomes (the part that shortens every time a cell divides). Used in research since the 1980s in Russia.','One of the only peptides with direct telomere lengthening data. Short cycles, gentle, and no hormonal effects. Beginner-ideal.')+
+  '</div>'+
+
+  // ── GOLDEN RULES ──
+  '<div style="font-family:\'Cinzel\',serif;font-size:0.75rem;font-weight:700;color:var(--t2);letter-spacing:2px;text-transform:uppercase;margin-bottom:12px">The 5 golden rules of peptide use</div>'+
+  '<div style="margin-bottom:28px">'+
+  rule(1,GC.teal,'🧊','Keep it cold','Reconstituted peptides must be refrigerated at 36–46°F (2–8°C). Bacteriostatic water keeps them stable for 28–60 days once mixed. Never freeze a reconstituted vial. Dry lyophilized powder can stay at room temp.')+
+  rule(2,GC.orange,'📐','Start low and go slow','Always start at the lowest effective dose for the first 1–2 weeks. Your body needs time to calibrate. Jumping straight to max dose is where side effects come from. You can always increase — you can\'t un-inject.')+
+  rule(3,GC.purple,'⏰','Timing is everything','GH-releasing peptides (Ipamorelin, GHRP-6, CJC-1295) need to be taken fasted — 2 hours after eating, 30+ minutes before eating. A single handful of food can block the entire GH pulse. Set a timer.')+
+  rule(4,GC.pink,'🔄','Rotate your sites','Never inject the same spot twice in a row. Rotating through 6–12 sites prevents lipodystrophy (fatty lumps under the skin). Your Body Map tab tracks this for you automatically.')+
+  rule(5,GC.sky,'🩺','Test before and after','Get baseline bloodwork before starting — at minimum: IGF-1, fasting glucose, cortisol, CBC, CMP. Then retest at 6–8 weeks. Data tells you if it\'s working. Guessing doesn\'t.')+
+  '</div>'+
+
+  // ── MYTHS VS FACTS ──
+  '<div style="font-family:\'Cinzel\',serif;font-size:0.75rem;font-weight:700;color:var(--t2);letter-spacing:2px;text-transform:uppercase;margin-bottom:12px">Myths vs facts</div>'+
+  '<div style="margin-bottom:28px">'+
+  myth('"Peptides are just steroids with a different name"','"Peptides and steroids are completely different. Steroids directly replace or mimic hormones. Peptides signal your body to optimize its own hormone production. No shutdown, no suppression."',GC.teal)+
+  myth('"They\'re illegal and dangerous"','"Most research peptides are legal to purchase for research purposes in the US. Danger comes from poor sourcing, wrong dosing, and skipping bloodwork — not from peptides themselves."',GC.purple)+
+  myth('"You need to inject everything — I can\'t do that"','"BPC-157 and KPV can be taken orally (capsules). Many peptides like Epitalon are injectable but use a tiny 29-31g insulin syringe. Most users feel no pain at all after the first few times."',GC.orange)+
+  myth('"If a little works, more must be better"','"False — peptides have a bell curve response. Beyond a certain dose, you get diminishing returns or side effects. BPC-157 at 250mcg often outperforms 1000mcg. Less is frequently more."',GC.sky)+
+  '</div>'+
+
+  // ── GLOSSARY ──
+  '<div style="font-family:\'Cinzel\',serif;font-size:0.75rem;font-weight:700;color:var(--t2);letter-spacing:2px;text-transform:uppercase;margin-bottom:12px">Glossary — plain English</div>'+
+  '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:28px">'+
+  [['mcg (microgram)','One-thousandth of a milligram. Most peptides are dosed in mcg. 250mcg = 0.25mg. Use our Calculator tab to convert.',GC.gold],
+   ['SubQ (subcutaneous)','Injecting just under the skin, not into muscle. A tiny pinch of skin, 45-degree angle. Less painful than IM.',GC.teal],
+   ['IM (intramuscular)','Injecting into muscle tissue. Used for some peptides like TB-500. Typically deeper and slightly more painful.',GC.sky],
+   ['BAC Water','Bacteriostatic Water. Used to reconstitute (dissolve) lyophilized peptide powder. Prevents bacteria growth. Don\'t use sterile water — it has no preservative.',GC.orange],
+   ['Reconstitution','Mixing dry peptide powder with BAC water to create an injectable liquid. Our Recon Calculator guides you through the math.',GC.purple],
+   ['Half-life','How long a peptide stays active in your system. BPC-157 has a ~4hr half-life. CJC-1295 DAC has ~8 days. This determines your dosing frequency.',GC.pink],
+   ['GHRP','Growth Hormone Releasing Peptide. Ipamorelin and GHRP-6 are GHRPs — they cause your pituitary to release GH.',GC.lime],
+   ['GHRH','Growth Hormone Releasing Hormone. CJC-1295 and Sermorelin are GHRHs — they extend your natural GH pulses. Best combined with a GHRP.',GC.sky],
+   ['PCT','Post-Cycle Therapy. Protocols to restore hormonal baseline after suppressive compounds. Most peptides do NOT require PCT.',GC.teal],
+   ['IGF-1','Insulin-like Growth Factor 1. Produced in your liver in response to GH. The main biomarker for GH axis activity — your key bloodwork number on peptide protocols.',GC.gold]
+  ].map(function(g){return '<div style="background:'+g[2]+'0d;border:1px solid '+g[2]+'22;border-radius:10px;padding:12px"><div style="font-weight:700;font-size:0.85rem;color:'+g[2]+';margin-bottom:4px">'+g[0]+'</div><div style="font-size:0.78rem;color:#94a3b8;line-height:1.55">'+g[1]+'</div></div>';}).join('')+
+  '</div>'+
+
+  // ── FAQ ──
+  '<div style="font-family:\'Cinzel\',serif;font-size:0.75rem;font-weight:700;color:var(--t2);letter-spacing:2px;text-transform:uppercase;margin-bottom:12px">Frequently asked questions</div>'+
+  '<div style="margin-bottom:24px">'+
+  faq('Does it hurt to inject?','"It\'s nothing like what you imagine." Most users use a 29–31 gauge insulin needle (the same used by diabetics for insulin). The needle is so thin you barely feel it. The pinch of skin is usually more sensation than the injection itself. By week 2, most people do it on autopilot.',GC.teal)+
+  faq('How do I know if it\'s working?','Track your baseline before you start: energy, sleep quality, pain levels, weight, and bloodwork (especially IGF-1). After 4–6 weeks, compare. Physical recovery improvements from BPC-157 and TB-500 are often felt within 1–2 weeks. GH axis peptides take 6–8 weeks to show up meaningfully in IGF-1 levels.',GC.purple)+
+  faq('Can I take peptides with other supplements?','Most peptides are compatible with common supplements (creatine, protein, vitamins, fish oil, magnesium). The main timing consideration: GH peptides require a fasted state, so take them away from protein shakes or meals.',GC.orange)+
+  faq('Do peptides shut down my natural hormones?','Almost universally no. Unlike anabolic steroids, peptides work with your body\'s own signaling. They don\'t replace hormones — they optimize their production and release. When you stop, your body returns to baseline. No PCT needed for most peptide protocols.',GC.sky)+
+  faq('What\'s the difference between cheap and expensive peptides?','Price matters because quality matters. Key indicators: the vendor should provide third-party COA (Certificate of Analysis) showing purity. Target >98% purity. Molecular weight should match the reference. Cheap overseas peptides often fail COA checks. Use our Inventory tab to log your vendor and purity data per vial.',GC.pink)+
+  faq('How do I store my peptides?','Dry (lyophilized) powder: room temperature, away from light, up to 24 months. Reconstituted (mixed) liquid: refrigerate at 2–8°C, use within 28–60 days (depending on peptide). Never freeze a mixed vial. Use the Inventory tab to track your recon date and expiry.',GC.lime)+
+  '</div>'+
+
+  // ── CTA ──
+  '<div style="background:linear-gradient(135deg,#0d1f4a,#1a0a2e);border:1px solid rgba(212,168,67,0.25);border-radius:20px;padding:24px;text-align:center">'+
+  '<div style="font-size:2rem;margin-bottom:10px">🚀</div>'+
+  '<div style="font-family:\'Cinzel\',serif;font-size:1.1rem;font-weight:800;color:var(--gold);margin-bottom:8px">Ready to start your first protocol?</div>'+
+  '<p style="font-size:0.85rem;color:#64748b;margin-bottom:16px;line-height:1.6">Use the Library to research your peptides, then build your protocol and track every dose right here.</p>'+
+  '<div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">'+
+  '<button class="bp" onclick="go(\'lb\')">📚 Browse Peptide Library</button>'+
+  '<button class="bs" onclick="go(\'pr\')">⚗️ Build My Protocol</button>'+
+  '<button class="bs" onclick="openGoalTemplates()">🎯 Start From a Goal</button></div></div>'+
+  '</div>';
+}
 // ── GOAL TEMPLATES ─────────────────────────────────────────────────
 function openGoalTemplates(){
   var templates=[
