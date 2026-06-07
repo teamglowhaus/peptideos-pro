@@ -200,6 +200,11 @@ td{padding:9px 10px;border-bottom:1px solid rgba(255,255,255,0.04)}
       <button class="tb" onclick="go('jn')">&#128211; Journal</button>
       <button class="tb" onclick="go('lx')">&#129656; Labs</button>
       <button class="tb" onclick="go('tl')">&#128295; Tools</button>
+      <button class="tb" onclick="go('wl')">&#128154; Wellness</button>
+      <button class="tb" onclick="go('hy')">&#128167; Hydration</button>
+      <button class="tb" onclick="go('bm')">&#128104; Body Map</button>
+      <button class="tb" onclick="go('cy')">&#128260; Cycles</button>
+      <button class="tb" onclick="go('glp')">&#128138; GLP-1</button>
     </nav>
   </div>
 </div>
@@ -221,6 +226,11 @@ td{padding:9px 10px;border-bottom:1px solid rgba(255,255,255,0.04)}
   <button class="mi" onclick="go('jn');closeDrawer()">&#128211; Journal</button>
   <button class="mi" onclick="go('lx');closeDrawer()">&#129656; Labs</button>
   <button class="mi" onclick="go('tl');closeDrawer()">&#128295; Tools</button>
+  <button class="mi" onclick="go('wl');closeDrawer()">&#128154; Wellness</button>
+  <button class="mi" onclick="go('hy');closeDrawer()">&#128167; Hydration</button>
+  <button class="mi" onclick="go('bm');closeDrawer()">&#128104; Body Map</button>
+  <button class="mi" onclick="go('cy');closeDrawer()">&#128260; Cycles</button>
+  <button class="mi" onclick="go('glp');closeDrawer()">&#128138; GLP-1</button>
 </div>
 
 <div id="main"></div>
@@ -399,6 +409,11 @@ function render(){
   else if(t==='jn')el.innerHTML=rJN();
   else if(t==='lx')el.innerHTML=rLX();
   else if(t==='tl'){el.innerHTML=rTL();setTimeout(updateRC,50);}
+  else if(t==='wl')el.innerHTML=rWL();
+  else if(t==='hy')el.innerHTML=rHY();
+  else if(t==='bm')el.innerHTML=rBM();
+  else if(t==='cy')el.innerHTML=rCY();
+  else if(t==='glp')el.innerHTML=rGLP();
   if(isLibSearch){var ni=el.querySelector('input.if');if(ni){ni.focus();try{ni.setSelectionRange(sPos,sPos);}catch(e){}}}
 }
 function H1(t){return '<h1 style="font-family:\'Space Grotesk\',sans-serif;font-size:26px;font-weight:700;margin-bottom:6px">'+t+'</h1>';}
@@ -484,7 +499,7 @@ function rPR(){
       (pep?'<div style="margin-top:10px;padding:8px 12px;border-radius:8px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);display:flex;gap:16px;flex-wrap:wrap;font-size:12px"><span>&#9203; '+pep.hl+'</span><span>&#128207; '+pep.dose+'</span><span>&#128260; '+pep.cycle+'</span></div>':'')+
       '</div>';
   }).join('');
-  return '<div>'+PH('My Protocol','Configure dosages, frequencies and schedules','<button class="bp" onclick="openAdd()">+ Add Peptide</button>')+
+  return '<div>'+PH('My Protocol','Configure dosages, frequencies and schedules','<div style="display:flex;gap:8px;flex-wrap:wrap"><button class="bs" onclick="openGoalTemplates()">🎯 Goal Templates</button><button class="bs" onclick="checkInteractions()">⚠️ Check Interactions</button><button class="bp" onclick="openAdd()">+ Add Peptide</button></div>')+
     (S.protocol.length===0?'<div class="card" style="padding:50px;text-align:center"><div style="font-size:46px;margin-bottom:14px">&#9883;</div><div style="font-weight:700;font-size:18px;margin-bottom:8px">No Protocol Yet</div><p style="color:#64748b;margin-bottom:20px">Browse the library and build your custom peptide protocol</p><button class="bp" onclick="openAdd()">Add Your First Peptide</button></div>':items)+'</div>';
 }
 
@@ -1390,6 +1405,403 @@ function saveReminder(){
   closeM();toast('Reminder set for '+t+' every day! &#9989;');
 }
 function cancelReminder(){localStorage.removeItem('pep_reminder');closeM();toast('Reminder removed');}
+
+// ── WELLNESS ──────────────────────────────────────────────────────
+function rWL(){
+  var today=S.date;
+  var wdata=ld('pep_wellness',{});
+  var todayW=wdata[today]||{};
+  var moodEmojis=['😴','😐','🙂','😊','🤩'];
+  function ratingHTML(field,max,type){
+    var h='<div style="display:flex;gap:8px;flex-wrap:wrap;">';
+    for(var i=1;i<=max;i++){var active=(todayW[field]||0)>=i;var icon=type==='bolt'?'⚡':'⭐';h+='<span onclick="setWellnessVal(\''+field+'\','+i+')" style="font-size:1.5rem;cursor:pointer;opacity:'+(active?1:0.22)+';transition:opacity 0.15s;">'+icon+'</span>';}
+    return h+'</div>';
+  }
+  var days14=[];for(var i=13;i>=0;i--){var d=new Date();d.setDate(d.getDate()-i);var key=d.toISOString().slice(0,10);days14.push({key:key,d:wdata[key]||null});}
+  var W=520,H=120,PAD=20,xStep=(W-PAD*2)/13;
+  function pts(field,max){return days14.map(function(e,i){var v=e.d?e.d[field]:null;if(v==null)return null;var x=PAD+i*xStep,y=PAD+(1-v/max)*(H-PAD*2);return x+','+y;}).filter(Boolean).join(' ');}
+  var energyPts=pts('energy',5),sleepPts=pts('sleep',5);
+  var moodPts=days14.map(function(e,i){var v=e.d?moodEmojis.indexOf(e.d.mood):-1;if(v<0)return null;var x=PAD+i*xStep,y=PAD+(1-v/4)*(H-PAD*2);return x+','+y;}).filter(Boolean).join(' ');
+  var gridLines='';for(var g=0;g<=4;g++)gridLines+='<line x1="'+PAD+'" x2="'+(W-PAD)+'" y1="'+(PAD+g/4*(H-PAD*2))+'" y2="'+(PAD+g/4*(H-PAD*2))+'" stroke="#1a2540" stroke-width="1"/>';
+  var trendSVG='<svg viewBox="0 0 '+W+' '+H+'" style="width:100%;height:'+H+'px;display:block;"><rect width="'+W+'" height="'+H+'" fill="var(--s1)" rx="8"/>'+gridLines+(energyPts?'<polyline points="'+energyPts+'" fill="none" stroke="var(--gold)" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/>':'')+(sleepPts?'<polyline points="'+sleepPts+'" fill="none" stroke="var(--teal)" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/>':'')+(moodPts?'<polyline points="'+moodPts+'" fill="none" stroke="#a78bfa" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/>':'')+'<text x="'+PAD+'" y="'+(H-4)+'" fill="var(--gold)" font-size="10">⚡ Energy</text><text x="'+(PAD+80)+'" y="'+(H-4)+'" fill="var(--teal)" font-size="10">⭐ Sleep</text><text x="'+(PAD+155)+'" y="'+(H-4)+'" fill="#a78bfa" font-size="10">😊 Mood</text></svg>';
+  var days7=[];for(var j=6;j>=0;j--){var d2=new Date();d2.setDate(d2.getDate()-j);var k2=d2.toISOString().slice(0,10);var lbl=d2.toLocaleDateString('en',{weekday:'short'});days7.push({key:k2,label:lbl,d:wdata[k2]||null});}
+  var summaryCards=days7.map(function(e){var mood=e.d&&e.d.mood?e.d.mood:'—';var en=e.d&&e.d.energy?e.d.energy:'—';var pain=e.d&&e.d.pain!=null?e.d.pain:'—';var isToday=e.key===today;return '<div class="card" style="padding:10px 8px;text-align:center;border:1px solid '+(isToday?'var(--gold)':'transparent')+'"><div style="font-size:0.7rem;color:var(--t2);margin-bottom:4px">'+e.label+'</div><div style="font-size:1.1rem">'+mood+'</div><div style="font-size:0.75rem;color:var(--gold)">⚡'+en+'</div><div style="font-size:0.7rem;color:#f87171">Pain:'+pain+'</div></div>';}).join('');
+  var painVal=todayW.pain!=null?todayW.pain:0;
+  return '<div style="max-width:680px;margin:0 auto;padding:20px 16px">'+
+    '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px"><h2 style="font-family:\'Cinzel\',serif;color:var(--gold);font-size:1.2rem;letter-spacing:1px">Wellness Check-in</h2></div>'+
+    '<div class="card" style="margin-bottom:16px"><div style="font-size:0.75rem;color:var(--t2);margin-bottom:14px">'+today+'</div>'+
+    '<div style="display:grid;gap:16px">'+
+    '<div><div class="lbl">Energy Level</div>'+ratingHTML('energy',5,'bolt')+'</div>'+
+    '<div><div class="lbl">Sleep Quality</div>'+ratingHTML('sleep',5,'star')+'</div>'+
+    '<div><div class="lbl">Sleep Hours</div><input class="if" type="number" min="0" max="24" step="0.5" value="'+(todayW.sleepHrs||'')+'" placeholder="hrs" style="width:90px;margin-top:4px" oninput="setWellnessVal(\'sleepHrs\',parseFloat(this.value)||0)"/></div>'+
+    '<div><div class="lbl">Mood</div><div style="display:flex;gap:12px;margin-top:4px">'+moodEmojis.map(function(em){return '<span onclick="setWellnessVal(\'mood\',\''+em+'\')" style="font-size:1.8rem;cursor:pointer;opacity:'+(todayW.mood===em?1:0.25)+';transition:opacity 0.15s">'+em+'</span>';}).join('')+'</div></div>'+
+    '<div><div class="lbl">Pain Level: <span style="color:var(--gold);font-weight:700">'+painVal+'</span>/10</div><input type="range" min="0" max="10" value="'+painVal+'" style="width:100%;margin-top:6px;accent-color:var(--gold)" oninput="setWellnessVal(\'pain\',parseInt(this.value))"/></div>'+
+    '</div><button class="bp" style="margin-top:16px;width:100%" onclick="subWellness()">Save Check-in ✓</button></div>'+
+    '<div style="font-weight:600;font-size:0.85rem;color:var(--t2);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px">14-Day Trend</div>'+
+    '<div class="card" style="margin-bottom:16px;padding:12px">'+trendSVG+'</div>'+
+    '<div style="font-weight:600;font-size:0.85rem;color:var(--t2);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px">7-Day Summary</div>'+
+    '<div style="display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-bottom:24px">'+summaryCards+'</div></div>';
+}
+function subWellness(){var wdata=ld('pep_wellness',{});if(!wdata[S.date]){toast('Rate something first.');return;}localStorage.setItem('pep_wellness',JSON.stringify(wdata));toast('Wellness saved! 💚');}
+function setWellnessVal(field,val){var wdata=ld('pep_wellness',{});if(!wdata[S.date])wdata[S.date]={};wdata[S.date][field]=val;localStorage.setItem('pep_wellness',JSON.stringify(wdata));render();}
+
+// ── HYDRATION ──────────────────────────────────────────────────────
+function rHY(){
+  var today=S.date;
+  var hdata=ld('pep_hydro',{});
+  var todayH=hdata[today]||{oz:0,goal:64};
+  var oz=todayH.oz||0;var goal=todayH.goal||64;var pct=Math.min(oz/goal,1);
+  var R=70,CX=90,CY=90,STROKE=14,circ=2*Math.PI*R,dash=pct*circ;
+  var ringColor=pct>=1?'var(--teal)':'var(--gold)';
+  var ringSVG='<svg viewBox="0 0 180 180" style="width:180px;height:180px"><circle cx="'+CX+'" cy="'+CY+'" r="'+R+'" fill="none" stroke="#1a2540" stroke-width="'+STROKE+'"/><circle cx="'+CX+'" cy="'+CY+'" r="'+R+'" fill="none" stroke="'+ringColor+'" stroke-width="'+STROKE+'" stroke-dasharray="'+dash+' '+circ+'" stroke-linecap="round" transform="rotate(-90 '+CX+' '+CY+')" style="transition:stroke-dasharray 0.4s ease"/><text x="'+CX+'" y="'+(CY-8)+'" text-anchor="middle" fill="var(--text)" font-size="22" font-weight="700">'+oz+'oz</text><text x="'+CX+'" y="'+(CY+14)+'" text-anchor="middle" fill="var(--t2)" font-size="12">of '+goal+'oz</text><text x="'+CX+'" y="'+(CY+30)+'" text-anchor="middle" fill="'+ringColor+'" font-size="13" font-weight="600">'+(pct>=1?'✓ Done!':Math.round(pct*100)+'%')+'</text></svg>';
+  var days7=[];for(var i=6;i>=0;i--){var d=new Date();d.setDate(d.getDate()-i);var key=d.toISOString().slice(0,10);var lbl=d.toLocaleDateString('en',{weekday:'short'});var e=hdata[key]||{oz:0,goal:64};days7.push({key:key,label:lbl,oz:e.oz||0,goal:e.goal||64});}
+  var maxOz=Math.max.apply(null,days7.map(function(e){return Math.max(e.oz,e.goal);}));maxOz=Math.max(maxOz,64);
+  var BW=400,BH=90,bPad=20,bW=(BW-bPad*2)/7;
+  var bars=days7.map(function(e,i){var x=bPad+i*bW;var barH=Math.max(3,(e.oz/maxOz)*(BH-30));var goalY=BH-16-(e.goal/maxOz)*(BH-30);var barY=BH-16-barH;var color=e.oz>=e.goal?'var(--teal)':'var(--gold)';var isToday=e.key===today;return '<rect x="'+(x+4)+'" y="'+barY+'" width="'+(bW-8)+'" height="'+barH+'" fill="'+color+'" rx="3" opacity="'+(isToday?1:0.5)+'"/><line x1="'+(x+2)+'" x2="'+(x+bW-2)+'" y1="'+goalY+'" y2="'+goalY+'" stroke="#f87171" stroke-width="1" stroke-dasharray="3,2"/><text x="'+(x+bW/2)+'" y="'+(BH-2)+'" text-anchor="middle" fill="var(--t2)" font-size="9">'+e.label+'</text>';}).join('');
+  var barSVG='<svg viewBox="0 0 '+BW+' '+BH+'" style="width:100%;height:'+BH+'px"><rect width="'+BW+'" height="'+BH+'" fill="var(--s1)" rx="8"/>'+bars+'<text x="'+(BW-bPad)+'" y="12" text-anchor="end" fill="#f87171" font-size="9">— goal</text></svg>';
+  var streak=0;for(var j=0;j<365;j++){var sd=new Date();sd.setDate(sd.getDate()-j);var sk=sd.toISOString().slice(0,10);var se=hdata[sk];if(se&&se.oz>=(se.goal||64))streak++;else break;}
+  return '<div style="max-width:600px;margin:0 auto;padding:20px 16px">'+
+    '<h2 style="font-family:\'Cinzel\',serif;color:var(--gold);font-size:1.2rem;letter-spacing:1px;margin-bottom:16px">💧 Hydration Tracker</h2>'+
+    '<div class="card" style="display:flex;align-items:center;gap:24px;flex-wrap:wrap;margin-bottom:16px">'+
+    '<div style="display:flex;flex-direction:column;align-items:center">'+ringSVG+
+    '<div style="font-size:0.75rem;color:var(--t2);margin-top:6px">Goal: <input class="if" type="number" min="8" max="256" value="'+goal+'" style="width:58px;padding:2px 6px;font-size:0.85rem;display:inline" onchange="setHydroGoal(parseInt(this.value))"/> oz</div></div>'+
+    '<div style="flex:1;min-width:180px"><div class="lbl" style="margin-bottom:8px">Quick Add</div>'+
+    '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">'+
+    '<button class="bp" onclick="addWater(8)">+8oz</button>'+
+    '<button class="bp" onclick="addWater(12)">+12oz</button>'+
+    '<button class="bp" onclick="addWater(16)">+16oz</button>'+
+    '<button class="bp" onclick="addWater(20)">+20oz</button>'+
+    '</div>'+
+    '<button class="bs" style="margin-bottom:8px" onclick="(function(){var v=prompt(\'Add how many oz?\',\'8\');if(v&&!isNaN(v))addWater(parseInt(v));})()">+ Custom oz</button><br>'+
+    '<button class="bd" onclick="resetWater()">Reset Today</button>'+
+    '<div style="margin-top:16px;padding:12px;background:var(--bg);border-radius:10px;text-align:center">'+
+    '<div style="font-size:2rem;font-weight:800;color:var(--teal)">'+streak+'</div>'+
+    '<div style="font-size:0.72rem;color:var(--t2)">day streak hitting goal 🔥</div></div></div></div>'+
+    '<div style="font-weight:600;font-size:0.85rem;color:var(--t2);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px">7-Day History</div>'+
+    '<div class="card" style="padding:12px">'+barSVG+
+    '<div style="display:flex;gap:16px;margin-top:8px;font-size:0.72rem;color:var(--t2)"><span style="color:var(--teal)">■ Goal reached</span><span style="color:var(--gold)">■ Below goal</span><span style="color:#f87171">— Daily goal line</span></div></div></div>';
+}
+function addWater(oz){var hdata=ld('pep_hydro',{});if(!hdata[S.date])hdata[S.date]={oz:0,goal:64};hdata[S.date].oz=(hdata[S.date].oz||0)+oz;localStorage.setItem('pep_hydro',JSON.stringify(hdata));toast('+'+oz+'oz added 💧');render();}
+function resetWater(){if(!confirm('Reset today\'s intake to 0?'))return;var hdata=ld('pep_hydro',{});if(hdata[S.date])hdata[S.date].oz=0;localStorage.setItem('pep_hydro',JSON.stringify(hdata));toast('Reset.');render();}
+function setHydroGoal(g){if(!g||g<8)return;var hdata=ld('pep_hydro',{});if(!hdata[S.date])hdata[S.date]={oz:0,goal:64};hdata[S.date].goal=g;localStorage.setItem('pep_hydro',JSON.stringify(hdata));toast('Goal set to '+g+'oz');render();}
+
+// ── BODY MAP ───────────────────────────────────────────────────────
+function rBM(){
+  var hist=JSON.parse(localStorage.getItem('pep_sites')||'{}');
+  var today=S.date;
+  var yesterday=new Date();yesterday.setDate(yesterday.getDate()-1);var yStr=yesterday.toISOString().slice(0,10);
+  var twoDays=new Date();twoDays.setDate(twoDays.getDate()-2);var twoStr=twoDays.toISOString().slice(0,10);
+  function siteColor(name){
+    var entry=hist[name];var ts=siteLastTs(entry);if(ts<0)return '#1a2540';
+    var d=new Date(ts);var dk=d.toISOString().slice(0,10);
+    if(dk===today)return 'var(--gold)';
+    if(dk===yStr||dk===twoStr)return '#f97316';
+    return '#1e3a5f';
+  }
+  function siteDate(name){var entry=hist[name];var ts=siteLastTs(entry);if(ts<0)return 'Never';return new Date(ts).toISOString().slice(0,10);}
+  var ZONES=[
+    {id:'lAbd',label:'Left Abdomen',cx:118,cy:228,rx:22,ry:17,tip:'Pinch 1–2″ of skin. Insert at 45° for lean body, 90° for more tissue. Stay 2″ from navel. Rotate with right side.'},
+    {id:'rAbd',label:'Right Abdomen',cx:182,cy:228,rx:22,ry:17,tip:'Mirror of left abdomen. Classic SubQ zone for BPC-157, GHK-Cu, peptide hormones. Avoid within 2″ of belly button.'},
+    {id:'navel',label:'Navel Area',cx:150,cy:248,rx:11,ry:11,tip:'Use tissue surrounding the navel, not directly on it. Stay at least 1 inch away. 45°–90° angle depending on tissue depth.'},
+    {id:'lFlank',label:'Flank L',cx:98,cy:252,rx:14,ry:12,tip:'Left side flank — good for BPC-157 local injection near hip. Pinch and inject at 45°. Rotate to prevent scar tissue.'},
+    {id:'rFlank',label:'Flank R',cx:202,cy:252,rx:14,ry:12,tip:'Right side flank. Mirror of left. Adequate subcutaneous tissue for most peptides. Alternate sides regularly.'},
+    {id:'lThigh',label:'Left Thigh',cx:117,cy:342,rx:20,ry:24,tip:'Outer or front of thigh (vastus lateralis). Self-injectable easily. Relax muscle fully. 90° angle, short insulin needle.'},
+    {id:'rThigh',label:'Right Thigh',cx:183,cy:342,rx:20,ry:24,tip:'Right outer thigh — alternate with left. Excellent SubQ zone. Can be used for IM on larger muscle mass individuals.'},
+    {id:'lDelt',label:'Left Deltoid',cx:84,cy:183,rx:16,ry:14,tip:'2–3 finger-widths below the shoulder bone (acromion). SubQ or IM. Keep arm relaxed. Short needle for SubQ peptides.'},
+    {id:'rDelt',label:'Right Deltoid',cx:216,cy:183,rx:16,ry:14,tip:'Mirror of left deltoid. Easier with help or by leaning arm against a surface. Good for GH peptides IM route.'},
+    {id:'lGlute',label:'Left Glute',cx:113,cy:298,rx:19,ry:16,tip:'Upper outer quadrant ONLY — divide buttock into 4 sections, inject top-right quarter of left cheek. IM depot, slower release.'},
+    {id:'rGlute',label:'Right Glute',cx:187,cy:298,rx:19,ry:16,tip:'Upper outer quadrant. Rotate with left glute. Keep clear of the sciatic nerve which runs through the lower/inner quadrant.'},
+  ];
+  var sel=window._bmSel||null;
+  var selZone=ZONES.filter(function(z){return z.id===sel;})[0]||null;
+  var zoneEls=ZONES.map(function(z){
+    var fill=siteColor(z.label);var isSel=sel===z.id;
+    var shortLabel=z.label.replace('Left ','L ').replace('Right ','R ');
+    return '<ellipse cx="'+z.cx+'" cy="'+z.cy+'" rx="'+z.rx+'" ry="'+z.ry+'" fill="'+fill+'" fill-opacity="0.85" stroke="'+(isSel?'#fff':'#2a4a7f')+'" stroke-width="'+(isSel?2.5:1.2)+'" style="cursor:pointer" onclick="selectBodySite(\''+z.id+'\')"><title>'+z.label+'</title></ellipse>'+
+    '<text x="'+z.cx+'" y="'+(z.cy+3)+'" text-anchor="middle" fill="#eef2f8" font-size="7" pointer-events="none" font-weight="600">'+shortLabel+'</text>';
+  }).join('');
+  var bodySVG='<svg viewBox="0 0 300 480" style="width:210px;height:336px;display:block;margin:0 auto">'+
+    '<ellipse cx="150" cy="70" rx="32" ry="37" fill="#0d1b3e" stroke="#2a3f6f" stroke-width="1.5"/>'+
+    '<rect x="138" y="103" width="24" height="18" fill="#0d1b3e" stroke="#2a3f6f" stroke-width="1"/>'+
+    '<path d="M100 120 Q85 130 80 158 L78 278 Q78 294 90 297 L110 299 L110 318 L190 318 L190 299 L210 297 Q222 294 222 278 L220 158 Q215 130 200 120 Z" fill="#0d1b3e" stroke="#2a3f6f" stroke-width="1.5"/>'+
+    '<path d="M82 126 Q60 140 55 198 Q52 228 60 248 L78 246 Q76 212 88 172 Z" fill="#0d1b3e" stroke="#2a3f6f" stroke-width="1.2"/>'+
+    '<path d="M218 126 Q240 140 245 198 Q248 228 240 248 L222 246 Q224 212 212 172 Z" fill="#0d1b3e" stroke="#2a3f6f" stroke-width="1.2"/>'+
+    '<path d="M110 316 Q105 340 108 388 Q110 420 115 448 L145 448 Q148 420 150 388 L150 316 Z" fill="#0d1b3e" stroke="#2a3f6f" stroke-width="1.2"/>'+
+    '<path d="M190 316 Q195 340 192 388 Q190 420 185 448 L155 448 Q152 420 150 388 L150 316 Z" fill="#0d1b3e" stroke="#2a3f6f" stroke-width="1.2"/>'+
+    zoneEls+'</svg>';
+  var legend='<div style="display:flex;gap:10px;flex-wrap:wrap;font-size:0.7rem;margin-top:8px"><span><span style="color:var(--gold)">■</span> Today</span><span><span style="color:#f97316">■</span> 1–2 days ago</span><span><span style="color:#1e3a5f">■</span> Older</span><span><span style="color:#1a2540">■</span> No record</span></div>';
+  var tipPanel=selZone?
+    '<div class="card" style="border:1px solid var(--gold);margin-bottom:12px"><div style="font-weight:700;color:var(--gold);margin-bottom:6px">📍 '+selZone.label+'</div><div style="font-size:0.85rem;line-height:1.6;color:var(--text)">'+selZone.tip+'</div><div style="margin-top:10px;font-size:0.75rem;color:var(--t2)">Last used: '+siteDate(selZone.label)+'</div></div>':
+    '<div class="card" style="color:var(--t2);font-size:0.85rem;text-align:center;padding:20px;margin-bottom:12px">Tap a zone on the body to see injection guidance.</div>';
+  var recentList=Object.keys(hist).map(function(name){var ts=siteLastTs(hist[name]);return{name:name,ts:ts};}).filter(function(s){return s.ts>0;}).sort(function(a,b){return b.ts-a.ts;}).slice(0,8);
+  var recentHTML=recentList.length?recentList.map(function(s){return '<div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid #1a2540;font-size:0.8rem"><span>'+s.name+'</span><span style="color:var(--t2)">'+new Date(s.ts).toISOString().slice(0,10)+'</span></div>';}).join(''):'<div style="color:var(--t2);font-size:0.8rem">No recent site logs.</div>';
+  return '<div style="max-width:700px;margin:0 auto;padding:20px 16px">'+
+    '<h2 style="font-family:\'Cinzel\',serif;color:var(--gold);font-size:1.2rem;letter-spacing:1px;margin-bottom:16px">Body Map — Injection Sites</h2>'+
+    '<div style="display:grid;grid-template-columns:230px 1fr;gap:16px;align-items:start">'+
+    '<div><div class="card" style="padding:12px;text-align:center">'+bodySVG+legend+'</div></div>'+
+    '<div>'+tipPanel+'<div class="card" style="padding:12px"><div class="lbl" style="margin-bottom:8px">Recent Sites</div>'+recentHTML+'</div></div></div></div>';
+}
+function selectBodySite(id){window._bmSel=(window._bmSel===id)?null:id;render();}
+
+// ── CYCLES ────────────────────────────────────────────────────────
+function rCY(){
+  var cycles=ld('pep_cycles',[]);
+  var today=new Date(S.date);
+  function cycleStatus(c){
+    var start=new Date(c.startDate);
+    var daysPassed=Math.floor((today-start)/86400000);
+    var onDays=(c.onWeeks||4)*7,offDays=(c.offWeeks||2)*7,washDays=(c.washoutWeeks||0)*7;
+    var totalDays=onDays+offDays+washDays;
+    var cycleDay=((daysPassed%totalDays)+totalDays)%totalDays;
+    if(cycleDay<onDays)return{phase:'ON',day:cycleDay+1,total:onDays,remaining:onDays-cycleDay-1,pct:(cycleDay+1)/onDays};
+    else if(cycleDay<onDays+offDays){var d=cycleDay-onDays;return{phase:'OFF',day:d+1,total:offDays,remaining:offDays-d-1,pct:(d+1)/offDays};}
+    else{var d2=cycleDay-onDays-offDays;return{phase:'WASHOUT',day:d2+1,total:washDays,remaining:washDays-d2-1,pct:(d2+1)/washDays};}
+  }
+  var cards=cycles.length?cycles.map(function(c,i){
+    var st=cycleStatus(c);
+    var phColor=st.phase==='ON'?'var(--teal)':st.phase==='OFF'?'var(--gold)':'#a78bfa';
+    return '<div class="card" style="border-left:3px solid '+phColor+';margin-bottom:12px">'+
+      '<div style="display:flex;justify-content:space-between;align-items:flex-start">'+
+      '<div><div style="font-weight:700;font-size:1rem">'+c.pepName+'</div>'+
+      '<div style="font-size:0.75rem;color:var(--t2)">Started '+c.startDate+' · '+c.onWeeks+'w on / '+c.offWeeks+'w off'+(c.washoutWeeks?' / '+c.washoutWeeks+'w washout':'')+'</div></div>'+
+      '<button class="bd" style="padding:4px 10px;font-size:0.75rem" onclick="delCycle('+i+')">Remove</button></div>'+
+      '<div style="margin:10px 0 4px"><span style="font-size:1.1rem;font-weight:700;color:'+phColor+'">'+st.phase+' — Day '+st.day+' of '+st.total+'</span>'+
+      '<span style="font-size:0.8rem;color:var(--t2);margin-left:8px">'+st.remaining+' days left in phase</span></div>'+
+      '<div style="background:#0d1b3e;border-radius:8px;height:10px;overflow:hidden"><div style="height:10px;background:'+phColor+';border-radius:8px;width:'+Math.round(st.pct*100)+'%;transition:width 0.4s"></div></div></div>';
+  }).join(''):'<div class="card" style="color:var(--t2);text-align:center;padding:28px">No cycles tracked yet. Add your first cycle below.</div>';
+  return '<div style="max-width:680px;margin:0 auto;padding:20px 16px">'+
+    '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">'+
+    '<h2 style="font-family:\'Cinzel\',serif;color:var(--gold);font-size:1.2rem;letter-spacing:1px">Peptide Cycles</h2>'+
+    '<button class="bp" onclick="openAddCycle()">+ Add Cycle</button></div>'+cards+'</div>';
+}
+function openAddCycle(){
+  var proto=S.protocol||[];
+  var pepOpts=proto.map(function(p){return '<option value="'+p.name+'">'+p.name+'</option>';}).join('');
+  openM(MH('🔄 Add Peptide Cycle')+
+    '<div style="display:grid;gap:12px">'+
+    '<div><div class="lbl">Peptide</div>'+(pepOpts?'<select class="if" id="cyPep" style="margin-top:4px">'+pepOpts+'</select>':'<input class="if" id="cyPep" placeholder="Peptide name" style="margin-top:4px"/>')+'</div>'+
+    '<div><div class="lbl">Start Date</div><input class="if" type="date" id="cyStart" value="'+S.date+'" style="margin-top:4px"/></div>'+
+    '<div class="g2"><div><div class="lbl">On Weeks</div><input class="if" type="number" id="cyOn" value="4" min="1" max="52" style="margin-top:4px"/></div>'+
+    '<div><div class="lbl">Off Weeks</div><input class="if" type="number" id="cyOff" value="2" min="0" max="52" style="margin-top:4px"/></div></div>'+
+    '<div><div class="lbl">Washout Weeks (optional)</div><input class="if" type="number" id="cyWash" value="0" min="0" max="52" style="margin-top:4px"/></div>'+
+    '<button class="bp" style="width:100%;margin-top:4px" onclick="subCycle()">Save Cycle</button></div>');
+}
+function subCycle(){
+  var pepName=(document.getElementById('cyPep')||{}).value;var startDate=(document.getElementById('cyStart')||{}).value;
+  var onWeeks=parseInt((document.getElementById('cyOn')||{}).value)||4;
+  var offWeeks=parseInt((document.getElementById('cyOff')||{}).value)||2;
+  var washoutWeeks=parseInt((document.getElementById('cyWash')||{}).value)||0;
+  if(!pepName||!startDate){toast('Fill in peptide and start date.');return;}
+  var cycles=ld('pep_cycles',[]);cycles.push({pepName:pepName,startDate:startDate,onWeeks:onWeeks,offWeeks:offWeeks,washoutWeeks:washoutWeeks});
+  localStorage.setItem('pep_cycles',JSON.stringify(cycles));closeM();toast('Cycle added! 🔄');render();
+}
+function delCycle(i){if(!confirm('Remove this cycle?'))return;var cycles=ld('pep_cycles',[]);cycles.splice(i,1);localStorage.setItem('pep_cycles',JSON.stringify(cycles));toast('Removed.');render();}
+
+// ── GLP-1 TRACKER ─────────────────────────────────────────────────
+function rGLP(){
+  var cfg=ld('pep_glp1',{});
+  var weekLogs=cfg.weekLogs||[];var schedule=cfg.schedule||[];
+  var today=new Date(S.date);
+  var currentWeek=0,currentDose=null,nextDose=null,nextDate=null;
+  var sortedSched=schedule.slice().sort(function(a,b){return a.week-b.week;});
+  if(cfg.startDate){
+    var start=new Date(cfg.startDate);
+    currentWeek=Math.floor((today-start)/(7*86400000))+1;
+    for(var i=sortedSched.length-1;i>=0;i--){if(currentWeek>=sortedSched[i].week){currentDose=sortedSched[i].dose;break;}}
+    for(var j=0;j<sortedSched.length;j++){if(sortedSched[j].week>currentWeek){nextDose=sortedSched[j].dose;var nd=new Date(start);nd.setDate(nd.getDate()+(sortedSched[j].week-1)*7);nextDate=nd.toISOString().slice(0,10);break;}}
+  }
+  var TW=520,TH=64,tPad=20;
+  var maxWk=sortedSched.length?Math.max.apply(null,sortedSched.map(function(s){return s.week;}).concat([currentWeek])):12;
+  var timelinePts=sortedSched.map(function(s){
+    var x=tPad+((s.week-1)/maxWk)*(TW-tPad*2);
+    var isCur=s.week<=currentWeek&&(!sortedSched.filter(function(ss){return ss.week>s.week&&ss.week<=currentWeek;}).length);
+    var isPast=s.week<currentWeek;
+    var color=isCur?'var(--gold)':isPast?'var(--teal)':'#2a3f6f';
+    return '<circle cx="'+x+'" cy="28" r="6" fill="'+color+'" stroke="#04091a" stroke-width="1.5"/>'+
+      '<text x="'+x+'" y="18" text-anchor="middle" fill="'+color+'" font-size="9">W'+s.week+'</text>'+
+      '<text x="'+x+'" y="50" text-anchor="middle" fill="var(--t2)" font-size="8">'+s.dose+'mg</text>';
+  }).join('');
+  var nowLineX=cfg.startDate?Math.min(tPad+((currentWeek-1)/maxWk)*(TW-tPad*2),TW-tPad):-1;
+  var timelineSVG=sortedSched.length?
+    '<svg viewBox="0 0 '+TW+' '+TH+'" style="width:100%;height:'+TH+'px"><rect width="'+TW+'" height="'+TH+'" fill="var(--s1)" rx="8"/>'+
+    '<line x1="'+tPad+'" x2="'+(TW-tPad)+'" y1="28" y2="28" stroke="#2a3f6f" stroke-width="2"/>'+
+    timelinePts+(nowLineX>0?'<line x1="'+nowLineX+'" x2="'+nowLineX+'" y1="8" y2="56" stroke="var(--gold)" stroke-width="2" stroke-dasharray="4,3"/>':'')+
+    '</svg>':'<div style="color:var(--t2);font-size:0.8rem;padding:12px">Configure schedule to see timeline.</div>';
+  var thisWeekLog=weekLogs.filter(function(w){return w.week===currentWeek;})[0]||{};
+  // Weight trend from S.body (show shape only, no numbers)
+  var bodyLogs=S.body||[];var weightSVG='';
+  var wpts=bodyLogs.slice(-16).filter(function(b){return b.weight;});
+  if(wpts.length>=2){
+    var minW=Math.min.apply(null,wpts.map(function(b){return parseFloat(b.weight);}));
+    var maxW=Math.max.apply(null,wpts.map(function(b){return parseFloat(b.weight);}));
+    var range=maxW-minW||1;
+    var WW=380,WH=70;
+    var linePts=wpts.map(function(b,i){var x=(i/(wpts.length-1))*WW;var y=WH-8-((parseFloat(b.weight)-minW)/range)*(WH-16);return x+','+y;}).join(' ');
+    weightSVG='<svg viewBox="0 0 '+WW+' '+WH+'" style="width:100%;max-width:380px;height:'+WH+'px"><rect width="'+WW+'" height="'+WH+'" fill="var(--s1)" rx="6"/>'+
+      '<polyline points="'+linePts+'" fill="none" stroke="var(--teal)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>'+
+      '<circle cx="'+wpts.map(function(b,i){return (i/(wpts.length-1))*WW;}).slice(-1)[0]+'" cy="'+wpts.map(function(b,i){var y=WH-8-((parseFloat(b.weight)-minW)/range)*(WH-16);return y;}).slice(-1)[0]+'" r="4" fill="var(--gold)"/>'+
+      '<text x="4" y="'+(WH-3)+'" fill="var(--t2)" font-size="9">Your Weight Trend ('+(wpts.length)+' entries)</text></svg>';
+  }
+  function slRow(label,field,val){return '<div style="margin-bottom:14px"><div class="lbl">'+label+': <span id="glpLbl_'+field+'" style="color:var(--gold);font-weight:700">'+(val||0)+'</span>/5</div><input type="range" min="0" max="5" value="'+(val||0)+'" style="width:100%;margin-top:4px;accent-color:var(--gold)" oninput="document.getElementById(\'glpLbl_'+field+'\').textContent=this.value" id="glpSl_'+field+'"/></div>';}
+  return '<div style="max-width:680px;margin:0 auto;padding:20px 16px">'+
+    '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">'+
+    '<h2 style="font-family:\'Cinzel\',serif;color:var(--gold);font-size:1.2rem;letter-spacing:1px">💉 GLP-1 Tracker</h2>'+
+    '<button class="bs" onclick="openGLPConfig()">⚙ Configure</button></div>'+
+    (cfg.startDate?
+      '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px">'+
+      '<div class="card" style="text-align:center"><div style="font-size:2rem;font-weight:800;color:var(--gold)">'+currentWeek+'</div><div style="font-size:0.72rem;color:var(--t2)">Current Week</div></div>'+
+      '<div class="card" style="text-align:center"><div style="font-size:2rem;font-weight:800;color:var(--teal)">'+(currentDose!=null?currentDose+'mg':'—')+'</div><div style="font-size:0.72rem;color:var(--t2)">Current Dose</div></div>'+
+      '<div class="card" style="text-align:center"><div style="font-size:1.3rem;font-weight:800;color:#a78bfa">'+(nextDose?nextDose+'mg':'—')+'</div><div style="font-size:0.72rem;color:var(--t2)">Next Escalation</div>'+(nextDate?'<div style="font-size:0.68rem;color:var(--t2)">'+nextDate+'</div>':'')+'</div></div>'+
+      '<div style="font-size:0.8rem;color:var(--t2);margin-bottom:12px">Drug: <strong style="color:var(--text)">'+(cfg.drug||'—')+'</strong> · Injection day: <strong style="color:var(--text)">'+(cfg.injDay||'—')+'</strong> · Started: <strong style="color:var(--text)">'+(cfg.startDate||'—')+'</strong></div>'
+      :'<div class="card" style="color:var(--t2);text-align:center;padding:20px;margin-bottom:16px">Not configured. Tap ⚙ Configure to set up your GLP-1 protocol.</div>')+
+    '<div style="font-weight:600;font-size:0.82rem;color:var(--t2);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px">Escalation Timeline</div>'+
+    '<div class="card" style="padding:12px;margin-bottom:16px">'+timelineSVG+'</div>'+
+    (cfg.startDate?
+      '<div style="font-weight:600;font-size:0.82rem;color:var(--t2);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px">Side Effects — Week '+currentWeek+'</div>'+
+      '<div class="card" style="margin-bottom:16px">'+
+      slRow('Nausea','nausea',thisWeekLog.nausea)+
+      slRow('Constipation','constipation',thisWeekLog.constipation)+
+      slRow('Fatigue','fatigue',thisWeekLog.fatigue)+
+      '<div class="lbl" style="margin-bottom:6px">Appetite Level (1=suppressed → 5=normal)</div>'+
+      '<div style="display:flex;gap:10px;margin-bottom:14px">'+[1,2,3,4,5].map(function(v){return '<span onclick="document.getElementById(\'glpApp\').value='+v+';this.parentElement.querySelectorAll(\'span\').forEach(function(s){s.style.opacity=\'0.25\'});this.style.opacity=\'1\'" style="font-size:1.4rem;cursor:pointer;opacity:'+(thisWeekLog.appetite===v?1:0.25)+'">🍽</span>';}).join('')+'</div>'+
+      '<input type="hidden" id="glpApp" value="'+(thisWeekLog.appetite||0)+'"/>'+
+      '<button class="bp" style="width:100%" onclick="logGLPWeek()">Save Week '+currentWeek+' Log ✓</button></div>'+
+      '<div style="font-weight:600;font-size:0.82rem;color:var(--t2);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px">Weight Trend</div>'+
+      '<div class="card" style="padding:12px">'+(weightSVG||'<div style="color:var(--t2);font-size:0.8rem">Log body weight in Progress → Body Metrics to see your trend here.</div>')+'</div>'
+    :'')+
+    '</div>';
+}
+function openGLPConfig(){
+  var cfg=ld('pep_glp1',{});
+  var sched=(cfg.schedule||[]).map(function(s){return 'W'+s.week+':'+s.dose;}).join(', ');
+  openM(MH('⚙ Configure GLP-1 Protocol')+
+    '<div style="display:grid;gap:12px">'+
+    '<div><div class="lbl">Drug</div><select class="if" id="glpDrug" style="margin-top:4px">'+
+    '<option value="Semaglutide"'+(cfg.drug==='Semaglutide'?' selected':'')+'>Semaglutide</option>'+
+    '<option value="Tirzepatide"'+(cfg.drug==='Tirzepatide'?' selected':'')+'>Tirzepatide</option></select></div>'+
+    '<div><div class="lbl">Start Date</div><input class="if" type="date" id="glpStart" value="'+(cfg.startDate||S.date)+'" style="margin-top:4px"/></div>'+
+    '<div><div class="lbl">Injection Day of Week</div><select class="if" id="glpDay" style="margin-top:4px">'+
+    ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'].map(function(d){return '<option'+(cfg.injDay===d?' selected':'')+'>'+d+'</option>';}).join('')+'</select></div>'+
+    '<div><div class="lbl">Escalation Schedule</div><div style="font-size:0.72rem;color:var(--t2);margin:4px 0">Format: W1:0.25, W5:0.5, W9:1.0 (week:dose pairs)</div>'+
+    '<input class="if" id="glpSched" value="'+sched+'" placeholder="W1:0.25, W5:0.5, W9:1.0" style="margin-top:2px"/></div>'+
+    '<button class="bp" style="width:100%;margin-top:4px" onclick="subGLPConfig()">Save Configuration</button></div>');
+}
+function subGLPConfig(){
+  var drug=(document.getElementById('glpDrug')||{}).value;
+  var startDate=(document.getElementById('glpStart')||{}).value;
+  var injDay=(document.getElementById('glpDay')||{}).value;
+  var schedStr=((document.getElementById('glpSched')||{}).value||'');
+  var schedule=schedStr.split(',').map(function(s){var p=s.trim().split(':');return{week:parseInt(p[0].replace(/\D/g,'')),dose:parseFloat(p[1])};}).filter(function(s){return !isNaN(s.week)&&!isNaN(s.dose);});
+  var cfg=ld('pep_glp1',{});Object.assign(cfg,{drug:drug,startDate:startDate,injDay:injDay,schedule:schedule});
+  localStorage.setItem('pep_glp1',JSON.stringify(cfg));closeM();toast('GLP-1 config saved! 💉');render();
+}
+function logGLPWeek(){
+  var cfg=ld('pep_glp1',{});if(!cfg.startDate)return;
+  var today=new Date(S.date);var start=new Date(cfg.startDate);
+  var currentWeek=Math.floor((today-start)/(7*86400000))+1;
+  var nausea=parseInt((document.getElementById('glpSl_nausea')||{}).value)||0;
+  var constipation=parseInt((document.getElementById('glpSl_constipation')||{}).value)||0;
+  var fatigue=parseInt((document.getElementById('glpSl_fatigue')||{}).value)||0;
+  var appetite=parseInt((document.getElementById('glpApp')||{}).value)||0;
+  if(!cfg.weekLogs)cfg.weekLogs=[];
+  var idx=cfg.weekLogs.findIndex(function(w){return w.week===currentWeek;});
+  var entry={week:currentWeek,nausea:nausea,constipation:constipation,fatigue:fatigue,appetite:appetite,date:S.date};
+  if(idx>=0)cfg.weekLogs[idx]=entry;else cfg.weekLogs.push(entry);
+  localStorage.setItem('pep_glp1',JSON.stringify(cfg));toast('Week '+currentWeek+' saved!');render();
+}
+
+// ── GOAL TEMPLATES ─────────────────────────────────────────────────
+function openGoalTemplates(){
+  var templates=[
+    {name:'Sleep Optimization',icon:'😴',peptides:['DSIP','Epitalon','BPC-157'],rationale:'Promotes slow-wave sleep architecture and circadian rhythm regulation.'},
+    {name:'Joint & Tendon Recovery',icon:'🦴',peptides:['BPC-157','TB-500','CJC-1295'],rationale:'Accelerates connective tissue repair and reduces local inflammation.'},
+    {name:'Fat Loss & Metabolism',icon:'🔥',peptides:['AOD-9604','Tesamorelin','MOTS-c'],rationale:'Enhances lipolysis, improves insulin sensitivity, and boosts metabolic rate.'},
+    {name:'Longevity & Anti-aging',icon:'⏳',peptides:['Epitalon','Thymalin','Selank'],rationale:'Supports telomere maintenance, immune regulation, and cellular defense.'},
+    {name:'Muscle & Strength',icon:'💪',peptides:['CJC-1295','Ipamorelin','IGF-1 LR3'],rationale:'Stimulates the GH/IGF-1 axis for hypertrophy, recovery, and nitrogen retention.'},
+    {name:'Cognitive & Focus',icon:'🧠',peptides:['Selank','Semax','Dihexa'],rationale:'Enhances BDNF, reduces anxiety, and supports neuroplasticity and memory.'},
+    {name:'Gut Health',icon:'🫁',peptides:['BPC-157','KPV','LL-37'],rationale:'Heals intestinal lining, modulates gut inflammation, and supports the microbiome.'},
+    {name:'GH Optimization',icon:'📈',peptides:['Ipamorelin','CJC-1295','GHRP-6'],rationale:'Maximizes endogenous GH pulsatility without excess cortisol or prolactin.'}
+  ];
+  var cards=templates.map(function(t){
+    var pepJSON=JSON.stringify(t.peptides).replace(/"/g,'&quot;');
+    return '<div onclick="applyTemplate('+pepJSON+')" style="background:var(--s1);border:1px solid #1a2540;border-radius:12px;padding:14px;cursor:pointer;transition:border-color 0.15s" onmouseover="this.style.borderColor=\'var(--gold)\'" onmouseout="this.style.borderColor=\'#1a2540\'">'+
+      '<div style="font-size:1.4rem;margin-bottom:4px">'+t.icon+'</div>'+
+      '<div style="font-weight:700;font-size:0.9rem;color:var(--text);margin-bottom:4px">'+t.name+'</div>'+
+      '<div style="font-size:0.75rem;color:var(--teal);margin-bottom:6px">'+t.peptides.join(' · ')+'</div>'+
+      '<div style="font-size:0.72rem;color:var(--t2);line-height:1.4">'+t.rationale+'</div></div>';
+  }).join('');
+  openM(MH('🎯 Goal-Based Protocol Templates')+
+    '<p style="font-size:0.82rem;color:var(--t2);margin:0 0 14px">Tap a goal to add its recommended peptides to your protocol.</p>'+
+    '<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px">'+cards+'</div>'+
+    '<button class="bs" style="width:100%;margin-top:14px" onclick="closeM()">Close</button>');
+}
+function applyTemplate(peptideNames){
+  var added=0;
+  peptideNames.forEach(function(name){
+    var existing=S.protocol.find(function(p){return p.name.toLowerCase()===name.toLowerCase();});
+    if(existing)return;
+    var plEntry=(typeof PL!=='undefined'?PL:[]).find(function(p){return p.name.toLowerCase()===name.toLowerCase();});
+    S.protocol.push(plEntry?{id:plEntry.id,name:plEntry.name,dose:plEntry.dose||'',route:Array.isArray(plEntry.routes)?plEntry.routes[0]:(plEntry.route||'SubQ'),unit:'mcg',days:[],active:true,startDate:S.date,notes:'Added via goal template'}:{id:'custom_'+Date.now()+Math.random(),name:name,dose:'',unit:'mcg',route:'SubQ',days:[],active:true,startDate:S.date,notes:'Added via goal template — set dose before use'});
+    added++;
+  });
+  sv();closeM();
+  toast(added?added+' peptide'+(added>1?'s':'')+' added to protocol! ✅':'All peptides already in protocol.');
+  render();
+}
+
+// ── INTERACTION CHECKER ────────────────────────────────────────────
+var INTERACTIONS={
+  'BPC-157|TB-500':'Synergistic healing stack — well tolerated together. Monitor for over-remodeling of scar tissue with long-term combined use.',
+  'CJC-1295|Ipamorelin':'Popular combination — watch for water retention, elevated fasting glucose, and carpal tunnel symptoms (tingling/numbness).',
+  'GHRP-6|CJC-1295':'Strong GH pulse synergy — GHRP-6 raises cortisol and prolactin significantly. Avoid unsupported long-term use.',
+  'GHRP-2|CJC-1295':'Potent GH release — GHRP-2 raises cortisol and prolactin more than Ipamorelin. Consider capping GHRP-2 at 200mcg.',
+  'IGF-1 LR3|Insulin':'⚠️ HIGH RISK: Additive hypoglycemic effect. Do NOT combine without clinical supervision — severe low blood sugar risk.',
+  'Selank|Semax':'Both modulate BDNF and serotonin. Combining may over-activate dopaminergic pathways. Start low, monitor mood closely.',
+  'Epitalon|DSIP':'Sleep peptide stack — generally safe but may cause excessive daytime drowsiness in sensitive individuals.',
+  'AOD-9604|Insulin':'AOD-9604 may enhance insulin sensitivity — monitor blood glucose carefully when using both, especially in diabetics.',
+  'Thymosin Alpha-1|BPC-157':'Immune modulation overlap — use caution in autoimmune conditions due to potential dual immune activation.',
+  'MOTS-c|Metformin':'Both activate AMPK pathways — combining may cause excessive energy substrate depletion. Monitor for fatigue and GI upset.',
+  'Tesamorelin|Insulin':'Tesamorelin can raise blood glucose. Insulin or insulin-sensitizing drugs may need dose adjustment when stacking.',
+  'LL-37|Thymosin Alpha-1':'Dual immune stimulation — caution in active autoimmune disease. May amplify inflammatory response unexpectedly.',
+  'Semax|Dihexa':'Both are potent BDNF enhancers. Stacking may cause overstimulation, anxiety, or insomnia in sensitive individuals.',
+  'GHRP-6|Ipamorelin':'Redundant GHRP mechanism — combining adds minimal benefit and increases prolactin/cortisol burden. Choose one.',
+  'KPV|LL-37':'Both anti-inflammatory — generally safe together. Monitor for unexpected immune suppression with long-term combined use.',
+  'Thymalin|Thymosin Alpha-1':'Overlapping thymic peptides — combining is largely redundant and may cause immune over-stimulation. Choose one.',
+  'BPC-157|NSAIDs':'BPC-157 may counteract COX-pathway suppression by NSAIDs. Stagger by several hours to preserve both mechanisms.'
+};
+function checkInteractions(){
+  var activeNames=(S.protocol||[]).filter(function(p){return p.active!==false;}).map(function(p){return p.name;});
+  if(activeNames.length<2){
+    openM(MH('⚠️ Interaction Checker')+'<div style="text-align:center;padding:24px"><div style="font-size:2rem;margin-bottom:8px">ℹ️</div><div style="color:var(--t2)">Add at least 2 active peptides to your protocol to check interactions.</div></div><button class="bs" style="width:100%;margin-top:10px" onclick="closeM()">Close</button>');
+    return;
+  }
+  var warnings=[];
+  for(var i=0;i<activeNames.length;i++){
+    for(var j=i+1;j<activeNames.length;j++){
+      var a=activeNames[i],b=activeNames[j];
+      var msg=INTERACTIONS[a+'|'+b]||INTERACTIONS[b+'|'+a];
+      if(!msg){Object.keys(INTERACTIONS).forEach(function(k){if(msg)return;var parts=k.split('|'),ka=parts[0],kb=parts[1];var aL=a.toLowerCase(),bL=b.toLowerCase(),kaL=ka.toLowerCase(),kbL=kb.toLowerCase();if((aL.includes(kaL)||kaL.includes(aL))&&(bL.includes(kbL)||kbL.includes(bL)))msg=INTERACTIONS[k];else if((aL.includes(kbL)||kbL.includes(aL))&&(bL.includes(kaL)||kaL.includes(bL)))msg=INTERACTIONS[k];});}
+      if(msg)warnings.push({a:a,b:b,msg:msg,danger:msg.includes('HIGH RISK')});
+    }
+  }
+  var pairs=(activeNames.length*(activeNames.length-1))/2;
+  var body='';
+  if(!warnings.length){
+    body='<div style="text-align:center;padding:20px"><div style="font-size:2.5rem;margin-bottom:8px">✅</div>'+
+      '<div style="color:var(--teal);font-size:1rem;font-weight:700">No known conflicts found</div>'+
+      '<div style="color:var(--t2);font-size:0.78rem;margin-top:6px">Checked '+pairs+' pair'+(pairs!==1?'s':'')+' across '+activeNames.length+' active peptides.</div>'+
+      '<div style="color:var(--t2);font-size:0.72rem;margin-top:10px;padding:8px;background:var(--s1);border-radius:8px;line-height:1.5">Not exhaustive — always consult a qualified healthcare provider.</div></div>';
+  }else{
+    body='<div style="margin-bottom:12px;padding:8px 12px;background:var(--s1);border-radius:8px;font-size:0.78rem;color:var(--t2)">Found <strong style="color:var(--gold)">'+warnings.length+' potential interaction'+(warnings.length!==1?'s':'')+' </strong>across '+pairs+' pairs.</div>'+
+      warnings.map(function(w){return '<div style="background:var(--s1);border:1px solid '+(w.danger?'#ef4444':'#d97706')+';border-radius:10px;padding:12px;margin-bottom:10px">'+
+        '<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><span style="font-size:1.1rem">'+(w.danger?'🚨':'⚠️')+'</span>'+
+        '<span style="font-weight:700;color:'+(w.danger?'#ef4444':'#f59e0b')+';font-size:0.9rem">'+w.a+' + '+w.b+'</span>'+
+        (w.danger?'<span style="background:#ef4444;color:#fff;font-size:0.65rem;padding:2px 6px;border-radius:4px;font-weight:700">HIGH RISK</span>':'')+'</div>'+
+        '<div style="font-size:0.8rem;color:var(--text);line-height:1.5">'+w.msg+'</div></div>';}).join('')+
+      '<div style="font-size:0.72rem;color:var(--t2);padding:8px;background:var(--s1);border-radius:8px;line-height:1.4">⚕️ Informational reference only. Always consult a qualified healthcare provider before combining peptides.</div>';
+  }
+  openM(MH('⚠️ Interaction Checker')+body+'<button class="bs" style="width:100%;margin-top:14px" onclick="closeM()">Close</button>');
+}
 
 // INIT
 window._rc={};window._icA='';window._icB='';
