@@ -1,0 +1,3 @@
+# Server-side only — never exposed to the browser
+ANTHROPIC_API_KEY=sk-ant-...
+PEXELS_API_KEY=your-pexels-key
