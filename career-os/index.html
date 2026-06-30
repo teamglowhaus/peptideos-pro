@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="description" content="Career OS — an AI-powered career atelier. Compose recruiter-grade prompts for Claude or ChatGPT. Works fully offline." />
+<title>Career OS — The Career Atelier</title>
+
+<!-- Fonts are bundled locally (offline-first). NO Google Fonts / CDN. -->
+<link rel="stylesheet" href="fonts/fonts.css" />
+<link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+<!-- ============================ SIDEBAR ============================ -->
+<aside class="sidebar">
+  <div class="brand">
+    <div class="seal" id="seal">C</div>
+    <div>
+      <div class="brand-name">The Career<br><em>Atelier</em></div>
+      <div class="brand-edition" id="brandEdition">General Edition</div>
+    </div>
+  </div>
+  <nav id="nav"></nav>
+  <div class="sidebar-foot">
+    <button class="theme-toggle" id="themeToggle">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M12 3v2M12 19v2M5 12H3M21 12h-2M6 6 4.5 4.5M19.5 19.5 18 18M18 6l1.5-1.5M4.5 19.5 6 18"/><circle cx="12" cy="12" r="3.6"/></svg>
+      <span id="themeLabel">Evening edition</span><span class="k">⇧D</span>
+    </button>
+  </div>
+</aside>
+
+<!-- ============================ MAIN ============================ -->
+<main class="main">
+  <header class="topbar">
+    <div class="topbar-left">
+      <button class="menu-btn" id="menuBtn" aria-label="Open navigation">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+      </button>
+      <div>
+        <div class="topbar-title" id="pageTitle">Atelier</div>
+        <div class="topbar-sub" id="pageSub">Your career command room</div>
+      </div>
+    </div>
+    <div class="occ-switch">
+      <button class="occ-btn" id="occBtn" aria-haspopup="menu">
+        <span class="occ-seal"></span><span id="occName">General</span>
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg>
+      </button>
+      <div class="occ-menu" id="occMenu" role="menu"></div>
+    </div>
+  </header>
+
+  <div class="scroll">
+    <!-- DASHBOARD -->
+    <section class="view" id="view-dashboard">
+      <div class="hero">
+        <div class="card hero-main">
+          <div class="hero-watermark" id="heroMark">C</div>
+          <span class="card-idx">№ 00</span>
+          <span class="eyebrow" id="heroEyebrow">Welcome back</span>
+          <h1 id="heroTitle">Built to get you <em>hired</em>.</h1>
+          <p id="heroCopy">Fill in a few details and the Atelier composes a recruiter-grade prompt for you to run in Claude or ChatGPT. No prompt-writing, no guesswork — just your story, sharpened.</p>
+          <div class="hero-cta">
+            <button class="btn btn-primary" data-go="bullets">Begin a draft
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h13M12 6l6 6-6 6"/></svg>
+            </button>
+            <button class="btn btn-ghost" data-go="ats">Audit against a job</button>
+          </div>
+        </div>
+
+        <div class="card cert">
+          <span class="eyebrow">Readiness</span>
+          <div class="ring-wrap">
+            <svg width="146" height="146" viewBox="0 0 146 146">
+              <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="var(--accent)"/><stop offset="100%" stop-color="var(--gold)"/></linearGradient></defs>
+              <circle class="ring-bg" cx="73" cy="73" r="59"/>
+              <circle class="ring-fg" id="ring" cx="73" cy="73" r="59" stroke-dasharray="371" stroke-dashoffset="371"/>
+            </svg>
+            <div class="ring-num"><b id="ringNum">0</b><small>Index</small></div>
+          </div>
+          <h3>Career Readiness</h3>
+          <p id="ringHint">Compose drafts to raise it</p>
+        </div>
+      </div>
+
+      <div class="stat-row" id="statRow"></div>
+
+      <div class="section-head"><span class="no">I.</span><h2>Begin here</h2><span class="rule-dot"></span><a href="#" data-go-first>The full atelier →</a></div>
+      <div class="qs-grid" id="qsGrid"></div>
+    </section>
+
+    <!-- MODULE -->
+    <section class="view" id="view-module" hidden>
+      <div class="mod-shell">
+        <div class="card panel">
+          <span class="card-idx" id="modIdx">№ 01</span>
+          <div class="panel-head">
+            <span class="eyebrow" id="modEyebrow">Module</span>
+            <h2 id="modTitle"></h2>
+            <p id="modIntro"></p>
+          </div>
+          <div id="modForm"></div>
+          <button class="btn btn-primary" id="genBtn" style="width:100%;justify-content:center;margin-top:8px">Compose prompt
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M18.4 5.6l-2.1 2.1M7.7 16.3l-2.1 2.1"/></svg>
+          </button>
+        </div>
+        <div class="card panel" style="position:sticky;top:100px;padding:0">
+          <div id="outShell"></div>
+        </div>
+      </div>
+    </section>
+  </div>
+</main>
+
+<!-- mobile drawer scrim -->
+<div class="scrim" id="scrim"></div>
+<div class="toast" id="toast"></div>
+
+<!-- Load order matters: configs first, then the engine. -->
+<script src="js/occupations.js"></script>
+<script src="js/modules.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
