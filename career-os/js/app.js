@@ -34,13 +34,18 @@ const store = {
   set board(v){ localStorage.setItem('cos_board', JSON.stringify(v)); },
 };
 
-// All navigable tools, grouped in display order: Build (Resume Builder) →
-// the prompt tools (Compose/Apply) → Track (Job Tracker). Custom views are
-// guarded so app.js still works if a phase file isn't loaded.
+// All navigable tools, grouped in display order: Build → Apply → Interview →
+// Track. The Resume Builder leads the Build group; the Job Tracker leads the
+// Track group (inserted just before the first Track prompt tool). Custom views
+// are guarded so app.js still works if a phase file isn't loaded.
 function navModules(){
+  const mods = MODULES.slice();
+  if(typeof TRACKER_MODULE !== 'undefined'){
+    const i = mods.findIndex(m => m.group === 'Track');
+    if(i >= 0) mods.splice(i, 0, TRACKER_MODULE); else mods.push(TRACKER_MODULE);
+  }
   const head = (typeof RESUME_MODULE !== 'undefined') ? [RESUME_MODULE] : [];
-  const tail = (typeof TRACKER_MODULE !== 'undefined') ? [TRACKER_MODULE] : [];
-  return head.concat(MODULES, tail);
+  return head.concat(mods);
 }
 function findNavModule(id){ return navModules().find(m => m.id === id); }
 
