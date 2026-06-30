@@ -59,7 +59,7 @@ body{
   background-color:var(--paper);
   background-image:var(--grain-fine),var(--grain-coarse);
   background-blend-mode:multiply,multiply;
-  -webkit-font-smoothing:antialiased;display:flex;min-height:100vh;
+  -webkit-font-smoothing:antialiased;display:flex;height:100vh;overflow:hidden;
   transition:background-color .4s ease,color .4s ease;
 }
 [data-theme="dark"] body{background-blend-mode:overlay,overlay}
@@ -135,7 +135,7 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 .occ-opt b{font-family:var(--f-display);font-weight:600;font-size:15px;display:block;line-height:1.2}
 .occ-opt small{font-family:var(--f-mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint)}
 
-.scroll{padding:40px 40px 72px;overflow-y:auto}
+.scroll{flex:1;padding:40px 40px 72px;overflow-y:auto}
 .view[hidden]{display:none}
 
 /* ============================ DASHBOARD ============================ */
@@ -234,9 +234,84 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
   .sidebar{position:fixed;left:0;top:0;transform:translateX(-104%);transition:transform .3s cubic-bezier(.22,.61,.36,1);box-shadow:0 30px 54px -22px rgba(15,8,2,.55)}
   body.nav-open .sidebar{transform:translateX(0)}
   body.nav-open .scrim{display:block;position:fixed;inset:0;z-index:50;background:rgba(15,8,2,.5)}
-  .hero,.stat-row,.qs-grid,.mod-shell{grid-template-columns:1fr}
+  .hero,.stat-row,.qs-grid,.mod-shell,.resume-shell{grid-template-columns:1fr}
+  .resume-preview{position:static}
   .scroll,.topbar{padding-left:22px;padding-right:22px}
   .hero-watermark{font-size:180px}
   .occ-btn span:not(.occ-seal){display:none}
 }
-@media(max-width:520px){.stat-row{grid-template-columns:1fr 1fr}}
+@media(max-width:520px){.stat-row{grid-template-columns:1fr 1fr}.rs-grid2{grid-template-columns:1fr}}
+
+/* ============================ RESUME BUILDER ============================ */
+/* Atelier-styled form (left) + a readable, printable résumé sheet (right).
+   The sheet is INK ON NEAR-WHITE — deliberately not parchment — so it reads
+   and prints like a real résumé. */
+.resume-shell{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start}
+@media(max-width:1080px){.resume-shell{grid-template-columns:1fr}}
+.resume-form{display:flex;flex-direction:column;gap:18px;min-width:0}
+.rs-card{padding:22px}
+.rs-card>.rs-head{display:flex;align-items:center;gap:12px;margin-bottom:4px}
+.rs-card .rs-head h3{font-family:var(--f-display);font-weight:600;font-size:18px}
+.rs-card .rs-head .rs-no{font-family:var(--f-display);font-style:italic;font-size:18px;color:var(--gold)}
+.rs-card .rs-head .rule-dot{margin:0 2px}
+.rs-grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px 14px}
+.rs-entry{border:1px dotted var(--gold-line);border-radius:6px;padding:14px;margin-top:14px;background:var(--inset)}
+.rs-entry-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px}
+.rs-entry-head .rs-entry-label{font-family:var(--f-mono);font-size:10px;letter-spacing:.13em;text-transform:uppercase;color:var(--ink-faint)}
+.rs-entry-tools{display:flex;gap:5px}
+.rs-iconbtn{width:28px;height:28px;display:grid;place-items:center;border:1px solid var(--line);border-radius:5px;color:var(--ink-soft);background:var(--surface);transition:.15s}
+.rs-iconbtn:hover:not(:disabled){border-color:var(--gold-line);color:var(--accent)}
+.rs-iconbtn:disabled{opacity:.32;cursor:not-allowed}
+.rs-iconbtn.danger:hover:not(:disabled){border-color:#b0413f;color:#b0413f}
+.rs-add{display:inline-flex;align-items:center;gap:8px;margin-top:14px;padding:10px 14px;border:1px dashed var(--gold-line);border-radius:6px;font-family:var(--f-mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft);background:transparent;transition:.15s;width:100%;justify-content:center}
+.rs-add:hover{border-color:var(--gold);color:var(--accent);border-style:solid}
+
+.resume-preview{position:sticky;top:100px}
+.resume-preview-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+.resume-preview-head .rp-title{font-family:var(--f-mono);font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold)}
+.resume-actions{display:flex;gap:8px;flex-wrap:wrap}
+
+/* the sheet — fixed near-white colors, independent of Day/Evening theme */
+.resume-sheet{
+  background:#fdfcf9;color:#1f1a12;
+  border:1px solid var(--line);border-radius:4px;
+  padding:46px 48px;min-height:62vh;
+  box-shadow:0 24px 50px -28px rgba(15,8,2,.55);
+  font-family:var(--f-ui);line-height:1.5;
+}
+.resume-sheet .r-empty{color:#9a8e76;font-size:13px;text-align:center;padding:48px 10px;font-family:var(--f-mono);letter-spacing:.06em}
+.resume-sheet .r-name{font-family:var(--f-display);font-weight:700;font-size:30px;letter-spacing:-.01em;color:var(--accent);line-height:1.05}
+.resume-sheet .r-target{font-family:var(--f-mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#7a6c50;margin-top:5px}
+.resume-sheet .r-contact{display:flex;flex-wrap:wrap;gap:3px 14px;margin-top:10px;font-size:12px;color:#4f4632}
+.resume-sheet .r-contact span{position:relative}
+.resume-sheet .r-section{margin-top:22px}
+.resume-sheet .r-section h4{font-family:var(--f-display);font-weight:600;font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);border-bottom:1px solid #d9cdb2;padding-bottom:4px;margin-bottom:10px}
+.resume-sheet .r-item{margin-bottom:12px}
+.resume-sheet .r-item:last-child{margin-bottom:0}
+.resume-sheet .r-item-top{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
+.resume-sheet .r-role{font-weight:600;font-size:13.5px;color:#241c0d}
+.resume-sheet .r-org{font-size:12.5px;color:#5a4f38}
+.resume-sheet .r-meta{font-family:var(--f-mono);font-size:10.5px;color:#8a7c5e;white-space:nowrap}
+.resume-sheet .r-summary{font-size:12.5px;color:#3a3322;margin-top:2px}
+.resume-sheet ul{margin:6px 0 0;padding-left:17px}
+.resume-sheet li{font-size:12.5px;color:#3a3322;margin-bottom:2px}
+.resume-sheet .r-inline{font-size:12.5px;color:#3a3322}
+
+/* ============================ PRINT — only the résumé sheet ============================ */
+@media print{
+  @page{margin:0.5in}
+  html,body{background:#fff !important}
+  body{display:block !important;height:auto !important;overflow:visible !important}
+  /* hide ALL app chrome and the non-résumé views */
+  .sidebar,.topbar,.scrim,.toast,.menu-btn,
+  #view-dashboard,#view-module,
+  .resume-form,.resume-preview-head{display:none !important}
+  .scroll{padding:0 !important;overflow:visible !important}
+  .resume-shell{display:block !important}
+  .resume-preview{position:static !important;top:auto !important}
+  .resume-sheet{
+    box-shadow:none !important;border:none !important;border-radius:0 !important;
+    margin:0 !important;padding:0 !important;min-height:0 !important;width:100% !important;
+    background:#fff !important;
+  }
+}

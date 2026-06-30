@@ -24,7 +24,15 @@ const store = {
   // completed-module list (drives the readiness ring + "drafts" stat)
   get done(){ try { return JSON.parse(localStorage.getItem('cos_done') || '[]'); } catch { return []; } },
   markDone(id){ const d = new Set(this.done); d.add(id); localStorage.setItem('cos_done', JSON.stringify([...d])); },
+
+  // Resume Builder data — one namespaced key holds the whole résumé (Phase 3)
+  get resume(){ try { return JSON.parse(localStorage.getItem('cos_resume') || 'null'); } catch { return null; } },
+  set resume(v){ localStorage.setItem('cos_resume', JSON.stringify(v)); },
 };
+
+// All navigable tools: the Resume Builder (custom) followed by the prompt tools.
+function navModules(){ return (typeof RESUME_MODULE !== 'undefined' ? [RESUME_MODULE] : []).concat(MODULES); }
+function findNavModule(id){ return navModules().find(m => m.id === id); }
 
 const $ = s => document.querySelector(s);
 let currentModule = null;
@@ -61,8 +69,9 @@ function markEditionActive(key){
 /* ---- 3. NAV + DASHBOARD -------------------------------------------------- */
 function renderNav(){
   // Group modules by their `group` field, preserving first-seen order.
+  // The Resume Builder is included first (its own "Build" group).
   const groups = {};
-  MODULES.forEach(m => { (groups[m.group] ||= []).push(m); });
+  navModules().forEach(m => { (groups[m.group] ||= []).push(m); });
 
   const dash = `<button class="nav-item active" data-view="dashboard">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>Atelier</button>`;
@@ -109,8 +118,8 @@ function renderRing(){
 }
 
 function renderQuickStart(){
-  // First three modules — the kickoff's "Quick start" grid.
-  $('#qsGrid').innerHTML = MODULES.slice(0,3).map((m,i) => `
+  // Resume Builder first (the flagship), then the next two prompt tools.
+  $('#qsGrid').innerHTML = navModules().slice(0,3).map((m,i) => `
     <div class="card qs-card" data-mod="${m.id}">
       <span class="qs-tag">${m.tag}</span>
       <span class="qs-num">0${i+1}</span>
@@ -186,8 +195,12 @@ function generate(){
   renderStats(); renderRing();
 }
 
-function copyPrompt(text){
-  const done = () => toast('Copied to clipboard');
+function copyPrompt(text){ copyText(text, 'Copied to clipboard'); }
+
+// Generic clipboard copy with an offline (file://) fallback. Reused by the
+// prompt composer and the Resume Builder's "Copy text" export.
+function copyText(text, msg){
+  const done = () => toast(msg || 'Copied to clipboard');
   if(navigator.clipboard && navigator.clipboard.writeText){
     navigator.clipboard.writeText(text).then(done).catch(() => fallbackCopy(text, done));
   } else { fallbackCopy(text, done); }
@@ -205,6 +218,7 @@ function fallbackCopy(text, done){
 function showView(name){
   $('#view-dashboard').hidden = name !== 'dashboard';
   $('#view-module').hidden    = name !== 'module';
+  $('#view-resume').hidden    = name !== 'resume';
   if(name === 'dashboard'){
     $('#pageTitle').textContent = 'Atelier';
     $('#pageSub').textContent   = OCCUPATIONS[store.occ].tagline;
@@ -214,8 +228,10 @@ function showView(name){
 }
 function setActiveNav(el){ document.querySelectorAll('.nav-item').forEach(n => n.classList.toggle('active', n === el)); }
 function navTo(mod){
+  if(!mod) return;
   setActiveNav(document.querySelector(`.nav-item[data-mod="${mod.id}"]`));
-  renderModule(mod);
+  if(mod.custom && mod.id === 'resume'){ renderResume(); showView('resume'); }
+  else renderModule(mod);
   closeDrawer();
 }
 function toast(m){ const t = $('#toast'); t.textContent = m; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 1900); }
@@ -229,12 +245,12 @@ document.addEventListener('click', e => {
   const nav = e.target.closest('[data-view],[data-mod]');
   if(nav){
     if(nav.dataset.view === 'dashboard'){ setActiveNav(nav); showView('dashboard'); closeDrawer(); }
-    else if(nav.dataset.mod){ navTo(MODULES.find(x => x.id === nav.dataset.mod)); }
+    else if(nav.dataset.mod){ navTo(findNavModule(nav.dataset.mod)); }
   }
   // hero / section CTAs
   const go = e.target.closest('[data-go]');
-  if(go){ navTo(MODULES.find(x => x.id === go.dataset.go)); }
-  if(e.target.closest('[data-go-first]')){ e.preventDefault(); navTo(MODULES[0]); }
+  if(go){ navTo(findNavModule(go.dataset.go)); }
+  if(e.target.closest('[data-go-first]')){ e.preventDefault(); navTo(navModules()[0]); }
 
   // occupation switcher open/close + selection
   if(e.target.closest('#occBtn')) $('#occMenu').classList.toggle('open');
@@ -285,4 +301,5 @@ function escapeAttr(s){ return String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','
   applyOccupation(store.occ);   // sets accent + edition-aware text, renders quick-start
   renderRing();
   bindStaticEvents();
+  initResumeBuilder();          // Phase 3 — binds the Resume Builder's events once
 })();

@@ -90,6 +90,24 @@
       <div class="qs-grid" id="qsGrid"></div>
     </section>
 
+    <!-- RESUME BUILDER (custom view — Phase 3) -->
+    <section class="view" id="view-resume" hidden>
+      <div class="resume-shell">
+        <div class="resume-form" id="resumeForm"></div>
+        <div class="resume-preview">
+          <div class="resume-preview-head">
+            <span class="rp-title">Live preview · one page</span>
+            <div class="resume-actions">
+              <button class="btn-sm btn-copy" id="rsPrint"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V2h12v7M6 18H4a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2h-2M6 14h12v8H6z"/></svg>Print / PDF</button>
+              <button class="btn-sm btn-link" id="rsCopy"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="9" y="9" width="11" height="11" rx="1.5"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>Copy text</button>
+              <button class="btn-sm btn-link" id="rsDoc"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m0 0 4-4m-4 4-4-4M5 21h14"/></svg>Download .doc</button>
+            </div>
+          </div>
+          <div class="resume-sheet" id="resumeSheet"></div>
+        </div>
+      </div>
+    </section>
+
     <!-- MODULE -->
     <section class="view" id="view-module" hidden>
       <div class="mod-shell">
@@ -120,6 +138,7 @@
 <!-- Load order matters: configs first, then the engine. -->
 <script src="js/occupations.js"></script>
 <script src="js/modules.js"></script>
+<script src="js/resume.js"></script>
 <script src="js/app.js"></script>
 </body>
 </html>
