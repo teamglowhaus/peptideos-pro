@@ -95,6 +95,10 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 .brand-name em{font-style:italic;font-weight:500;color:var(--accent);transition:color .4s ease}
 .brand-edition{font-family:var(--f-mono);font-size:9.5px;letter-spacing:.15em;text-transform:uppercase;color:var(--ink-faint);margin-top:5px}
 
+/* The nav scrolls internally so a long tool list never pushes the sidebar past
+   100vh (which would otherwise make the whole window scroll). min-height:0 is
+   required for a flex child to be allowed to shrink and scroll. */
+#nav{flex:1 1 auto;min-height:0;overflow-y:auto;overflow-x:hidden;margin:0 -6px;padding:0 6px}
 .nav-group{margin-top:20px}
 .nav-label{font-family:var(--f-mono);font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-faint);padding:0 12px 9px;display:flex;align-items:center;gap:8px}
 .nav-label::after{content:"";height:0;flex:1;border-top:1px dotted var(--line)}
@@ -349,6 +353,86 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 .btn-danger{background:transparent;border:1px solid var(--line);color:#a8423f;font-family:var(--f-ui);font-size:13px;font-weight:500;padding:10px 16px;border-radius:5px;transition:.15s}
 .btn-danger:hover{border-color:#a8423f;background:#a8423f12}
 
+/* ============================ SIDEBAR FOOTER NAV (Bonuses/Help/Settings) ==== */
+.foot-nav{display:flex;flex-direction:column;gap:1px;margin-bottom:8px}
+.foot-link{display:flex;align-items:center;gap:12px;width:100%;padding:8px 12px;border-radius:6px;color:var(--ink-soft);font-size:13.5px;text-align:left;position:relative;transition:.16s}
+.foot-link svg{width:15px;height:15px;flex-shrink:0;opacity:.7}
+.foot-link:hover{background:var(--accent-soft);color:var(--ink)}
+.foot-link.active{color:var(--accent);font-weight:500;background:var(--accent-soft)}
+.foot-link.active::before{content:"";position:absolute;left:0;top:7px;bottom:7px;width:2px;background:var(--accent);border-radius:2px}
+.foot-link.active svg{opacity:1}
+
+/* ============================ SETTINGS ============================ */
+.settings-wrap{display:flex;flex-direction:column;gap:20px;max-width:740px}
+.set-card{padding:24px 26px}
+.set-row{display:flex;align-items:center;justify-content:space-between;gap:24px;padding:6px 0}
+.set-row.col{flex-direction:column;align-items:stretch;gap:14px}
+.set-label{max-width:42ch}
+.set-label b{font-family:var(--f-display);font-weight:600;font-size:15.5px;display:block}
+.set-label span{font-size:13px;color:var(--ink-soft);display:block;margin-top:2px;line-height:1.45}
+.set-card .rule{margin:16px 0}
+.seg-group{display:inline-flex;border:1px solid var(--line);border-radius:6px;overflow:hidden;flex-shrink:0;background:var(--inset)}
+.seg{padding:9px 15px;font-family:var(--f-ui);font-size:13px;color:var(--ink-soft);background:transparent;white-space:nowrap;transition:.15s;border-right:1px solid var(--line)}
+.seg:last-child{border-right:0}
+.seg:hover:not(.is-on){color:var(--ink);background:var(--accent-soft)}
+.seg.is-on{background:var(--accent);color:#F4EDDC;font-weight:500}
+.edpick-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px}
+.edpick{display:flex;align-items:center;gap:10px;padding:11px 13px;border:1px solid var(--line);border-radius:7px;background:var(--inset);text-align:left;transition:.15s}
+.edpick:hover{border-color:var(--gold-line)}
+.edpick.is-on{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-line)}
+.edpick-sw{width:20px;height:20px;border-radius:5px;flex-shrink:0;box-shadow:inset 0 0 0 1px var(--gold-line)}
+.edpick-nm{font-family:var(--f-display);font-weight:600;font-size:14.5px}
+
+/* ============================ HELP ============================ */
+.help-wrap{display:flex;flex-direction:column;gap:20px;max-width:760px}
+.help-card{padding:26px 28px}
+.help-hero .eyebrow{display:block;margin-bottom:8px}
+.help-hero h2{font-family:var(--f-display);font-weight:600;font-size:26px;letter-spacing:-.01em;margin-bottom:18px}
+.help-steps{list-style:none;display:flex;flex-direction:column;gap:14px}
+.help-steps li{display:flex;gap:14px;align-items:flex-start}
+.help-steps .hs-no{width:28px;height:28px;flex-shrink:0;display:grid;place-items:center;border-radius:50%;border:1px solid var(--gold-line);font-family:var(--f-display);font-weight:600;font-size:14px;color:var(--accent)}
+.help-steps b{font-family:var(--f-display);font-weight:600;font-size:15.5px}
+.help-steps p{font-size:13.5px;color:var(--ink-soft);margin-top:2px;line-height:1.5}
+.faq{border-bottom:1px dotted var(--line);padding:4px 0}
+.faq summary{cursor:pointer;list-style:none;padding:12px 0;font-family:var(--f-display);font-weight:600;font-size:15.5px;display:flex;align-items:center;gap:10px}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::before{content:"+";font-family:var(--f-mono);color:var(--accent);font-size:16px;width:14px}
+.faq[open] summary::before{content:"–"}
+.faq p{font-size:14px;color:var(--ink-soft);line-height:1.6;padding:0 0 14px 24px}
+.help-note{font-size:14px;color:var(--ink-soft);line-height:1.6}
+.help-note code{font-family:var(--f-mono);font-size:12.5px;background:var(--inset);padding:1px 6px;border-radius:4px;color:var(--accent)}
+
+/* ============================ BONUSES ============================ */
+.bonus-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;align-items:start}
+@media(max-width:880px){.bonus-grid{grid-template-columns:1fr}}
+.bonus-card{padding:0;overflow:hidden}
+.bonus-card>summary{cursor:pointer;list-style:none;padding:22px 24px;position:relative}
+.bonus-card>summary::-webkit-details-marker{display:none}
+.bonus-tag{font-family:var(--f-mono);font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-faint);border:1px solid var(--line);padding:3px 8px;border-radius:3px}
+.bonus-card h3{font-family:var(--f-display);font-weight:600;font-size:19px;margin:14px 0 6px;letter-spacing:-.005em}
+.bonus-card>summary>p{font-size:13.5px;color:var(--ink-soft);line-height:1.5}
+.bonus-open{display:inline-block;margin-top:12px;font-family:var(--f-mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent)}
+.bonus-card[open] .bonus-open{display:none}
+.bonus-body{position:relative;border-top:1px dotted var(--line);padding:18px 24px 22px}
+.bonus-copy{position:absolute;top:14px;right:18px}
+.bonus-body pre{font-family:var(--f-mono);font-size:11.5px;line-height:1.7;color:var(--ink-soft);white-space:pre-wrap;max-height:420px;overflow:auto;margin-top:6px}
+
+/* ============================ FONT SIZE (Settings → Large) ============================ */
+[data-fontsize="large"]{
+  --fs-body:16.5px; --fs-input:16.5px;
+}
+[data-fontsize="large"] body{font-size:15.5px}
+[data-fontsize="large"] .field input,[data-fontsize="large"] .field textarea{font-size:16.5px}
+[data-fontsize="large"] .panel-head p,[data-fontsize="large"] .module-head p{font-size:16px}
+[data-fontsize="large"] .out-empty p{font-size:15px}
+[data-fontsize="large"] .prompt-raw pre{font-size:13px}
+[data-fontsize="large"] .hero-main p{font-size:17px}
+[data-fontsize="large"] .qs-card p,[data-fontsize="large"] .tcard .tc-company{font-size:15px}
+[data-fontsize="large"] .resume-sheet{font-size:15px}
+[data-fontsize="large"] .resume-sheet .r-summary,[data-fontsize="large"] .resume-sheet li,[data-fontsize="large"] .resume-sheet .r-inline{font-size:14px}
+[data-fontsize="large"] .faq p,[data-fontsize="large"] .help-note,[data-fontsize="large"] .set-label span{font-size:15px}
+[data-fontsize="large"] .bonus-body pre{font-size:13px}
+
 /* ============================ PRINT — only the résumé sheet ============================ */
 @media print{
   @page{margin:0.5in}
@@ -356,7 +440,7 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
   body{display:block !important;height:auto !important;overflow:visible !important}
   /* hide ALL app chrome and the non-résumé views */
   .sidebar,.topbar,.scrim,.toast,.menu-btn,.modal,
-  #view-dashboard,#view-module,#view-tracker,
+  #view-dashboard,#view-module,#view-tracker,#view-settings,#view-help,#view-bonuses,
   .resume-form,.resume-preview-head{display:none !important}
   .scroll{padding:0 !important;overflow:visible !important}
   .resume-shell{display:block !important}

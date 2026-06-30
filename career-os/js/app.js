@@ -17,9 +17,17 @@ const store = {
   get theme(){ return localStorage.getItem('cos_theme') || 'light'; },
   set theme(v){ localStorage.setItem('cos_theme', v); },
 
+  // --- Settings (Phase 6) — always persisted; these are tiny preferences ---
+  get fontSize(){ return localStorage.getItem('cos_fontsize') || 'comfortable'; },
+  set fontSize(v){ localStorage.setItem('cos_fontsize', v); },
+  // autosave gates whether USER CONTENT (form fields, résumé, board) is written
+  // to disk. Preferences above always persist. Default: on.
+  get autosave(){ return localStorage.getItem('cos_autosave') !== 'off'; },
+  set autosave(v){ localStorage.setItem('cos_autosave', v ? 'on' : 'off'); },
+
   // per-module field values, keyed by module id
   fields(id){ try { return JSON.parse(localStorage.getItem('cos_f_'+id) || '{}'); } catch { return {}; } },
-  saveField(id, k, val){ const f = this.fields(id); f[k] = val; localStorage.setItem('cos_f_'+id, JSON.stringify(f)); },
+  saveField(id, k, val){ if(!this.autosave) return; const f = this.fields(id); f[k] = val; localStorage.setItem('cos_f_'+id, JSON.stringify(f)); },
 
   // completed-module list (drives the readiness ring + "drafts" stat)
   get done(){ try { return JSON.parse(localStorage.getItem('cos_done') || '[]'); } catch { return []; } },
@@ -27,11 +35,14 @@ const store = {
 
   // Resume Builder data — one namespaced key holds the whole résumé (Phase 3)
   get resume(){ try { return JSON.parse(localStorage.getItem('cos_resume') || 'null'); } catch { return null; } },
-  set resume(v){ localStorage.setItem('cos_resume', JSON.stringify(v)); },
+  set resume(v){ if(this.autosave) localStorage.setItem('cos_resume', JSON.stringify(v)); },
 
   // Job Tracker board — one namespaced key holds the whole board (Phase 4)
   get board(){ try { return JSON.parse(localStorage.getItem('cos_board') || 'null'); } catch { return null; } },
-  set board(v){ localStorage.setItem('cos_board', JSON.stringify(v)); },
+  set board(v){ if(this.autosave) localStorage.setItem('cos_board', JSON.stringify(v)); },
+
+  // Wipe all saved user content + preferences (Settings → Clear data)
+  clearAll(){ Object.keys(localStorage).filter(k => k.startsWith('cos_')).forEach(k => localStorage.removeItem(k)); },
 };
 
 // All navigable tools, grouped in display order: Build → Apply → Interview →
@@ -230,11 +241,9 @@ function fallbackCopy(text, done){
 }
 
 /* ---- 6. ROUTER + EVENTS -------------------------------------------------- */
+const VIEWS = ['dashboard','module','resume','tracker','settings','help','bonuses'];
 function showView(name){
-  $('#view-dashboard').hidden = name !== 'dashboard';
-  $('#view-module').hidden    = name !== 'module';
-  $('#view-resume').hidden    = name !== 'resume';
-  $('#view-tracker').hidden   = name !== 'tracker';
+  VIEWS.forEach(v => { const el = $('#view-'+v); if(el) el.hidden = (v !== name); });
   if(name === 'dashboard'){
     $('#pageTitle').textContent = 'Atelier';
     $('#pageSub').textContent   = OCCUPATIONS[store.occ].tagline;
@@ -242,13 +251,22 @@ function showView(name){
   }
   $('.scroll').scrollTop = 0;
 }
-function setActiveNav(el){ document.querySelectorAll('.nav-item').forEach(n => n.classList.toggle('active', n === el)); }
+function setActiveNav(el){ document.querySelectorAll('.nav-item, .foot-link').forEach(n => n.classList.toggle('active', n === el)); }
 function navTo(mod){
   if(!mod) return;
   setActiveNav(document.querySelector(`.nav-item[data-mod="${mod.id}"]`));
   if(mod.custom && mod.id === 'resume'){ renderResume(); showView('resume'); }
   else if(mod.custom && mod.id === 'tracker'){ renderTracker(); showView('tracker'); }
   else renderModule(mod);
+  closeDrawer();
+}
+// Meta views (Settings / Help / Bonuses) and the dashboard — rendered on demand.
+function navToView(name, el){
+  setActiveNav(el || document.querySelector(`[data-view="${name}"]`));
+  if(name === 'settings' && typeof renderSettings === 'function') renderSettings();
+  if(name === 'help'     && typeof renderHelp === 'function')     renderHelp();
+  if(name === 'bonuses'  && typeof renderBonuses === 'function')  renderBonuses();
+  showView(name);
   closeDrawer();
 }
 function toast(m){ const t = $('#toast'); t.textContent = m; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 1900); }
@@ -261,7 +279,7 @@ document.addEventListener('click', e => {
   // nav: dashboard or a module
   const nav = e.target.closest('[data-view],[data-mod]');
   if(nav){
-    if(nav.dataset.view === 'dashboard'){ setActiveNav(nav); showView('dashboard'); closeDrawer(); }
+    if(nav.dataset.view){ navToView(nav.dataset.view, nav); }
     else if(nav.dataset.mod){ navTo(findNavModule(nav.dataset.mod)); }
   }
   // hero / section CTAs
@@ -280,11 +298,16 @@ document.addEventListener('click', e => {
   if(e.target.closest('#scrim'))   closeDrawer();
 });
 
-/* ---- 7. THEME (Day / Evening edition) ------------------------------------ */
+/* ---- 7. THEME + FONT SIZE ------------------------------------------------- */
 function applyTheme(t){
   document.documentElement.dataset.theme = t;
   store.theme = t;
   const lbl = $('#themeLabel'); if(lbl) lbl.textContent = t === 'dark' ? 'Day edition' : 'Evening edition';
+  if(!$('#view-settings')?.hidden && typeof renderSettings === 'function') renderSettings();
+}
+function applyFontSize(v){
+  document.documentElement.dataset.fontsize = v;   // CSS [data-fontsize="large"] scales reading text
+  store.fontSize = v;
 }
 function bindStaticEvents(){
   $('#genBtn').addEventListener('click', generate);
@@ -312,6 +335,7 @@ function escapeAttr(s){ return String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','
 /* ---- 9. INIT ------------------------------------------------------------- */
 (function init(){
   applyTheme(store.theme);
+  applyFontSize(store.fontSize);
   renderNav();
   renderStats();
   renderEditionMenu();
@@ -320,4 +344,5 @@ function escapeAttr(s){ return String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','
   bindStaticEvents();
   initResumeBuilder();          // Phase 3 — binds the Resume Builder's events once
   initJobTracker();             // Phase 4 — binds the Job Tracker's events once
+  if(typeof initExtras === 'function') initExtras();  // Phase 6 — Settings/Help/Bonuses
 })();
