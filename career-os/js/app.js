@@ -28,10 +28,20 @@ const store = {
   // Resume Builder data — one namespaced key holds the whole résumé (Phase 3)
   get resume(){ try { return JSON.parse(localStorage.getItem('cos_resume') || 'null'); } catch { return null; } },
   set resume(v){ localStorage.setItem('cos_resume', JSON.stringify(v)); },
+
+  // Job Tracker board — one namespaced key holds the whole board (Phase 4)
+  get board(){ try { return JSON.parse(localStorage.getItem('cos_board') || 'null'); } catch { return null; } },
+  set board(v){ localStorage.setItem('cos_board', JSON.stringify(v)); },
 };
 
-// All navigable tools: the Resume Builder (custom) followed by the prompt tools.
-function navModules(){ return (typeof RESUME_MODULE !== 'undefined' ? [RESUME_MODULE] : []).concat(MODULES); }
+// All navigable tools, grouped in display order: Build (Resume Builder) →
+// the prompt tools (Compose/Apply) → Track (Job Tracker). Custom views are
+// guarded so app.js still works if a phase file isn't loaded.
+function navModules(){
+  const head = (typeof RESUME_MODULE !== 'undefined') ? [RESUME_MODULE] : [];
+  const tail = (typeof TRACKER_MODULE !== 'undefined') ? [TRACKER_MODULE] : [];
+  return head.concat(MODULES, tail);
+}
 function findNavModule(id){ return navModules().find(m => m.id === id); }
 
 const $ = s => document.querySelector(s);
@@ -219,6 +229,7 @@ function showView(name){
   $('#view-dashboard').hidden = name !== 'dashboard';
   $('#view-module').hidden    = name !== 'module';
   $('#view-resume').hidden    = name !== 'resume';
+  $('#view-tracker').hidden   = name !== 'tracker';
   if(name === 'dashboard'){
     $('#pageTitle').textContent = 'Atelier';
     $('#pageSub').textContent   = OCCUPATIONS[store.occ].tagline;
@@ -231,6 +242,7 @@ function navTo(mod){
   if(!mod) return;
   setActiveNav(document.querySelector(`.nav-item[data-mod="${mod.id}"]`));
   if(mod.custom && mod.id === 'resume'){ renderResume(); showView('resume'); }
+  else if(mod.custom && mod.id === 'tracker'){ renderTracker(); showView('tracker'); }
   else renderModule(mod);
   closeDrawer();
 }
@@ -302,4 +314,5 @@ function escapeAttr(s){ return String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','
   renderRing();
   bindStaticEvents();
   initResumeBuilder();          // Phase 3 — binds the Resume Builder's events once
+  initJobTracker();             // Phase 4 — binds the Job Tracker's events once
 })();
