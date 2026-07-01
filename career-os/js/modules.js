@@ -298,6 +298,225 @@ Deliver:
 Anchor on value delivered, not tenure or need. Keep it collaborative, not combative.`
   },
 
+  {
+    id:"professional-bio", group:"Build", name:"Professional Bio", tag:"Draft",
+    icon:'<circle cx="12" cy="8" r="4"/><path d="M4 20a8 8 0 0 1 16 0"/><path d="M2 12h3M19 12h3"/>',
+    intro:"A polished bio in three lengths — for LinkedIn, a website, or a speaker intro.",
+    fields:[
+      {key:"name", label:"Name & role", type:"input", ph:o=>"Jordan Rivera, "+o.roleEx},
+      {key:"use",  label:"Where it'll be used", type:"input", ph:_=>"e.g. LinkedIn, company site, conference intro"},
+      {key:"highlights", label:"Highlights to include", type:"textarea", ph:_=>"Signature wins, expertise, credentials, a human detail"},
+    ],
+    buildPrompt:(v,o)=>
+`You are a professional bio writer who crafts credible, human bios for ${o.name.toLowerCase()} professionals.
+
+Write a bio for: ${v.name||'[name & role]'}, to be used on ${v.use||'[LinkedIn / website / intro]'}.
+Highlights: ${v.highlights||'[your wins, expertise, credentials, a human detail]'}
+
+Deliver THREE lengths, all in third person:
+1. SHORT (~50 words) — a crisp one-paragraph bio.
+2. MEDIUM (~100 words) — adds proof and specialty.
+3. LONG (~200 words) — full story: what I do, who I help, signature results, credentials, and a closing human note.
+
+Rules: open with a strong identity line (not "X is a…dedicated professional"), lead with value, weave in credible specifics, and keep the voice warm and confident. End the long version with one personable detail.`
+  },
+
+  /* ===================================================================== */
+  /*  RÉSUMÉS — role-specific résumé builders                              */
+  /* ===================================================================== */
+
+  {
+    id:"resume-careerchange", group:"Résumés", name:"Career Change Résumé", tag:"Résumé",
+    icon:'<path d="M4 7h11M10 3 6 7l4 4M20 17H9M14 13l4 4-4 4"/>',
+    intro:"A functional/hybrid résumé that reframes your past for a new field.",
+    fields:[
+      {key:"from", label:"Current field / role", type:"input", ph:_=>"e.g. classroom teacher"},
+      {key:"to",   label:"Target role / field", type:"input", ph:o=>o.roleEx},
+      {key:"exp",  label:"Experience & wins", type:"textarea", ph:_=>"Roles, responsibilities, results, projects"},
+    ],
+    buildPrompt:(v,o)=>
+`You are a career-change résumé writer who gets people hired in new fields without relevant titles.
+
+Build a full résumé moving FROM ${v.from||'[current field]'} TO ${v.to||o.roleEx}.
+My experience: ${v.exp||'[roles, responsibilities, results]'}
+
+Deliver a complete, truthful hybrid résumé:
+1. TARGET TITLE + 3-line summary that frames me for the new field.
+2. CORE SKILLS — the transferable skills that matter in ${v.to||o.roleEx}, in that field's language.
+3. EXPERIENCE — my roles rewritten as achievement bullets emphasizing transferable impact (mark any invented metric with [ ]).
+4. A short "Relevant Projects / Additional Qualifications" section to bridge gaps.
+Explain in one line why the hybrid format helps me here. Keep it honest — reframe, don't fabricate.`
+  },
+
+  {
+    id:"resume-executive", group:"Résumés", name:"Executive Résumé", tag:"Résumé",
+    icon:'<path d="M3 20h18M6 20V10M18 20V10M4 10l8-6 8 6M9 20v-5h6v5"/>',
+    intro:"A board-ready résumé built around leadership scope and P&L impact.",
+    fields:[
+      {key:"role",  label:"Target executive role", type:"input", ph:_=>"e.g. VP of Operations, COO"},
+      {key:"scope", label:"Scope you own", type:"input", ph:_=>"team size, budget/P&L, regions, functions"},
+      {key:"wins",  label:"Signature results", type:"textarea", ph:_=>"Transformations, growth, turnarounds, exits"},
+    ],
+    buildPrompt:(v,o)=>
+`You are an executive résumé writer for C-suite and VP candidates.
+
+Build a senior, board-ready résumé for a ${v.role||'[executive role]'}.
+Scope I own: ${v.scope||'[team, budget/P&L, regions]'}
+Signature results: ${v.wins||'[transformations, growth, turnarounds]'}
+
+Deliver:
+1. EXECUTIVE SUMMARY — a 3–4 line leadership brand statement (identity, scope, signature impact).
+2. CORE COMPETENCIES — 8–10 executive competencies (P&L, org design, strategy, M&A, etc. as relevant).
+3. EXPERIENCE — achievement bullets that lead with business outcomes ($, %, scale) and show scope of leadership, not tasks.
+4. A "Selected Highlights" band of 3 marquee results.
+Tone: confident, understated, quantified. No buzzword soup. Mark invented figures with [ ].`
+  },
+
+  {
+    id:"resume-federal", group:"Résumés", name:"Federal Résumé", tag:"Résumé",
+    icon:'<path d="M3 21h18M5 21V10M19 21V10M4 10l8-5 8 5M9 21v-6M12 21v-6M15 21v-6"/>',
+    intro:"A USAJOBS-style federal résumé that mirrors the announcement.",
+    fields:[
+      {key:"series", label:"Job series / grade (if known)", type:"input", ph:_=>"e.g. 0343, GS-12"},
+      {key:"announce", label:"Duties / announcement text", type:"textarea", ph:_=>"Paste key duties & qualifications from the posting"},
+      {key:"exp", label:"Your experience", type:"textarea", ph:_=>"Roles, dates, hours/week, duties, results"},
+    ],
+    buildPrompt:(v,o)=>
+`You are a federal résumé specialist who writes USAJOBS-compliant résumés that pass HR screening.
+
+Build a federal résumé${v.series?` targeting ${v.series}`:''}.
+Announcement duties/qualifications:
+${v.announce||'[paste key duties & qualifications]'}
+My experience: ${v.exp||'[roles, dates, hours/week, duties, results]'}
+
+Deliver a federal-format résumé:
+1. For each role: Title, Employer, Location, Month/Year–Month/Year, Hours per week, and (if applicable) Salary/Grade — then detailed duty + accomplishment statements.
+2. Mirror the announcement's key words and required competencies explicitly (federal HR matches literally).
+3. Include a "Specialized Experience" paragraph that maps my background to the qualification requirements.
+4. Note anything I must add to be rated eligible (hours, dates, KSAs).
+Federal résumés are detailed and long — do NOT trim to one page. Flag missing items with [ ].`
+  },
+
+  {
+    id:"resume-healthcare", group:"Résumés", name:"Healthcare Résumé", tag:"Résumé",
+    icon:'<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M12 8v8M8 12h8"/>',
+    intro:"A clinical résumé that leads with licensure, units, and outcomes.",
+    fields:[
+      {key:"role", label:"Target role", type:"input", ph:_=>"e.g. ICU Registered Nurse"},
+      {key:"creds", label:"Licenses & certifications", type:"input", ph:_=>"e.g. RN, BSN, ACLS, BLS, CCRN"},
+      {key:"exp", label:"Clinical experience", type:"textarea", ph:_=>"Units, patient population, systems (EHR), results"},
+    ],
+    buildPrompt:(v,o)=>
+`You are a healthcare résumé writer who places clinicians in competitive roles.
+
+Build a clinical résumé for a ${v.role||'[clinical role]'}.
+Licenses/certifications: ${v.creds||'[RN, BSN, ACLS…]'}
+Experience: ${v.exp||'[units, patient population, EHR, results]'}
+
+Deliver:
+1. A LICENSURE & CERTIFICATIONS block up top (this gets read first in healthcare).
+2. SUMMARY — 3 lines framing specialty, setting, and strengths.
+3. CLINICAL EXPERIENCE — bullets naming unit/setting, patient acuity & ratios, systems (e.g. Epic/Cerner), and measurable outcomes (fall rates, satisfaction, throughput).
+4. SKILLS — clinical + technical competencies employers scan for.
+Keep it credible and specifics-driven. Mark any invented number with [ ].`
+  },
+
+  {
+    id:"resume-it", group:"Résumés", name:"IT / Tech Résumé", tag:"Résumé",
+    icon:'<rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8M9 9l-2 2 2 2M15 9l2 2-2 2M12 21v-4"/>',
+    intro:"An impact-first tech résumé tuned for ATS and engineering hiring.",
+    fields:[
+      {key:"role", label:"Target role", type:"input", ph:_=>"e.g. Senior Backend Engineer"},
+      {key:"stack", label:"Tech stack / skills", type:"input", ph:_=>"languages, frameworks, cloud, tools"},
+      {key:"exp", label:"Experience & projects", type:"textarea", ph:_=>"What you built, scale, impact"},
+    ],
+    buildPrompt:(v,o)=>
+`You are a technical résumé writer who gets engineers past ATS and technical screens.
+
+Build a résumé for a ${v.role||'[tech role]'}.
+Stack/skills: ${v.stack||'[languages, frameworks, cloud, tools]'}
+Experience & projects: ${v.exp||'[what you built, scale, impact]'}
+
+Deliver:
+1. SUMMARY — 3 lines: level, domain strengths, signature impact.
+2. TECHNICAL SKILLS — grouped (Languages / Frameworks / Cloud & Infra / Data / Tools) and ATS-friendly.
+3. EXPERIENCE — bullets in "accomplished X by doing Y, measured by Z" form: latency, throughput, uptime, cost, scale, users, deploy frequency.
+4. PROJECTS — 2–3 with stack + outcome.
+Prioritize quantified impact over task lists. Mark invented metrics with [ ].`
+  },
+
+  {
+    id:"resume-teacher", group:"Résumés", name:"Teacher Résumé", tag:"Résumé",
+    icon:'<path d="M3 7l9-4 9 4-9 4-9-4z"/><path d="M21 7v5M7 9v5c0 1 2.2 2.5 5 2.5s5-1.5 5-2.5V9"/>',
+    intro:"An education résumé built on certification, pedagogy, and student outcomes.",
+    fields:[
+      {key:"role", label:"Role & level", type:"input", ph:_=>"e.g. 5th Grade Lead Teacher"},
+      {key:"certs", label:"Certifications & endorsements", type:"input", ph:_=>"e.g. State cert, ESL endorsement"},
+      {key:"exp", label:"Teaching experience", type:"textarea", ph:_=>"Grades/subjects, methods, results, initiatives"},
+    ],
+    buildPrompt:(v,o)=>
+`You are an education résumé writer who helps teachers land the classrooms they want.
+
+Build a résumé for a ${v.role||'[teaching role]'}.
+Certifications/endorsements: ${v.certs||'[state cert, endorsements]'}
+Experience: ${v.exp||'[grades/subjects, methods, results]'}
+
+Deliver:
+1. A CERTIFICATIONS & LICENSURE block near the top.
+2. SUMMARY — 3 lines: level/subject, teaching philosophy in action, signature strength.
+3. TEACHING EXPERIENCE — bullets showing grade/subject, instructional methods (differentiation, SEL, data-driven instruction), and measurable student outcomes (growth %, proficiency, engagement).
+4. SKILLS/HIGHLIGHTS — curriculum, assessment, tech, family engagement, leadership.
+Show classroom impact with specifics. Mark invented numbers with [ ].`
+  },
+
+  {
+    id:"resume-student", group:"Résumés", name:"Student & New-Grad Résumé", tag:"Résumé",
+    icon:'<path d="M4 5a2 2 0 0 1 2-2h11v16H6a2 2 0 0 0-2 2z"/><path d="M17 3v16"/>',
+    intro:"An education-forward résumé that turns projects and internships into proof.",
+    fields:[
+      {key:"target", label:"Target role / field", type:"input", ph:o=>o.roleEx},
+      {key:"edu", label:"Degree, school, grad date", type:"input", ph:_=>"e.g. B.S. Marketing, State U, 2026"},
+      {key:"exp", label:"Projects, internships, activities", type:"textarea", ph:_=>"Coursework, projects, jobs, clubs, leadership"},
+    ],
+    buildPrompt:(v,o)=>
+`You are an early-career résumé coach who helps students and new grads with little formal experience stand out.
+
+Build a résumé targeting ${v.target||o.roleEx}.
+Education: ${v.edu||'[degree, school, grad date]'}
+Experience: ${v.exp||'[projects, internships, jobs, activities]'}
+
+Deliver:
+1. EDUCATION near the top (degree, school, grad date, relevant coursework, honors, GPA if strong).
+2. SUMMARY — 2–3 lines framing potential + strongest proof (no "hardworking recent grad" clichés).
+3. EXPERIENCE & PROJECTS — turn internships, class projects, part-time jobs, and leadership into achievement bullets with results.
+4. SKILLS — the tools and abilities the target role scans for.
+Lead with capability and evidence, not apology for limited experience. Mark invented metrics with [ ].`
+  },
+
+  {
+    id:"resume-military", group:"Résumés", name:"Military Transition Résumé", tag:"Résumé",
+    icon:'<path d="M8 4h8l-1 5a4 4 0 0 1-6 0z"/><path d="M12 13v4M9 21l3-2 3 2"/>',
+    intro:"Translate service experience into civilian language employers understand.",
+    fields:[
+      {key:"service", label:"Branch, rank, MOS/rating", type:"input", ph:_=>"e.g. Army, SSG, 25B"},
+      {key:"target", label:"Target civilian role", type:"input", ph:o=>o.roleEx},
+      {key:"exp", label:"Duties, leadership & results", type:"textarea", ph:_=>"What you led, managed, maintained, achieved"},
+    ],
+    buildPrompt:(v,o)=>
+`You are a military-to-civilian résumé translator who helps service members land civilian roles.
+
+Build a civilian résumé. Background: ${v.service||'[branch, rank, MOS/rating]'}.
+Target civilian role: ${v.target||o.roleEx}
+Duties, leadership & results: ${v.exp||'[what you led, managed, achieved]'}
+
+Deliver:
+1. SUMMARY — 3 lines positioning me for the civilian role (no unexplained acronyms).
+2. TRANSLATION — for each key duty/MOS responsibility, the plain-English civilian equivalent and the transferable skill it proves (leadership, logistics, ops, security, training).
+3. EXPERIENCE — achievement bullets in civilian terms with scope (people led, budget/equipment value, readiness, outcomes).
+4. A short note on how to phrase clearances/awards for a civilian employer.
+Decode ALL jargon. Emphasize leadership and measurable impact. Mark invented figures with [ ].`
+  },
+
   /* ===================================================================== */
   /*  APPLY — outreach & application materials                             */
   /* ===================================================================== */
@@ -854,6 +1073,30 @@ Deliver:
 5. 30-DAY START — the three highest-leverage things to do this month.
 
 Prioritize by impact-per-hour. Be concrete about what "good enough to list" looks like.`
+  },
+
+  {
+    id:"goal-planner", group:"Track", name:"Career Goal Planner", tag:"Plan",
+    icon:'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5"/><path d="M12 3v3M21 12h-3"/>',
+    intro:"Turn a career goal into a dated plan with milestones and weekly actions.",
+    fields:[
+      {key:"now",  label:"Where you are now", type:"input", ph:o=>o.roleEx},
+      {key:"goal", label:"Your goal", type:"input", ph:_=>"e.g. Senior role in 12 months / switch into UX"},
+      {key:"constraints", label:"Constraints & context", type:"textarea", ph:_=>"time per week, timeline, budget, obligations"},
+    ],
+    buildPrompt:(v,o)=>
+`You are a career coach who turns vague ambitions into concrete, dated plans for ${o.name.toLowerCase()} professionals.
+
+Where I am: ${v.now||o.roleEx}. My goal: ${v.goal||'[your goal]'}.
+Constraints: ${v.constraints||'(assume ~5 hrs/week; ask nothing — make reasonable assumptions)'}
+
+Deliver:
+1. GOAL, SHARPENED — restate my goal as a SMART goal (specific, measurable, time-bound).
+2. MILESTONE MAP — 30 / 90 / 180 / 365-day milestones, each with a clear success signal.
+3. SKILLS & PROOF — what to learn or demonstrate at each stage, and how to show it.
+4. WEEKLY CADENCE — a realistic weekly routine given my constraints.
+5. METRICS & CHECK-INS — what to track and when to course-correct.
+Keep it motivating but grounded. Front-load the highest-leverage moves.`
   },
 
 ];

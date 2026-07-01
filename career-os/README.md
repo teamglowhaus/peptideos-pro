@@ -4,8 +4,9 @@ A premium, **fully offline** career toolkit. Open `index.html` in any modern
 browser and it just works — no install, no build step, no framework, no server,
 no account, no internet required.
 
-Career OS gives you 33 career tools, a résumé builder, and a job tracker, all
-wrapped in an editorial "atelier" design with five occupation editions.
+Career OS gives you 40+ career tools (including eight role-specific résumés), a
+résumé builder, and a job tracker, all wrapped in an editorial "atelier" design
+with five occupation editions.
 
 ---
 
@@ -16,11 +17,14 @@ wrapped in an editorial "atelier" design with five occupation editions.
   export to **PDF (print), plain text, and Word (.doc)**. Autosaves.
 - **Job Tracker** — a drag-and-drop Kanban board (Wishlist → Applied →
   Interview → Offer → Rejected) with search, filter, and autosave.
-- **33 AI prompt tools** across **Build · Apply · Interview · Track**. Each one
-  turns a few inputs into an expert-grade prompt you copy into Claude or
-  ChatGPT — you never have to write the prompt yourself.
-- **Bonuses** — power verbs, ATS rules, message templates, checklists, salary
-  and LinkedIn guides.
+- **40+ AI prompt tools** across **Build · Résumés · Apply · Interview · Track**.
+  Each turns a few inputs into an expert-grade prompt you copy into Claude or
+  ChatGPT — you never have to write the prompt yourself. Includes eight
+  role-specific résumés (Career Change, Executive, Federal, Healthcare, IT/Tech,
+  Teacher, Student/New-Grad, Military Transition).
+- **Bonuses** — 500 power verbs, an achievement library, résumé/ATS/interview/
+  LinkedIn checklists, networking + professional email templates, salary
+  research & negotiation scripts, and a career planning workbook.
 - **Help Center** and real, persisted **Settings**.
 
 ### How the prompt tools work

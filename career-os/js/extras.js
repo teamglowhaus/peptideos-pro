@@ -131,20 +131,50 @@ function renderHelp(){
 /* ---- BONUSES LIBRARY ----------------------------------------------------- */
 /* Real, useful, offline resources. Each opens to reveal copy-ready content.   */
 const BONUSES = [
-  { title:"120 Résumé Power Verbs", tag:"Reference",
-    intro:"Stronger openings for every bullet, grouped by what you did.",
+  { title:"500 Power Verbs", tag:"Reference",
+    intro:"Twenty categories of strong résumé verbs. Never open two bullets the same way.",
     body:
-`LED / OWNED: Led, Directed, Spearheaded, Orchestrated, Owned, Championed, Oversaw, Drove, Headed, Piloted
-BUILT / CREATED: Built, Designed, Developed, Launched, Established, Engineered, Architected, Formulated, Devised, Produced
-IMPROVED: Improved, Optimized, Streamlined, Accelerated, Strengthened, Upgraded, Refined, Overhauled, Modernized, Simplified
-GREW: Grew, Increased, Expanded, Scaled, Boosted, Generated, Drove, Maximized, Doubled, Tripled
-SAVED / CUT: Reduced, Cut, Saved, Eliminated, Decreased, Consolidated, Trimmed, Lowered, Minimized, Reclaimed
-DELIVERED: Delivered, Achieved, Completed, Executed, Exceeded, Surpassed, Hit, Shipped, Finalized, Secured
-LED PEOPLE: Mentored, Coached, Trained, Supervised, Onboarded, Developed, Guided, Unified, Motivated, Empowered
-SOLVED: Resolved, Diagnosed, Troubleshot, Untangled, Fixed, Remediated, Prevented, Mitigated, Debugged, Addressed
-INFLUENCED: Negotiated, Persuaded, Aligned, Partnered, Advised, Influenced, Secured, Advocated, Lobbied, Brokered
-ANALYZED: Analyzed, Audited, Assessed, Forecasted, Modeled, Evaluated, Measured, Mapped, Researched, Quantified
-(Use a different verb in every bullet — repetition reads as autopilot.)` },
+`LEADERSHIP & OWNERSHIP: Led, Directed, Spearheaded, Orchestrated, Owned, Championed, Oversaw, Drove, Headed, Piloted, Chaired, Governed, Commanded, Mobilized, Galvanized, Steered, Presided, Founded, Instituted, Pioneered, Marshaled, Helmed, Stewarded, Established, Initiated
+
+BUILDING & CREATING: Built, Created, Designed, Developed, Launched, Engineered, Architected, Formulated, Devised, Produced, Constructed, Assembled, Crafted, Composed, Forged, Prototyped, Authored, Originated, Shaped, Fabricated, Generated, Conceived, Drafted, Modeled, Configured
+
+IMPROVING & OPTIMIZING: Improved, Optimized, Streamlined, Enhanced, Refined, Upgraded, Overhauled, Modernized, Simplified, Standardized, Automated, Strengthened, Elevated, Revitalized, Sharpened, Tuned, Perfected, Retooled, Reengineered, Consolidated, Harmonized, Rationalized, Fortified, Transformed, Renovated
+
+GROWTH & INCREASE: Grew, Increased, Expanded, Scaled, Boosted, Amplified, Accelerated, Multiplied, Doubled, Tripled, Maximized, Advanced, Extended, Broadened, Propelled, Escalated, Compounded, Widened, Ramped, Enlarged, Surged, Bolstered, Augmented, Uplifted, Catapulted
+
+REVENUE & COST: Generated, Earned, Captured, Monetized, Grossed, Netted, Reduced, Cut, Saved, Lowered, Trimmed, Slashed, Decreased, Minimized, Eliminated, Recouped, Recovered, Reclaimed, Contained, Curbed, Offset, Funded, Financed, Budgeted, Forecasted
+
+DELIVERING & ACHIEVING: Delivered, Achieved, Completed, Executed, Exceeded, Surpassed, Attained, Secured, Won, Shipped, Finalized, Fulfilled, Accomplished, Realized, Landed, Clinched, Closed, Reached, Notched, Sustained, Outperformed, Yielded, Banked, Nailed, Hit
+
+MANAGING PEOPLE & MENTORING: Managed, Mentored, Coached, Trained, Supervised, Onboarded, Cultivated, Guided, Empowered, Motivated, Unified, Inspired, Fostered, Nurtured, Recruited, Hired, Staffed, Delegated, Counseled, Upskilled, Retained, Aligned, Energized, Enabled, Groomed
+
+PROBLEM-SOLVING & FIXING: Solved, Resolved, Diagnosed, Troubleshot, Fixed, Remediated, Debugged, Untangled, Prevented, Mitigated, Addressed, Corrected, Repaired, Restored, Rectified, Reconciled, Averted, Defused, Neutralized, Countered, Patched, Salvaged, Overcame, Cracked, Redressed
+
+COMMUNICATION & PERSUASION: Presented, Communicated, Persuaded, Influenced, Negotiated, Pitched, Articulated, Conveyed, Advocated, Lobbied, Briefed, Educated, Clarified, Translated, Documented, Reported, Wrote, Edited, Publicized, Promoted, Evangelized, Facilitated, Moderated, Narrated, Corresponded
+
+ANALYSIS & RESEARCH: Analyzed, Researched, Assessed, Evaluated, Audited, Investigated, Examined, Measured, Quantified, Benchmarked, Projected, Mapped, Segmented, Surveyed, Tested, Validated, Verified, Calculated, Interpreted, Synthesized, Appraised, Inspected, Profiled, Tracked, Monitored
+
+TECHNICAL & ENGINEERING: Programmed, Coded, Deployed, Integrated, Migrated, Scripted, Provisioned, Implemented, Installed, Maintained, Refactored, Instrumented, Containerized, Virtualized, Hardened, Encrypted, Networked, Compiled, Rearchitected, Automated, Debugged, Configured, Administered, Patched, Documented
+
+OPERATIONS & PROCESS: Coordinated, Operated, Administered, Scheduled, Dispatched, Processed, Expedited, Systematized, Handled, Regulated, Balanced, Allocated, Arranged, Prioritized, Sequenced, Synchronized, Routed, Logged, Ran, Facilitated, Managed, Supervised, Executed, Standardized, Oversaw
+
+SALES & BUSINESS DEVELOPMENT: Sold, Prospected, Closed, Negotiated, Upsold, Cross-sold, Acquired, Renewed, Converted, Qualified, Sourced, Signed, Positioned, Partnered, Brokered, Penetrated, Won, Retained, Expanded, Exceeded, Pitched, Cultivated, Onboarded, Forecasted, Landed
+
+MARKETING & BRAND: Marketed, Branded, Positioned, Launched, Promoted, Advertised, Publicized, Segmented, Targeted, Personalized, Optimized, Ranked, Grew, Engaged, Converted, Nurtured, Amplified, Curated, Storyboarded, Rebranded, Messaged, Campaigned, Localized, Syndicated, Activated
+
+PLANNING & STRATEGY: Planned, Strategized, Forecasted, Roadmapped, Prioritized, Aligned, Scoped, Charted, Envisioned, Blueprinted, Modeled, Projected, Budgeted, Allocated, Positioned, Structured, Sequenced, Balanced, Anticipated, Formulated, Defined, Set, Established, Framed, Calibrated
+
+CHANGE & TRANSFORMATION: Transformed, Modernized, Revamped, Restructured, Reorganized, Realigned, Reengineered, Digitized, Integrated, Consolidated, Merged, Migrated, Transitioned, Standardized, Centralized, Decentralized, Rebuilt, Redesigned, Repositioned, Revitalized, Overhauled, Streamlined, Unified, Scaled, Turned around
+
+QUALITY, RISK & COMPLIANCE: Ensured, Enforced, Audited, Inspected, Verified, Validated, Certified, Standardized, Documented, Complied, Safeguarded, Secured, Protected, Reduced, Mitigated, Controlled, Monitored, Reviewed, Reconciled, Corrected, Prevented, Assured, Accredited, Governed, Regulated
+
+TEACHING, CARE & SUPPORT: Taught, Instructed, Trained, Coached, Mentored, Facilitated, Educated, Advised, Counseled, Guided, Supported, Assisted, Cared, Treated, Rehabilitated, Assessed, Diagnosed, Administered, Monitored, Comforted, Empowered, Tutored, Demonstrated, Explained, Nurtured
+
+ORGANIZATION & ADMINISTRATION: Organized, Cataloged, Compiled, Consolidated, Filed, Recorded, Maintained, Updated, Processed, Arranged, Coordinated, Scheduled, Tracked, Logged, Documented, Archived, Systematized, Standardized, Streamlined, Prepared, Reconciled, Balanced, Audited, Verified, Managed
+
+INITIATIVE & IMPACT: Initiated, Launched, Pioneered, Introduced, Established, Founded, Instituted, Championed, Drove, Led, Delivered, Achieved, Improved, Increased, Reduced, Created, Built, Solved, Won, Exceeded, Transformed, Accelerated, Generated, Secured, Spearheaded
+
+RULE: never start two bullets with the same verb, and never with "Responsible for". Match the verb to the result that follows it.` },
 
   { title:"ATS Formatting Rules", tag:"Checklist",
     intro:"What keeps your résumé readable to applicant-tracking software.",
@@ -209,8 +239,8 @@ DURING
 WITHIN 24 HOURS
 - Send a tailored thank-you that references something specific you discussed.` },
 
-  { title:"Salary Research Toolkit", tag:"Guide",
-    intro:"Know your number before you ever say it.",
+  { title:"Salary Research & Negotiation Scripts", tag:"Guide",
+    intro:"Know your number — and the exact words to hold it.",
     body:
 `WHERE TO LOOK (triangulate at least 3)
 - Levels.fyi (tech), Glassdoor, LinkedIn Salary, Payscale, Salary.com.
@@ -231,7 +261,27 @@ BUILD YOUR RANGE
 WHEN ASKED "WHAT ARE YOUR EXPECTATIONS?"
 "Based on the role and market data for this level, I'm targeting [range]. I'm sure we can find a number that works if it's the right fit."
 
-ALWAYS counter once, politely. Most first offers have room. Use the Salary Negotiation Script tool for the exact words.` },
+ALWAYS counter once, politely. Most first offers have room.
+
+--- NEGOTIATION SCRIPTS (swap the [brackets]) ---
+
+COUNTER (email)
+"Thank you so much — I'm excited about [role] and the team. Based on the scope and market data for this level, I was targeting [$target]. Is there flexibility to close that gap? I'm confident we can find a number that works."
+
+WHEN THEY NAME A NUMBER FIRST (verbal)
+"I appreciate that. Given [my specialization / competing interest / the responsibilities], I was hoping for something closer to [$target]. How much room is there?" — then stop talking.
+
+"THAT'S THE MAX WE CAN DO"
+"I understand budgets have limits. If base is fixed, could we look at a signing bonus, an earlier review, extra PTO, or [title]? I want to make this work."
+
+"WE DON'T USUALLY NEGOTIATE"
+"Totally understand. I'm weighing this seriously, and [$target] would make it an easy yes. Is there anything you can do?"
+
+ACCEPTING
+"That works for me — I'm thrilled to accept. Could you send the written offer so I can review and sign? Looking forward to starting on [date]."
+
+DECLINING GRACEFULLY
+"Thank you for the offer and your time. After careful thought I've decided to pursue another opportunity that's a closer fit right now. I'd love to stay in touch."` },
 
   { title:"LinkedIn Profile Audit", tag:"Checklist",
     intro:"A 12-point pass to make recruiters stop scrolling.",
@@ -257,6 +307,143 @@ PROOF & ACTIVITY
 
 SETTINGS
 12. "Open to work" set (recruiters-only if discreet); location and headline match your target market.` },
+
+  { title:"Achievement Library", tag:"Reference",
+    intro:"Ready-made achievement bullets by function — swap the [numbers] for yours.",
+    body:
+`LEADERSHIP / MANAGEMENT
+- Led a team of [8] to deliver [project] [2] weeks ahead of schedule and [10]% under budget.
+- Built and scaled a department from [3] to [15] while cutting attrition [30]%.
+- Turned around an underperforming unit, lifting output [40]% in [two quarters].
+
+REVENUE / SALES
+- Grew territory revenue [35]% YoY ([$1.2M] → [$1.6M]) by [reworking the pipeline].
+- Closed [$800K] in new business in [6 months], [120]% of quota.
+- Improved renewal rate from [78]% to [91]% via a proactive check-in cadence.
+
+COST / EFFICIENCY
+- Cut operating costs [$250K]/yr by renegotiating [vendor contracts].
+- Reduced process cycle time [45]% by automating [manual reporting].
+- Eliminated [12] hrs/week of rework through a new [QA checklist].
+
+CUSTOMER / SERVICE
+- Raised CSAT from [4.1] to [4.7] across [3,000+] monthly tickets.
+- Cut average response time [60]% while volume grew [25]%.
+
+OPERATIONS / PROJECT
+- Delivered [15] concurrent projects at [98]% on-time with zero budget overruns.
+- Standardized [onboarding], cutting ramp time from [6] to [3] weeks.
+
+TECHNICAL
+- Reduced page load [2.4s] → [0.8s], lifting conversion [12]%.
+- Cut cloud spend [$40K]/yr by right-sizing [infrastructure].
+- Improved deploy frequency from [weekly] to [daily] with a new CI/CD pipeline.
+
+HEALTHCARE
+- Maintained a [0.9] fall rate per [1,000] patient-days on a [24]-bed unit.
+- Precepted [11] new-grad nurses, cutting orientation time [30]%.
+
+EDUCATION
+- Raised student proficiency [22]% through data-driven differentiation.
+- Secured [$15K] in grants for [classroom technology].
+
+FORMULA: Action verb + what you did + tool/method + measurable result. If you lack a number, estimate conservatively and mark it [like this] until confirmed.` },
+
+  { title:"Résumé Checklist", tag:"Checklist",
+    intro:"A final pass before you hit submit.",
+    body:
+`CONTENT
+- Every bullet starts with a strong, varied verb (no "Responsible for").
+- At least half of your bullets carry a number (%, $, time, scale, quality).
+- Top third of page 1 shows your strongest, most relevant proof.
+- Summary is specific to the target role — not a generic objective.
+- Keywords from the job description appear where they're true.
+- No duties-only lines; every bullet implies a result.
+
+LENGTH & FORMAT
+- 1 page (<10 yrs experience) or 2 pages (senior); federal is the exception.
+- Consistent dates ("Jan 2022 – Present"), tenses, and punctuation.
+- One clean, ATS-safe font; single column; no tables/text boxes/images.
+- Adequate white space; nothing crammed edge to edge.
+
+PROOF & POLISH
+- Contact info correct; LinkedIn URL customized.
+- File saved as PDF named "First-Last-Resume.pdf".
+- Zero typos — read it backwards, and out loud, once.
+- Tailored to THIS role, not a one-size-fits-all copy.
+
+REMOVE
+- References line ("available on request" is assumed).
+- Photo, birthdate, marital status (US résumés).
+- High-school info once you have a degree.
+- Clichés: "hardworking", "team player", "detail-oriented" (show it instead).` },
+
+  { title:"Professional Email Templates", tag:"Templates",
+    intro:"Copy, fill the [brackets], send. Covers the whole search.",
+    body:
+`APPLICATION FOLLOW-UP
+Subject: Following up — [Role], [Your Name]
+Hi [Name], I applied for [role] on [date] and wanted to reaffirm my interest. [One line: strongest relevant proof.] I'd welcome the chance to discuss how I can help [team/goal]. Thank you for your time.
+
+THANK-YOU AFTER INTERVIEW
+Subject: Thank you — [Role]
+Hi [Name], thank you for the conversation today. I especially enjoyed [specific topic]. It reinforced my excitement about [role] — [one line tying your strength to their need]. Happy to share anything else that would help.
+
+ACCEPTING AN OFFER
+Subject: Offer Acceptance — [Your Name]
+Hi [Name], I'm delighted to accept the [role] offer at [salary/terms]. Thank you for the opportunity and your confidence. Please send any onboarding paperwork — I look forward to starting on [date].
+
+DECLINING AN OFFER
+Hi [Name], thank you for the offer and for the time your team invested. After careful consideration I've decided to accept another opportunity that's a closer fit right now. I hope our paths cross again — I have great respect for [company].
+
+RESCHEDULING AN INTERVIEW
+Hi [Name], I'm looking forward to our conversation. Something unavoidable has come up at our scheduled time — could we move to [option A] or [option B]? Apologies for the shuffle, and thank you for your flexibility.
+
+REQUESTING A REFERENCE
+Hi [Name], I'm applying for [role] and would be grateful to list you as a reference — you saw my work on [project] firsthand. If you're comfortable, I'll send the role details and a couple of points to emphasize. Totally fine to say no.
+
+RECONNECTING (cold-ish)
+Hi [Name], it's been a while since [shared context]! I'm exploring [field/role] and thought of you. No agenda beyond catching up — and I'd value your take on [topic] if you have 15 minutes sometime.` },
+
+  { title:"Career Planning Workbook", tag:"Workbook",
+    intro:"A guided self-assessment to point the search in the right direction.",
+    body:
+`Work through these in a notebook. Be honest — this is for you, not a recruiter.
+
+1. VALUES (what a job must give you)
+- Rank: compensation, growth, stability, flexibility, impact, autonomy, prestige, people.
+- Top 3 non-negotiables: __________
+- Deal-breakers you'll walk away from: __________
+
+2. STRENGTHS & ENERGY
+- 3 things people consistently praise in your work: __________
+- Tasks that energize you (you lose track of time): __________
+- Tasks that drain you (minimize these): __________
+
+3. STORY & PROOF
+- 5 accomplishments you're proud of + the result of each: __________
+- The through-line they reveal about you: __________
+
+4. TARGET
+- Ideal role title(s): __________
+- Industries / company types / size: __________
+- Must-have vs nice-to-have in the next role: __________
+
+5. GAPS
+- Skills/credentials the target role expects that you lack: __________
+- Fastest way to close or signal each: __________
+
+6. GOALS (make them SMART)
+- 90-day goal: __________
+- 12-month goal: __________
+- Success signal for each: __________
+
+7. WEEKLY PLAN
+- Hours/week for the search: ____
+- Split across: applying / networking / tailoring / interview prep / skill-building.
+- One action to take TODAY: __________
+
+Revisit monthly. Adjust the target as you learn — clarity comes from motion, not just reflection.` },
 ];
 
 function renderBonuses(){
