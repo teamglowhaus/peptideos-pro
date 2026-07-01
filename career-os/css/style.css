@@ -91,7 +91,8 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 [data-theme="dark"] .sidebar{background-blend-mode:overlay}
 .brand{display:flex;align-items:center;gap:13px;padding:4px 8px 22px}
 .seal{width:44px;height:44px;flex-shrink:0;display:grid;place-items:center;border:1px solid var(--gold-line);border-radius:3px;background:var(--inset);font-family:var(--f-display);font-weight:600;font-size:22px;color:var(--accent);box-shadow:inset 0 0 0 3px var(--surface),inset 0 0 0 4px var(--gold-soft);transition:color .4s ease}
-.brand-name{font-family:var(--f-display);font-weight:600;font-size:19px;letter-spacing:.005em;line-height:1.02}
+.brand-house{font-family:var(--f-mono);font-size:8.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:4px}
+.brand-name{font-family:var(--f-display);font-weight:600;font-size:22px;letter-spacing:.005em;line-height:1.02}
 .brand-name em{font-style:italic;font-weight:500;color:var(--accent);transition:color .4s ease}
 .brand-edition{font-family:var(--f-mono);font-size:9.5px;letter-spacing:.15em;text-transform:uppercase;color:var(--ink-faint);margin-top:5px}
 
