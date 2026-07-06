@@ -290,9 +290,13 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 .resume-score-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
 .resume-score-head b{font-family:var(--f-display);font-weight:600;font-size:14px}
 .resume-score-head span{font-family:var(--f-mono);font-size:11px;letter-spacing:.08em;color:var(--ink-faint);white-space:nowrap}
-.resume-score-bar{height:5px;border-radius:3px;background:var(--inset);overflow:hidden;margin-bottom:13px}
+.resume-score-bar{height:5px;border-radius:3px;background:var(--inset);overflow:hidden;margin-bottom:11px}
 .resume-score-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--accent),var(--gold));transition:width .5s cubic-bezier(.4,0,.2,1)}
+.resume-score-note{font-size:11.5px;color:var(--ink-faint);line-height:1.4;margin-bottom:12px}
 .rs-check-list{display:flex;flex-direction:column;gap:7px}
+/* visually hidden but announced to screen readers (used to speak pass/fail
+   state explicitly, since sighted users get it from icon shape + color) */
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
 .rs-check{display:flex;align-items:flex-start;gap:9px;font-size:12.5px;color:var(--ink-faint);line-height:1.4}
 .rs-check .mark{flex-shrink:0;width:15px;height:15px;margin-top:1px}
 .rs-check.pass{color:var(--ink)}
@@ -452,6 +456,7 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 [data-fontsize="large"] .resume-sheet .r-summary,[data-fontsize="large"] .resume-sheet li,[data-fontsize="large"] .resume-sheet .r-inline{font-size:14px}
 [data-fontsize="large"] .faq p,[data-fontsize="large"] .help-note,[data-fontsize="large"] .set-label span{font-size:15px}
 [data-fontsize="large"] .rs-check{font-size:14px}
+[data-fontsize="large"] .resume-score-note{font-size:13px}
 [data-fontsize="large"] .bonus-body pre{font-size:13px}
 
 /* ============================ PRINT — only the résumé sheet ============================ */

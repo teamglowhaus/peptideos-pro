@@ -482,14 +482,18 @@ const RESUME_CHECKS = [
   {label:"Target position set", test:d => !!String(d.target||"").trim()},
   {label:"Professional summary written", test:d => String(d.summary||"").trim().length >= 40},
   {label:"At least one role with highlights", test:d => bulletLines(d.experience).length > 0},
+  // The next two checks assess the QUALITY of highlights that already exist —
+  // they pass vacuously when there are none, so "no highlights yet" shows up
+  // as exactly one failing check (above), not three.
   {label:"Highlights show measurable impact", test:d => {
     const bullets = bulletLines(d.experience);
-    if(!bullets.length) return false;
+    if(!bullets.length) return true;
     return bullets.filter(b => /\d/.test(b)).length / bullets.length >= 0.5;
   }},
   {label:'No "Responsible for" openers', test:d => {
     const bullets = bulletLines(d.experience);
-    return bullets.length > 0 && !bullets.some(b => /^responsible for/i.test(b));
+    if(!bullets.length) return true;
+    return !bullets.some(b => /^responsible for/i.test(b));
   }},
   {label:"Skills listed", test:d => !!String(d.skills||"").trim()},
   {label:"Education listed", test:d => (d.education||[]).some(r => Object.values(r).some(v => v && String(v).trim() !== ""))},
@@ -507,9 +511,11 @@ function renderResumeScore(){
   el.innerHTML = `
     <div class="resume-score-head"><b>Résumé Score</b><span>${passed} / ${results.length}</span></div>
     <div class="resume-score-bar"><div class="resume-score-fill" style="width:${pct}%"></div></div>
+    <p class="resume-score-note">A quick mechanical self-check, not a guarantee — your judgment still matters most.</p>
     <div class="rs-check-list">${results.map(r => `
       <div class="rs-check ${r.pass ? 'pass' : ''}">
-        <span class="mark">${r.pass ? ICO_CHECK : ICO_DOT}</span><span>${escapeHtml(r.label)}</span>
+        <span class="mark">${r.pass ? ICO_CHECK : ICO_DOT}</span>
+        <span><span class="sr-only">${r.pass ? 'Passed: ' : 'Not yet: '}</span>${escapeHtml(r.label)}</span>
       </div>`).join("")}</div>`;
 }
 

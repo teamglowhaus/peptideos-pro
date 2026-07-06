@@ -131,6 +131,10 @@ Open `js/occupations.js`, copy an entry, and change the accent, seal letter,
 tagline, greeting, and example variables. To make it the default, set the
 fallback in `js/app.js` (`store.occ` returns `'general'` by default).
 
+Also add a matching entry to `RESUME_EXAMPLES` in `js/resume.js` — without
+one, the Résumé Builder's "Load example" falls back to the General edition's
+sample for the new occupation instead of one tailored to it.
+
 To sell a niche edition (e.g. *Career OS — Nursing Edition*), duplicate the
 whole folder, set the default edition, tweak the example variables, and list it
 separately. Same engine, new skin.
