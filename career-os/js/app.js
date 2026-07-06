@@ -113,13 +113,27 @@ function renderNav(){
 
 function renderStats(){
   const done = store.done.length;
-  const jobs = (store.board && store.board.jobs) || [];
-  const countStatus = s => jobs.filter(j => j.status === s).length;
+  // Prefer the Job Tracker's live in-memory board — `board` is a plain global
+  // declared in tracker.js, shared across all classic <script> tags on the
+  // page — over the persisted copy in store.board, whose setter is a no-op
+  // when Autosave is off. Without this, saveBoard()'s call to renderStats()
+  // would read back stale (or empty) localStorage instead of the change that
+  // was just made. Falls back to store.board before the tracker has loaded.
+  const liveBoard = (typeof board !== 'undefined' && board) ? board : store.board;
+  const jobs = (liveBoard && liveBoard.jobs) || [];
+  // Cumulative funnel counts, not a snapshot of the job's CURRENT column —
+  // otherwise a job advancing from Applied to Interview would make
+  // "Applications" appear to shrink, which reads as regressing, not progress.
+  // (A job rejected after reaching a stage no longer counts toward it, since
+  // there's no per-job stage history — a known limit of this data model.)
+  const applications = jobs.filter(j => j.status !== 'wishlist').length;
+  const interviews    = jobs.filter(j => j.status === 'interview' || j.status === 'offer').length;
+  const offers        = jobs.filter(j => j.status === 'offer').length;
   const stats = [
     {b:done, s:"Drafts composed", i:'<path d="M4 6h16M4 12h16M4 18h10"/>'},
-    {b:countStatus('applied'),   s:"Applications",    i:'<path d="M4 4h16v16H4z"/><path d="m4 8 8 5 8-5"/>'},
-    {b:countStatus('interview'), s:"Interviews",      i:'<path d="M8 2v4M16 2v4M3 10h18M5 6h14v14H5z"/>'},
-    {b:countStatus('offer'),     s:"Offers",          i:'<path d="m12 2 3 7h7l-5.5 4 2 7L12 17l-6.5 3 2-7L2 9h7z"/>'},
+    {b:applications, s:"Applications",    i:'<path d="M4 4h16v16H4z"/><path d="m4 8 8 5 8-5"/>'},
+    {b:interviews,   s:"Interviews",      i:'<path d="M8 2v4M16 2v4M3 10h18M5 6h14v14H5z"/>'},
+    {b:offers,       s:"Offers",          i:'<path d="m12 2 3 7h7l-5.5 4 2 7L12 17l-6.5 3 2-7L2 9h7z"/>'},
   ];
   $('#statRow').innerHTML = stats.map((s,i) => `<div class="card stat">
     <span class="card-idx">0${i+1}</span>

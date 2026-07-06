@@ -276,6 +276,13 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 .resume-preview-head .rp-title{font-family:var(--f-mono);font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold)}
 .resume-actions{display:flex;gap:8px;flex-wrap:wrap}
 
+/* Sample-content warning — shown only while "Load example" data is still
+   unedited, since it's polished enough to look like a finished résumé. */
+.resume-example-banner:empty{display:none}
+.resume-example-banner{display:flex;align-items:flex-start;gap:10px;background:var(--gold-soft);border:1px solid var(--gold-line);border-radius:var(--r);padding:13px 16px;margin-bottom:14px;font-size:12.5px;line-height:1.5;color:var(--ink)}
+.resume-example-banner svg{flex-shrink:0;margin-top:1px;color:var(--accent)}
+.resume-example-banner b{font-weight:600}
+
 /* Résumé Score — a live, offline checklist (no AI call) that scores the
    résumé being built against the same rules as the Bonuses' Résumé Checklist. */
 .resume-score{background:var(--surface);background-image:var(--grain-fine);background-blend-mode:multiply;border:1px solid var(--line);border-radius:var(--r);padding:16px 18px;margin-bottom:14px;box-shadow:inset 0 1px 0 rgba(255,250,236,.45)}
@@ -455,7 +462,7 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
   /* hide ALL app chrome and the non-résumé views */
   .sidebar,.topbar,.scrim,.toast,.menu-btn,.modal,
   #view-dashboard,#view-module,#view-tracker,#view-settings,#view-help,#view-bonuses,
-  .resume-form,.resume-preview-head,.resume-score{display:none !important}
+  .resume-form,.resume-preview-head,.resume-score,.resume-example-banner{display:none !important}
   .scroll{padding:0 !important;overflow:visible !important}
   .resume-shell{display:block !important}
   .resume-preview{position:static !important;top:auto !important}

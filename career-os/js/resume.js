@@ -105,7 +105,7 @@ const RESUME_EXAMPLES = {
       {title:"Project Coordinator", company:"Northline Group", location:"Denver, CO", start:"Aug 2018", end:"May 2021",
         bullets:"Coordinated 15+ concurrent client projects, maintaining a 96% on-time delivery rate\nBuilt the team's first standardized intake process, cutting kickoff time from 2 weeks to 3 days"},
     ],
-    education:[{degree:"B.A. Business Administration", school:"University of Colorado Boulder", location:"Boulder, CO", start:"2014", end:"2018", details:""}],
+    education:[{degree:"B.A. Business Administration", school:"Front Range State University", location:"Boulder, CO", start:"2014", end:"2018", details:""}],
     certifications:[{name:"PMP", issuer:"Project Management Institute", date:"2022"}],
   }),
   nurse: Object.assign(defaultResume(), {
@@ -115,12 +115,12 @@ const RESUME_EXAMPLES = {
     summary:"ICU Registered Nurse with 6 years of critical-care experience across Level I trauma and cardiac units. Epic power user who mentors new-graduate nurses and leads rapid-response protocol.",
     skills:"Critical care, Epic/EHR, ACLS, BLS, ventilator management, patient & family advocacy",
     experience:[
-      {title:"Senior ICU Registered Nurse", company:"St. David's Medical Center", location:"Austin, TX", start:"Jun 2021", end:"Present",
+      {title:"Senior ICU Registered Nurse", company:"Hill Country Medical Center", location:"Austin, TX", start:"Jun 2021", end:"Present",
         bullets:"Precepted 11 new-graduate nurses, cutting orientation time 30%\nLed rapid-response coverage on a 24-bed ICU, maintaining a 0.9 falls-per-1,000-patient-days rate\nPartnered with physicians on a sepsis-protocol update that cut time-to-antibiotics 22%"},
-      {title:"Registered Nurse, Cardiac Step-Down", company:"Seton Medical Center", location:"Austin, TX", start:"Jul 2018", end:"May 2021",
+      {title:"Registered Nurse, Cardiac Step-Down", company:"Lakeside Regional Medical Center", location:"Austin, TX", start:"Jul 2018", end:"May 2021",
         bullets:"Managed a 5–6 patient acute cardiac caseload per shift with zero medication errors\nTrained 8 new hires on telemetry monitoring and post-op cardiac care protocols"},
     ],
-    education:[{degree:"B.S. Nursing", school:"University of Texas at Austin", location:"Austin, TX", start:"2014", end:"2018", details:""}],
+    education:[{degree:"B.S. Nursing", school:"Bluebonnet State University", location:"Austin, TX", start:"2014", end:"2018", details:""}],
     certifications:[{name:"ACLS", issuer:"American Heart Association", date:"2024"},{name:"CCRN", issuer:"AACN", date:"2023"}],
   }),
   swe: Object.assign(defaultResume(), {
@@ -130,13 +130,13 @@ const RESUME_EXAMPLES = {
     summary:"Senior backend engineer with 8 years building distributed systems at scale. Specializes in turning slow, brittle services into fast, reliable ones — and the teams that run them into ones that move faster too.",
     skills:"Go, Python, Kubernetes, AWS, PostgreSQL, distributed systems, CI/CD",
     experience:[
-      {title:"Senior Software Engineer", company:"Stripe", location:"Remote", start:"Mar 2020", end:"Present",
+      {title:"Senior Software Engineer", company:"Bridgeline Payments", location:"Remote", start:"Mar 2020", end:"Present",
         bullets:"Cut p99 checkout latency from 2.4s to 0.8s, lifting conversion 12%\nReduced cloud spend $40K/yr by right-sizing infrastructure and automating scale-down\nLed the migration of a 6-year-old monolith's billing path to a Go microservice with zero downtime"},
-      {title:"Software Engineer", company:"Carta", location:"San Francisco, CA", start:"Jul 2016", end:"Feb 2020",
+      {title:"Software Engineer", company:"Vertex Equity Systems", location:"San Francisco, CA", start:"Jul 2016", end:"Feb 2020",
         bullets:"Built the internal deploy pipeline, cutting release time from 45 to 8 minutes\nShipped a rate-limiting service now handling 50M+ requests/day"},
     ],
-    education:[{degree:"B.S. Computer Science", school:"UC Berkeley", location:"Berkeley, CA", start:"2012", end:"2016", details:""}],
-    projects:[{name:"ratelimit-go", role:"Creator & maintainer", link:"github.com/achen/ratelimit-go", description:"Open-source token-bucket rate limiter used by 3 mid-size startups\n400+ GitHub stars"}],
+    education:[{degree:"B.S. Computer Science", school:"Pacific Coast State University", location:"Berkeley, CA", start:"2012", end:"2016", details:""}],
+    projects:[{name:"ratelimit-go", role:"Creator & maintainer", link:"github.com/example-dev/ratelimit-go", description:"Open-source token-bucket rate limiter used by 3 mid-size startups\n400+ GitHub stars"}],
   }),
   teacher: Object.assign(defaultResume(), {
     name:"Morgan Ellis", phone:"(555) 402-1187", email:"morgan.ellis@email.com", location:"Portland, OR",
@@ -150,7 +150,7 @@ const RESUME_EXAMPLES = {
       {title:"4th Grade Teacher", company:"Lincoln Elementary", location:"Portland, OR", start:"Aug 2016", end:"Jun 2019",
         bullets:"Led a classroom of 26 students to the highest math growth scores in the grade level two years running"},
     ],
-    education:[{degree:"M.Ed. Elementary Education", school:"Portland State University", location:"Portland, OR", start:"2014", end:"2016", details:""}],
+    education:[{degree:"M.Ed. Elementary Education", school:"Cascade State University", location:"Portland, OR", start:"2014", end:"2016", details:""}],
     certifications:[{name:"Oregon Teaching License", issuer:"Oregon TSPC", date:"2016"}],
   }),
   exec: Object.assign(defaultResume(), {
@@ -165,16 +165,28 @@ const RESUME_EXAMPLES = {
       {title:"Director of Operations", company:"Fairview Supply Co.", location:"Chicago, IL", start:"Feb 2014", end:"Dec 2018",
         bullets:"Turned around an underperforming region, lifting output 40% in two quarters\nCut operating costs $250K/yr by renegotiating vendor contracts"},
     ],
-    education:[{degree:"MBA", school:"Kellogg School of Management", location:"Evanston, IL", start:"2010", end:"2012", details:""}],
+    education:[{degree:"MBA", school:"Lakeshore School of Management", location:"Evanston, IL", start:"2010", end:"2012", details:""}],
     awards:[{name:"Operational Excellence Award", issuer:"Northwind Logistics", date:"2023"}],
   }),
 };
 
+// Checks EVERY field on the résumé (not a curated subset) — used to decide
+// whether "Load example" needs to confirm before it overwrites anything.
 function hasResumeContent(d){
   const has = v => v && String(v).trim() !== "";
-  return has(d.name) || has(d.summary) ||
-    RESUME_SECTION_ORDER.some(s => (d[s]||[]).some(r => Object.values(r).some(has)));
+  return Object.keys(defaultResume()).some(k => {
+    const v = d[k];
+    return Array.isArray(v) ? v.some(r => Object.values(r).some(has)) : has(v);
+  });
 }
+
+// True while the builder holds unedited example data. Every field's every
+// name/company/school is fictional, but it's polished enough to look like a
+// finished, submittable résumé — so we keep a persistent banner (not just a
+// toast) up until the user actually edits something, to head off someone
+// exporting it as-is.
+let exampleActive = false;
+
 // Deep-clone so edits to the loaded example never mutate the shared template.
 function loadExampleResume(){
   const example = RESUME_EXAMPLES[store.occ] || RESUME_EXAMPLES.general;
@@ -182,9 +194,17 @@ function loadExampleResume(){
      !confirm("Replace your current résumé with a filled-in example? You can edit every field afterward. This can't be undone.")) return;
   resumeData = JSON.parse(JSON.stringify(example));
   RESUME_SECTION_ORDER.forEach(s => { if(!Array.isArray(resumeData[s])) resumeData[s] = []; });
+  exampleActive = true;
   saveResume();
   renderResume();
-  toast("Example résumé loaded — edit any field");
+  toast("Example loaded — every name and detail is fictional, replace it all before you send this anywhere");
+}
+
+function renderExampleBanner(){
+  const el = $('#resumeExampleBanner'); if(!el) return;
+  el.innerHTML = !exampleActive ? "" : `
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4M12 17h.01M10.3 3.9 2.5 17a2 2 0 0 0 1.7 3h15.6a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg>
+    <span><b>Sample content.</b> Every name, employer, and result here is fictional — replace all of it before exporting or sending this résumé anywhere.</span>`;
 }
 
 function loadResume(){
@@ -278,6 +298,8 @@ function renderResumePreview(){
   const has = v => v && String(v).trim() !== "";
   const lines = v => String(v||"").split("\n").map(s => s.trim()).filter(Boolean);
   const E = escapeHtml;
+
+  renderExampleBanner();
 
   // contact line
   const contact = [d.phone, d.email, d.location, d.website, d.linkedin].filter(has)
@@ -502,6 +524,7 @@ function initResumeBuilder(){
     if(t.dataset.f !== undefined){ resumeData[t.dataset.f] = t.value; }
     else if(t.dataset.sec !== undefined){ resumeData[t.dataset.sec][+t.dataset.i][t.dataset.k] = t.value; }
     else return;
+    exampleActive = false;
     saveResume();
     renderResumePreview();
   });
@@ -517,6 +540,7 @@ function initResumeBuilder(){
     else if(up){ const s=up.dataset.up, i=+up.dataset.i; if(i>0) [resumeData[s][i-1],resumeData[s][i]]=[resumeData[s][i],resumeData[s][i-1]]; }
     else if(dn){ const s=dn.dataset.down, i=+dn.dataset.i; const a=resumeData[s]; if(i<a.length-1) [a[i+1],a[i]]=[a[i],a[i+1]]; }
     else return;
+    exampleActive = false;
     saveResume();
     renderResume();
   });
