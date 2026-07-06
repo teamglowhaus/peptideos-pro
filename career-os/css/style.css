@@ -280,9 +280,11 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
    résumé being built against the same rules as the Bonuses' Résumé Checklist. */
 .resume-score{background:var(--surface);background-image:var(--grain-fine);background-blend-mode:multiply;border:1px solid var(--line);border-radius:var(--r);padding:16px 18px;margin-bottom:14px;box-shadow:inset 0 1px 0 rgba(255,250,236,.45)}
 [data-theme="dark"] .resume-score{background-blend-mode:overlay}
-.resume-score-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:11px}
+.resume-score-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
 .resume-score-head b{font-family:var(--f-display);font-weight:600;font-size:14px}
 .resume-score-head span{font-family:var(--f-mono);font-size:11px;letter-spacing:.08em;color:var(--ink-faint);white-space:nowrap}
+.resume-score-bar{height:5px;border-radius:3px;background:var(--inset);overflow:hidden;margin-bottom:13px}
+.resume-score-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--accent),var(--gold));transition:width .5s cubic-bezier(.4,0,.2,1)}
 .rs-check-list{display:flex;flex-direction:column;gap:7px}
 .rs-check{display:flex;align-items:flex-start;gap:9px;font-size:12.5px;color:var(--ink-faint);line-height:1.4}
 .rs-check .mark{flex-shrink:0;width:15px;height:15px;margin-top:1px}

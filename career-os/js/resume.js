@@ -470,14 +470,21 @@ const RESUME_CHECKS = [
     return bullets.length > 0 && !bullets.some(b => /^responsible for/i.test(b));
   }},
   {label:"Skills listed", test:d => !!String(d.skills||"").trim()},
+  {label:"Education listed", test:d => (d.education||[]).some(r => Object.values(r).some(v => v && String(v).trim() !== ""))},
+  {label:"LinkedIn or portfolio link added", test:d => {
+    const has = v => v && String(v).trim() !== "";
+    return has(d.linkedin) || has(d.website);
+  }},
 ];
 
 function renderResumeScore(){
   const el = $('#resumeScore'); if(!el) return;
   const results = RESUME_CHECKS.map(c => ({ label:c.label, pass: c.test(resumeData) }));
   const passed = results.filter(r => r.pass).length;
+  const pct = Math.round(passed / results.length * 100);
   el.innerHTML = `
     <div class="resume-score-head"><b>Résumé Score</b><span>${passed} / ${results.length}</span></div>
+    <div class="resume-score-bar"><div class="resume-score-fill" style="width:${pct}%"></div></div>
     <div class="rs-check-list">${results.map(r => `
       <div class="rs-check ${r.pass ? 'pass' : ''}">
         <span class="mark">${r.pass ? ICO_CHECK : ICO_DOT}</span><span>${escapeHtml(r.label)}</span>
