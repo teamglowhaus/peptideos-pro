@@ -113,11 +113,13 @@ function renderNav(){
 
 function renderStats(){
   const done = store.done.length;
+  const jobs = (store.board && store.board.jobs) || [];
+  const countStatus = s => jobs.filter(j => j.status === s).length;
   const stats = [
     {b:done, s:"Drafts composed", i:'<path d="M4 6h16M4 12h16M4 18h10"/>'},
-    {b:"12", s:"Applications",    i:'<path d="M4 4h16v16H4z"/><path d="m4 8 8 5 8-5"/>'},
-    {b:"3",  s:"Interviews",      i:'<path d="M8 2v4M16 2v4M3 10h18M5 6h14v14H5z"/>'},
-    {b:"1",  s:"Offers",          i:'<path d="m12 2 3 7h7l-5.5 4 2 7L12 17l-6.5 3 2-7L2 9h7z"/>'},
+    {b:countStatus('applied'),   s:"Applications",    i:'<path d="M4 4h16v16H4z"/><path d="m4 8 8 5 8-5"/>'},
+    {b:countStatus('interview'), s:"Interviews",      i:'<path d="M8 2v4M16 2v4M3 10h18M5 6h14v14H5z"/>'},
+    {b:countStatus('offer'),     s:"Offers",          i:'<path d="m12 2 3 7h7l-5.5 4 2 7L12 17l-6.5 3 2-7L2 9h7z"/>'},
   ];
   $('#statRow').innerHTML = stats.map((s,i) => `<div class="card stat">
     <span class="card-idx">0${i+1}</span>
@@ -125,6 +127,7 @@ function renderStats(){
     <b>${s.b}</b><span>${s.s}</span></div>`).join('');
 }
 
+let ringCountUp = null;   // guards against stacked intervals if renderRing() fires again mid-animation
 function renderRing(){
   // Readiness = share of modules completed (with a small head-start once any
   // draft exists, so the first composition feels rewarding).
@@ -134,10 +137,11 @@ function renderRing(){
   // defer so the transition runs from full offset → target
   setTimeout(() => $('#ring').setAttribute('stroke-dashoffset', (circ * (1 - pct/100)).toFixed(0)), 140);
   // count-up numeral
+  clearInterval(ringCountUp);
   let n = 0;
-  const t = setInterval(() => {
+  ringCountUp = setInterval(() => {
     n += Math.ceil(pct/24);
-    if(n >= pct){ n = Math.round(pct); clearInterval(t); }
+    if(n >= pct){ n = Math.round(pct); clearInterval(ringCountUp); }
     $('#ringNum').textContent = n;
   }, 28);
   $('#ringHint').textContent = pct >= 80 ? "Interview-ready" : pct > 0 ? "A strong beginning" : "Compose drafts to raise it";
@@ -247,6 +251,7 @@ function showView(name){
   if(name === 'dashboard'){
     $('#pageTitle').textContent = 'Atelier';
     $('#pageSub').textContent   = OCCUPATIONS[store.occ].tagline;
+    renderStats();
     renderRing();
   }
   $('.scroll').scrollTop = 0;

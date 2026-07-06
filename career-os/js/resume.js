@@ -87,6 +87,106 @@ function defaultResume(){
 }
 let resumeData = null;
 
+/* ---- EXAMPLE RÉSUMÉS (Phase 7 — "Load example") ---------------------------
+   One fully-written, occupation-aware example per edition. "Load example"
+   drops a finished résumé into the builder so a buyer can see, edit, and
+   export a real result immediately instead of starting from a blank form.
+   No AI call, no network — this is plain bundled data, same as OCCUPATIONS. */
+const RESUME_EXAMPLES = {
+  general: Object.assign(defaultResume(), {
+    name:"Jordan Avery Rivera", phone:"(555) 214-7790", email:"jordan.rivera@email.com", location:"Denver, CO",
+    linkedin:"linkedin.com/in/jordanrivera",
+    target:"Senior Project Manager",
+    summary:"Senior Project Manager with 7 years leading cross-functional teams through complex, multi-stakeholder programs. Known for turning ambiguous initiatives into shipped results on time and under budget.",
+    skills:"Stakeholder management, Agile & Scrum, budgeting & forecasting, risk management, roadmapping, cross-functional leadership",
+    experience:[
+      {title:"Senior Project Manager", company:"Meridian Partners", location:"Denver, CO", start:"Jun 2021", end:"Present",
+        bullets:"Led a 12-person cross-functional team to launch a company-wide CRM migration 3 weeks ahead of schedule\nCut project cycle time 28% by introducing a lightweight Agile cadence across 4 departments\nManaged a $1.4M annual program budget with zero overruns across 9 concurrent initiatives"},
+      {title:"Project Coordinator", company:"Northline Group", location:"Denver, CO", start:"Aug 2018", end:"May 2021",
+        bullets:"Coordinated 15+ concurrent client projects, maintaining a 96% on-time delivery rate\nBuilt the team's first standardized intake process, cutting kickoff time from 2 weeks to 3 days"},
+    ],
+    education:[{degree:"B.A. Business Administration", school:"University of Colorado Boulder", location:"Boulder, CO", start:"2014", end:"2018", details:""}],
+    certifications:[{name:"PMP", issuer:"Project Management Institute", date:"2022"}],
+  }),
+  nurse: Object.assign(defaultResume(), {
+    name:"Jordan A. Rivera", phone:"(555) 213-8890", email:"jordan.rivera@email.com", location:"Austin, TX",
+    linkedin:"linkedin.com/in/jrivera",
+    target:"ICU Registered Nurse",
+    summary:"ICU Registered Nurse with 6 years of critical-care experience across Level I trauma and cardiac units. Epic power user who mentors new-graduate nurses and leads rapid-response protocol.",
+    skills:"Critical care, Epic/EHR, ACLS, BLS, ventilator management, patient & family advocacy",
+    experience:[
+      {title:"Senior ICU Registered Nurse", company:"St. David's Medical Center", location:"Austin, TX", start:"Jun 2021", end:"Present",
+        bullets:"Precepted 11 new-graduate nurses, cutting orientation time 30%\nLed rapid-response coverage on a 24-bed ICU, maintaining a 0.9 falls-per-1,000-patient-days rate\nPartnered with physicians on a sepsis-protocol update that cut time-to-antibiotics 22%"},
+      {title:"Registered Nurse, Cardiac Step-Down", company:"Seton Medical Center", location:"Austin, TX", start:"Jul 2018", end:"May 2021",
+        bullets:"Managed a 5–6 patient acute cardiac caseload per shift with zero medication errors\nTrained 8 new hires on telemetry monitoring and post-op cardiac care protocols"},
+    ],
+    education:[{degree:"B.S. Nursing", school:"University of Texas at Austin", location:"Austin, TX", start:"2014", end:"2018", details:""}],
+    certifications:[{name:"ACLS", issuer:"American Heart Association", date:"2024"},{name:"CCRN", issuer:"AACN", date:"2023"}],
+  }),
+  swe: Object.assign(defaultResume(), {
+    name:"Alex Chen", phone:"(555) 640-2210", email:"alex.chen@email.com", location:"San Francisco, CA",
+    website:"alexchen.dev", linkedin:"linkedin.com/in/alexchen",
+    target:"Senior Software Engineer",
+    summary:"Senior backend engineer with 8 years building distributed systems at scale. Specializes in turning slow, brittle services into fast, reliable ones — and the teams that run them into ones that move faster too.",
+    skills:"Go, Python, Kubernetes, AWS, PostgreSQL, distributed systems, CI/CD",
+    experience:[
+      {title:"Senior Software Engineer", company:"Stripe", location:"Remote", start:"Mar 2020", end:"Present",
+        bullets:"Cut p99 checkout latency from 2.4s to 0.8s, lifting conversion 12%\nReduced cloud spend $40K/yr by right-sizing infrastructure and automating scale-down\nLed the migration of a 6-year-old monolith's billing path to a Go microservice with zero downtime"},
+      {title:"Software Engineer", company:"Carta", location:"San Francisco, CA", start:"Jul 2016", end:"Feb 2020",
+        bullets:"Built the internal deploy pipeline, cutting release time from 45 to 8 minutes\nShipped a rate-limiting service now handling 50M+ requests/day"},
+    ],
+    education:[{degree:"B.S. Computer Science", school:"UC Berkeley", location:"Berkeley, CA", start:"2012", end:"2016", details:""}],
+    projects:[{name:"ratelimit-go", role:"Creator & maintainer", link:"github.com/achen/ratelimit-go", description:"Open-source token-bucket rate limiter used by 3 mid-size startups\n400+ GitHub stars"}],
+  }),
+  teacher: Object.assign(defaultResume(), {
+    name:"Morgan Ellis", phone:"(555) 402-1187", email:"morgan.ellis@email.com", location:"Portland, OR",
+    linkedin:"linkedin.com/in/morganellis",
+    target:"5th Grade Lead Teacher",
+    summary:"5th grade lead teacher with 6 years raising reading and math proficiency through differentiated, data-driven instruction. Builds classrooms where every student, including those below grade level, makes measurable growth.",
+    skills:"Differentiated instruction, SEL, formative assessment, IEP collaboration, classroom technology",
+    experience:[
+      {title:"5th Grade Lead Teacher", company:"Maple Grove Elementary", location:"Portland, OR", start:"Aug 2019", end:"Present",
+        bullets:"Raised reading proficiency 22% in one school year through small-group, data-driven differentiation\nDesigned a peer-mentoring program adopted school-wide across 6 classrooms\nSecured a $15,000 grant for classroom technology, funding 1:1 devices for 28 students"},
+      {title:"4th Grade Teacher", company:"Lincoln Elementary", location:"Portland, OR", start:"Aug 2016", end:"Jun 2019",
+        bullets:"Led a classroom of 26 students to the highest math growth scores in the grade level two years running"},
+    ],
+    education:[{degree:"M.Ed. Elementary Education", school:"Portland State University", location:"Portland, OR", start:"2014", end:"2016", details:""}],
+    certifications:[{name:"Oregon Teaching License", issuer:"Oregon TSPC", date:"2016"}],
+  }),
+  exec: Object.assign(defaultResume(), {
+    name:"Morgan Lee", phone:"(555) 305-9902", email:"morgan.lee@email.com", location:"Chicago, IL",
+    linkedin:"linkedin.com/in/morganlee",
+    target:"VP of Operations",
+    summary:"Operations executive who scales teams and P&L. Led a turnaround that lifted output 40% while cutting cost, and has integrated two acquisitions without disrupting service.",
+    skills:"P&L ownership, org design, M&A integration, lean operations, strategy",
+    experience:[
+      {title:"VP of Operations", company:"Northwind Logistics", location:"Chicago, IL", start:"Jan 2019", end:"Present",
+        bullets:"Grew EBITDA 35% ($1.2M to $1.6M) via a network redesign across 8 distribution centers\nIntegrated two acquisitions worth $40M combined with zero service disruption\nBuilt and scaled the operations team from 3 directors to 15 while cutting attrition 30%"},
+      {title:"Director of Operations", company:"Fairview Supply Co.", location:"Chicago, IL", start:"Feb 2014", end:"Dec 2018",
+        bullets:"Turned around an underperforming region, lifting output 40% in two quarters\nCut operating costs $250K/yr by renegotiating vendor contracts"},
+    ],
+    education:[{degree:"MBA", school:"Kellogg School of Management", location:"Evanston, IL", start:"2010", end:"2012", details:""}],
+    awards:[{name:"Operational Excellence Award", issuer:"Northwind Logistics", date:"2023"}],
+  }),
+};
+
+function hasResumeContent(d){
+  const has = v => v && String(v).trim() !== "";
+  return has(d.name) || has(d.summary) ||
+    RESUME_SECTION_ORDER.some(s => (d[s]||[]).some(r => Object.values(r).some(has)));
+}
+// Deep-clone so edits to the loaded example never mutate the shared template.
+function loadExampleResume(){
+  const example = RESUME_EXAMPLES[store.occ] || RESUME_EXAMPLES.general;
+  if(hasResumeContent(resumeData) &&
+     !confirm("Replace your current résumé with a filled-in example? You can edit every field afterward. This can't be undone.")) return;
+  resumeData = JSON.parse(JSON.stringify(example));
+  RESUME_SECTION_ORDER.forEach(s => { if(!Array.isArray(resumeData[s])) resumeData[s] = []; });
+  saveResume();
+  renderResume();
+  toast("Example résumé loaded — edit any field");
+}
+
 function loadResume(){
   const saved = store.resume;            // single namespaced key (see app.js store.resume)
   resumeData = Object.assign(defaultResume(), saved || {});
@@ -190,6 +290,7 @@ function renderResumePreview(){
 
   if(!anything){
     $('#resumeSheet').innerHTML = `<div class="r-empty">Your résumé previews here as you type.</div>`;
+    renderResumeScore();
     return;
   }
 
@@ -237,6 +338,7 @@ function renderResumePreview(){
   if(has(d.references)) body += section("References", `<div class="r-inline">${E(d.references)}</div>`);
 
   $('#resumeSheet').innerHTML = body;
+  renderResumeScore();
 
   // helpers (closures)
   function section(title, inner){ return `<div class="r-section"><h4>${title}</h4>${inner}</div>`; }
@@ -339,6 +441,48 @@ function toRoman(n){
 const ICO_UP   = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 14 6-6 6 6"/></svg>';
 const ICO_DOWN = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 10 6 6 6-6"/></svg>';
 const ICO_X    = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>';
+const ICO_CHECK= '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>';
+const ICO_DOT  = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/></svg>';
+
+/* ---- RÉSUMÉ SCORE (Phase 7) ------------------------------------------------
+   A live, fully offline checklist — the same rules taught in the Bonuses'
+   "Résumé Checklist", now checked against the résumé actually being built.
+   No AI call: plain pattern checks over resumeData. Recomputed on every
+   preview render (cheap — a handful of small arrays). */
+function bulletLines(rows){
+  return (rows||[]).flatMap(r => String(r.bullets||"").split("\n").map(s => s.trim()).filter(Boolean));
+}
+const RESUME_CHECKS = [
+  {label:"Contact info complete", test:d => {
+    const has = v => v && String(v).trim() !== "";
+    return has(d.name) && (has(d.phone) || has(d.email)) && has(d.location);
+  }},
+  {label:"Target position set", test:d => !!String(d.target||"").trim()},
+  {label:"Professional summary written", test:d => String(d.summary||"").trim().length >= 40},
+  {label:"At least one role with highlights", test:d => bulletLines(d.experience).length > 0},
+  {label:"Highlights show measurable impact", test:d => {
+    const bullets = bulletLines(d.experience);
+    if(!bullets.length) return false;
+    return bullets.filter(b => /\d/.test(b)).length / bullets.length >= 0.5;
+  }},
+  {label:'No "Responsible for" openers', test:d => {
+    const bullets = bulletLines(d.experience);
+    return bullets.length > 0 && !bullets.some(b => /^responsible for/i.test(b));
+  }},
+  {label:"Skills listed", test:d => !!String(d.skills||"").trim()},
+];
+
+function renderResumeScore(){
+  const el = $('#resumeScore'); if(!el) return;
+  const results = RESUME_CHECKS.map(c => ({ label:c.label, pass: c.test(resumeData) }));
+  const passed = results.filter(r => r.pass).length;
+  el.innerHTML = `
+    <div class="resume-score-head"><b>Résumé Score</b><span>${passed} / ${results.length}</span></div>
+    <div class="rs-check-list">${results.map(r => `
+      <div class="rs-check ${r.pass ? 'pass' : ''}">
+        <span class="mark">${r.pass ? ICO_CHECK : ICO_DOT}</span><span>${escapeHtml(r.label)}</span>
+      </div>`).join("")}</div>`;
+}
 
 /* ---- INIT: bind delegated events once ------------------------------------ */
 function initResumeBuilder(){
@@ -371,6 +515,7 @@ function initResumeBuilder(){
   });
 
   // exports
+  $('#rsExample').addEventListener("click", loadExampleResume);
   $('#rsPrint').addEventListener("click", () => window.print());
   $('#rsCopy').addEventListener("click",  () => copyText(resumeToText(), "Résumé text copied"));
   $('#rsDoc').addEventListener("click",   () => { downloadBlob(resumeToDoc(), resumeFilename("doc"), "application/msword"); toast("Word document downloaded"); });

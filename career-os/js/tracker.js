@@ -50,7 +50,8 @@ function loadBoard(){
   board = store.board || defaultBoard();
   if(!Array.isArray(board.jobs)) board.jobs = [];
 }
-function saveBoard(){ store.board = board; }      // autosave through the one store
+// autosave through the one store; also refreshes the Dashboard's live counts
+function saveBoard(){ store.board = board; if(typeof renderStats === 'function') renderStats(); }
 function getJob(id){ return board.jobs.find(j => j.id === id); }
 function newId(){
   if(window.crypto && crypto.randomUUID) return crypto.randomUUID();
@@ -110,13 +111,25 @@ function renderBoard(){
   $('#trackerBoard').innerHTML = cols;
 }
 
+// Only allow http(s) links to reach an href — blocks a javascript:/data: URI
+// typed into the "Link to posting" field from executing when the card is clicked.
+function safeJobLink(raw){
+  const s = String(raw||"").trim();
+  if(!s) return "";
+  try{
+    const u = new URL(/^[a-z][a-z0-9+.-]*:/i.test(s) ? s : "https://" + s);
+    return (u.protocol === "http:" || u.protocol === "https:") ? u.href : "";
+  } catch { return ""; }
+}
+
 function cardHtml(j){
   const E = escapeHtml, A = escapeAttr;
   const meta = [];
   if(j.location) meta.push(`<span>${E(j.location)}</span>`);
   if(j.comp)     meta.push(`<span>${E(j.comp)}</span>`);
   if(j.added)    meta.push(`<span>${E(j.added)}</span>`);
-  if(j.link)     meta.push(`<a href="${A(j.link)}" target="_blank" rel="noopener" data-noedit>Posting ↗</a>`);
+  const href = safeJobLink(j.link);
+  if(href)       meta.push(`<a href="${A(href)}" target="_blank" rel="noopener" data-noedit>Posting ↗</a>`);
   return `<div class="tcard" draggable="true" data-id="${A(j.id)}">
     <div class="tc-company">${E(j.company||"Untitled")}</div>
     ${j.role?`<div class="tc-role">${E(j.role)}</div>`:""}

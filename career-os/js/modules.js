@@ -3,8 +3,8 @@
    -------------------------------------------------------------------------
    ONE renderer drives every tool. A tool is a single object in this array.
    The renderer reads `fields[]` to draw the form, and calls `buildPrompt()`
-   on Generate. Adding a 34th tool = one new object below. No view code ever
-   changes — that is the whole product.
+   on Generate. Adding another tool = one new object below. No view code
+   ever changes — that is the whole product.
 
    ----- HOW TO ADD A NEW MODULE (copy an entry, edit the values) -----
    {

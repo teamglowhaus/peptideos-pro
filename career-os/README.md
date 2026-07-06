@@ -12,9 +12,14 @@ with five occupation editions.
 
 ## What's inside
 
-- **Dashboard** — a Career Readiness ring that grows as you use the tools.
+- **Dashboard** — a Career Readiness ring that grows as you use the tools,
+  plus live application/interview/offer counts pulled straight from your Job
+  Tracker.
 - **Résumé Builder** — a multi-section form with a live one-page preview and
-  export to **PDF (print), plain text, and Word (.doc)**. Autosaves.
+  export to **PDF (print), plain text, and Word (.doc)**. Autosaves. One-click
+  **Load example** drops in a polished, occupation-aware sample résumé to
+  edit from, and a live **Résumé Score** checklist tells you what's still
+  missing — both fully offline, no AI call.
 - **Job Tracker** — a drag-and-drop Kanban board (Wishlist → Applied →
   Interview → Offer → Rejected) with search, filter, and autosave.
 - **40+ AI prompt tools** across **Build · Résumés · Apply · Interview · Track**.
