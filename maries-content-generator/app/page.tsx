@@ -15,6 +15,16 @@ import {
   type ModeId,
   type Platform,
 } from "@/lib/modes";
+import {
+  addPrompt,
+  loadVault,
+  parseTagInput,
+  removePrompt,
+  toggleFavorite,
+  updatePrompt,
+  type VaultPrompt,
+} from "@/lib/vault";
+import PromptVault from "./PromptVault";
 
 interface Photo {
   id: number;
@@ -165,6 +175,14 @@ export default function Home() {
   const [copied, setCopied] = useState(false);
   const [downloading, setDownloading] = useState(false);
 
+  // Prompt Vault
+  const [view, setView] = useState<"create" | "vault">("create");
+  const [vault, setVault] = useState<VaultPrompt[]>([]);
+  const [saving, setSaving] = useState(false);
+  const [saveName, setSaveName] = useState("");
+  const [saveTags, setSaveTags] = useState("");
+  const [savedFlash, setSavedFlash] = useState(false);
+
   const cfg = MODES[mode];
   const formats = useMemo(() => {
     if (mode === "swc") return platform === "Instagram" ? INSTAGRAM_FORMATS : TIKTOK_FORMATS;
@@ -185,6 +203,54 @@ export default function Home() {
   useEffect(() => {
     if (!formats.includes(format)) setFormat(formats[0]);
   }, [formats, format]);
+
+  // hydrate the vault from localStorage on mount
+  useEffect(() => {
+    setVault(loadVault());
+  }, []);
+
+  function openSaveDialog() {
+    setSaveName(topic.trim() ? `${topic.trim()} — ${format}` : format);
+    setSaveTags("");
+    setSaving(true);
+  }
+
+  function confirmSave() {
+    setVault((v) =>
+      addPrompt(v, saveName, parseTagInput(saveTags), {
+        mode,
+        platform,
+        format,
+        promoAngle: mode === "swc" ? promoAngle : undefined,
+        topic,
+        goal,
+        hookStyle,
+        extraContext: extraContext.trim() || undefined,
+        output: output || undefined,
+      }),
+    );
+    setSaving(false);
+    setSavedFlash(true);
+    setTimeout(() => setSavedFlash(false), 1600);
+  }
+
+  function loadFromVault(p: VaultPrompt) {
+    setMode(p.mode);
+    setPlatform(p.platform);
+    setFormat(p.format);
+    if (p.promoAngle) setPromoAngle(p.promoAngle);
+    setTopic(p.topic);
+    setGoal(p.goal);
+    setHookStyle(p.hookStyle);
+    setExtraContext(p.extraContext ?? "");
+    setOutput(p.output ?? "");
+    setPhotos([]);
+    setSelectedPhoto(null);
+    setSlide(0);
+    setError("");
+    setView("create");
+    if (typeof window !== "undefined") window.scrollTo({ top: 0, behavior: "smooth" });
+  }
 
   const sections = useMemo(() => parseSections(output), [output]);
   const staticFormat = isStaticFormat(format);
@@ -284,8 +350,36 @@ export default function Home() {
       <h1 className="app-title">
         Marie&apos;s <span>Content Generator</span>
       </h1>
-      <p className="app-sub">{cfg.tagline}</p>
+      <p className="app-sub">{view === "vault" ? "Your saved prompts — reload and reuse any time" : cfg.tagline}</p>
 
+      <div className="view-nav">
+        <button
+          className={`view-nav-btn ${view === "create" ? "active" : ""}`}
+          onClick={() => setView("create")}
+        >
+          ✍️ Create
+        </button>
+        <button
+          className={`view-nav-btn ${view === "vault" ? "active" : ""}`}
+          onClick={() => setView("vault")}
+        >
+          📚 Prompt Vault{vault.length > 0 ? ` (${vault.length})` : ""}
+        </button>
+      </div>
+
+      {view === "vault" && (
+        <PromptVault
+          prompts={vault}
+          onLoad={loadFromVault}
+          onDelete={(id) => setVault((v) => removePrompt(v, id))}
+          onToggleFavorite={(id) => setVault((v) => toggleFavorite(v, id))}
+          onUpdate={(id, patch) => setVault((v) => updatePrompt(v, id, patch))}
+          onStartCreating={() => setView("create")}
+        />
+      )}
+
+      {view === "create" && (
+      <>
       <div className="tabs">
         {MODE_ORDER.map((id) => (
           <button
@@ -391,10 +485,43 @@ export default function Home() {
             <button className="btn btn-ghost" onClick={copyOutput}>
               {copied ? "Copied ✓" : "Copy to clipboard"}
             </button>
+            <button className="btn btn-ghost" onClick={openSaveDialog}>
+              {savedFlash ? "Saved ✓" : "💾 Save to Vault"}
+            </button>
             <button className="btn btn-ghost" onClick={generate}>
               Regenerate
             </button>
           </div>
+
+          {saving && (
+            <div className="save-dialog">
+              <div className="field full">
+                <label>Save as</label>
+                <input
+                  value={saveName}
+                  onChange={(e) => setSaveName(e.target.value)}
+                  placeholder="Name this prompt"
+                  autoFocus
+                />
+              </div>
+              <div className="field full">
+                <label>Tags (comma separated, optional)</label>
+                <input
+                  value={saveTags}
+                  onChange={(e) => setSaveTags(e.target.value)}
+                  placeholder="e.g. skincare, promo, evergreen"
+                />
+              </div>
+              <div className="save-dialog-actions">
+                <button className="btn btn-primary save-dialog-save" onClick={confirmSave}>
+                  Save to Vault
+                </button>
+                <button className="btn btn-ghost" onClick={() => setSaving(false)}>
+                  Cancel
+                </button>
+              </div>
+            </div>
+          )}
           <div className="output">{renderedOutput}</div>
 
           {/* ---- Images ---- */}
@@ -467,6 +594,8 @@ export default function Home() {
             </>
           )}
         </div>
+      )}
+      </>
       )}
 
       <footer className="footer">
