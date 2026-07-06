@@ -1,9 +1,9 @@
 // Client-side Prompt Vault — saves, organizes, and reuses generation setups.
-// Persisted to localStorage so Marie's saved prompts survive reloads.
+// Persisted to localStorage so saved prompts survive reloads.
 
 import type { ModeId, Platform } from "./modes";
 
-const STORAGE_KEY = "maries-prompt-vault-v1";
+const STORAGE_KEY = "contentforge-prompt-vault-v1";
 
 // A saved prompt captures the full generation setup plus the last output.
 export interface VaultPrompt {

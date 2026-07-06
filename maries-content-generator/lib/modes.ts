@@ -1,4 +1,4 @@
-// Shared config for Marie's Content Generator — used by both the UI and API routes.
+// Shared config for ContentForge — used by both the UI and API routes.
 
 export type ModeId = "ugc" | "instagram" | "tiktok" | "swc";
 export type Platform = "Instagram" | "TikTok";
@@ -64,16 +64,16 @@ export const UGC_STYLES = [
   "Skit / Funny concept",
 ];
 
-export const SWC_ANGLES = [
+export const PROMO_ANGLES = [
   "I bought this and here's what's inside",
-  "How I'm making money between night shifts",
+  "How I'm making money on the side",
   "Digital products explained for beginners",
   "You don't need to make it from scratch",
   "PLR / done-for-you products explainer",
   "This is how I'd start over if I lost everything",
   "No face no followers no problem",
   "What I wish I knew before I started",
-  "Real talk: is SWC worth it?",
+  "Real talk: is it worth it?",
   "Storytime: how I found this",
 ];
 
@@ -103,7 +103,7 @@ export const MODES: Record<ModeId, ModeConfig> = {
   ugc: {
     id: "ugc",
     label: "UGC Video Creator",
-    tagline: "Real content for brands Marie genuinely uses",
+    tagline: "Real content for brands you genuinely use",
     theme: {
       bg: "#1a1015",
       panel: "#241620",
@@ -144,7 +144,7 @@ export const MODES: Record<ModeId, ModeConfig> = {
   },
   swc: {
     id: "swc",
-    label: "SWC Course Promo",
+    label: "Digital Product Promo",
     tagline: "Real been-there honesty, never hype",
     theme: {
       bg: "#0d1117",
@@ -191,5 +191,5 @@ export const MODE_IMAGE_KEYWORDS: Record<ModeId, string> = {
   ugc: "lifestyle product aesthetic",
   instagram: "aesthetic lifestyle",
   tiktok: "candid lifestyle",
-  swc: "laptop workspace hustle night",
+  swc: "laptop workspace hustle",
 };

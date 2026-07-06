@@ -6,7 +6,7 @@ import {
   HOOK_STYLES,
   INSTAGRAM_FORMATS,
   MODES,
-  SWC_ANGLES,
+  PROMO_ANGLES,
   TIKTOK_FORMATS,
   imageOrientation,
   isCarouselFormat,
@@ -159,7 +159,7 @@ export default function Home() {
   const [mode, setMode] = useState<ModeId>("ugc");
   const [platform, setPlatform] = useState<Platform>("Instagram");
   const [format, setFormat] = useState(MODES.ugc.formats[0]);
-  const [promoAngle, setPromoAngle] = useState(SWC_ANGLES[0]);
+  const [promoAngle, setPromoAngle] = useState(PROMO_ANGLES[0]);
   const [topic, setTopic] = useState("");
   const [goal, setGoal] = useState(GOALS[0]);
   const [hookStyle, setHookStyle] = useState(HOOK_STYLES[0]);
@@ -322,7 +322,7 @@ export default function Home() {
         selectedPhoto.full,
         overlayText,
         portrait,
-        `maries-post${suffix}.png`,
+        `content-post${suffix}.png`,
       );
     } catch (e) {
       setImagesError(e instanceof Error ? e.message : String(e));
@@ -348,7 +348,7 @@ export default function Home() {
   return (
     <main className="app">
       <h1 className="app-title">
-        Marie&apos;s <span>Content Generator</span>
+        Content<span>Forge</span>
       </h1>
       <p className="app-sub">{view === "vault" ? "Your saved prompts — reload and reuse any time" : cfg.tagline}</p>
 
@@ -407,7 +407,7 @@ export default function Home() {
               <div className="field">
                 <label>Promo Angle</label>
                 <select value={promoAngle} onChange={(e) => setPromoAngle(e.target.value)}>
-                  {SWC_ANGLES.map((a) => (
+                  {PROMO_ANGLES.map((a) => (
                     <option key={a}>{a}</option>
                   ))}
                 </select>
@@ -447,7 +447,7 @@ export default function Home() {
             <input
               value={topic}
               onChange={(e) => setTopic(e.target.value)}
-              placeholder="e.g. lavender pillow spray, SWC 2.0 course, vitamin C serum…"
+              placeholder="e.g. lavender pillow spray, my online course, vitamin C serum…"
             />
           </div>
 
@@ -456,13 +456,13 @@ export default function Home() {
             <textarea
               value={extraContext}
               onChange={(e) => setExtraContext(e.target.value)}
-              placeholder="Anything else Marie should know — brand details, story beats, what to avoid…"
+              placeholder="Anything else the AI should know — your story, niche, brand details, what to avoid…"
             />
           </div>
         </div>
 
         <button className="btn btn-primary" onClick={generate} disabled={loading}>
-          {loading ? "Writing in Marie's voice…" : "Generate Content"}
+          {loading ? "Writing your content…" : "Generate Content"}
         </button>
       </div>
 
@@ -599,7 +599,7 @@ export default function Home() {
       )}
 
       <footer className="footer">
-        <b>@mariesdigitalmanifesto</b> · <b>@scrubs2sales</b>
+        <b>ContentForge</b> · AI content in your voice
       </footer>
     </main>
   );

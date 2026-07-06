@@ -1,10 +1,11 @@
-# Marie's Content Generator
+# ContentForge
 
-A Next.js app that generates UGC, Instagram, TikTok, and SWC course promo content in Marie's voice — scripts, captions, and upload-ready images.
+A Next.js app that generates UGC, Instagram, TikTok, and digital-product promo content in your voice — scripts, captions, and upload-ready images.
 
 ## What it does
 
-- **4 creator modes** (tabs): UGC Video Creator, Instagram Creator, TikTok Creator, SWC Course Promo — each with its own color system, formats, and voice rules.
+- **4 creator modes** (tabs): UGC Video Creator, Instagram Creator, TikTok Creator, Digital Product Promo — each with its own color system, formats, and voice rules.
+- **Prompt Vault**: save any generation setup (mode, format, topic, goal, hook, extra context) plus the copy it produced, then search, tag, favorite, and reload/reuse it any time. Persisted client-side in the browser.
 - **Script & copy generation** via the Anthropic API (server-side, key never exposed).
 - **Pexels image search** baked in: after generating, the app fetches 3 relevant background images.
 - **Visual preview panel** for static formats (Single Feed Post, Carousel, Stories): click an image, see your copy overlaid in bold white text, swipe carousel slides.
