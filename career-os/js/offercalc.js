@@ -46,6 +46,17 @@ function ocNum(v){
 }
 function ocFmt(n){ return "$" + Math.round(n).toLocaleString("en-US"); }
 
+// Vesting years needs its own parse: "" (never entered) should default to 4,
+// but an explicit "0" (fully vested/immediate) must NOT collapse into that
+// same default via `|| 4` — that would silently 4x-understate a grant whose
+// full value should count this year.
+function ocEquityYears(v){
+  const s = String(v||"").trim();
+  if(!s) return 4;
+  const n = ocNum(v);
+  return n > 0 ? n : 1;
+}
+
 function ocLoad(){ ocOffers = { a: defaultOffer(), b: defaultOffer() }; }
 
 /* ---- MATH ------------------------------------------------------------------
@@ -54,7 +65,7 @@ function ocLoad(){ ocOffers = { a: defaultOffer(), b: defaultOffer() }; }
    to get an annual-equivalent figure; this ignores cliffs/back-loading. */
 function ocCompute(o){
   const base = ocNum(o.base), signing = ocNum(o.signing), bonus = ocNum(o.bonus),
-        equityTotal = ocNum(o.equityTotal), equityYears = ocNum(o.equityYears) || 4,
+        equityTotal = ocNum(o.equityTotal), equityYears = ocEquityYears(o.equityYears),
         benefits = ocNum(o.benefits), col = ocNum(o.col), pto = ocNum(o.pto);
   const equityAnnual = equityYears > 0 ? equityTotal / equityYears : 0;
   const ongoing = base + bonus + equityAnnual + benefits;

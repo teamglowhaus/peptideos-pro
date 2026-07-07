@@ -24,7 +24,8 @@ with five occupation editions.
 - **Cover Letter Builder** — the Résumé Builder's companion: write and format
   an actual cover letter with a live preview and the same Print/PDF, text, and
   Word exports (distinct from the "Cover Letter" prompt tool, which composes
-  an AI prompt instead).
+  an AI prompt instead). Same multi-profile system as the Résumé Builder — save
+  a separate named letter per application — plus one-click **Load example**.
 - **Job Tracker** — a drag-and-drop Kanban board (Wishlist → Applied →
   Interview → Offer → Rejected) with search, filter, autosave, and
   **CSV export** for a real backup you can open in Excel or Sheets.
