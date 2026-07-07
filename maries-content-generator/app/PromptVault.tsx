@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { MODES } from "@/lib/modes";
 import { allTags, parseTagInput, type VaultPrompt } from "@/lib/vault";
 
@@ -11,6 +11,8 @@ interface Props {
   onToggleFavorite: (id: string) => void;
   onUpdate: (id: string, patch: { name: string; tags: string[] }) => void;
   onStartCreating: () => void;
+  onExport: () => void;
+  onImport: (text: string) => { added: number; error?: string };
 }
 
 type ModeFilter = "all" | "favorites" | keyof typeof MODES;
@@ -41,6 +43,8 @@ export default function PromptVault({
   onToggleFavorite,
   onUpdate,
   onStartCreating,
+  onExport,
+  onImport,
 }: Props) {
   const [query, setQuery] = useState("");
   const [modeFilter, setModeFilter] = useState<ModeFilter>("all");
@@ -49,8 +53,49 @@ export default function PromptVault({
   const [editName, setEditName] = useState("");
   const [editTags, setEditTags] = useState("");
   const [copiedId, setCopiedId] = useState<string | null>(null);
+  const [importNote, setImportNote] = useState("");
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const tags = useMemo(() => allTags(prompts), [prompts]);
+
+  async function handleImportFile(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    e.target.value = ""; // allow re-importing the same file later
+    if (!file) return;
+    try {
+      const text = await file.text();
+      const res = onImport(text);
+      setImportNote(
+        res.error
+          ? res.error
+          : `Imported ${res.added} prompt${res.added === 1 ? "" : "s"}.`,
+      );
+    } catch {
+      setImportNote("Couldn't read that file.");
+    }
+    setTimeout(() => setImportNote(""), 4000);
+  }
+
+  const backupBar = (
+    <div className="vault-backup">
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="application/json,.json"
+        onChange={handleImportFile}
+        style={{ display: "none" }}
+      />
+      {prompts.length > 0 && (
+        <button className="btn btn-ghost" onClick={onExport}>
+          ⬇ Export backup
+        </button>
+      )}
+      <button className="btn btn-ghost" onClick={() => fileInputRef.current?.click()}>
+        ⬆ Import backup
+      </button>
+      {importNote && <span className="vault-import-note">{importNote}</span>}
+    </div>
+  );
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -105,6 +150,7 @@ export default function PromptVault({
         <button className="btn btn-primary vault-empty-btn" onClick={onStartCreating}>
           Create your first one
         </button>
+        <div className="vault-empty-backup">{backupBar}</div>
       </div>
     );
   }
@@ -113,6 +159,7 @@ export default function PromptVault({
 
   return (
     <div className="panel">
+      {backupBar}
       <div className="vault-controls">
         <input
           className="vault-search"

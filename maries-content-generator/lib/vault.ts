@@ -4,6 +4,16 @@
 import type { ModeId, Platform } from "./modes";
 
 const STORAGE_KEY = "contentforge-prompt-vault-v1";
+// Older builds stored the vault under these keys; loadVault migrates them forward
+// so nobody loses saved prompts when the app is renamed.
+const LEGACY_STORAGE_KEYS = ["maries-prompt-vault-v1"];
+
+// Tracks whether the most recent write to localStorage succeeded, so the UI can
+// warn the user (e.g. storage full) instead of silently losing their data.
+let lastWriteOk = true;
+export function lastWriteSucceeded(): boolean {
+  return lastWriteOk;
+}
 
 // A saved prompt captures the full generation setup plus the last output.
 export interface VaultPrompt {
@@ -40,10 +50,9 @@ function makeId(): string {
   return `p_${Date.now().toString(36)}_${Math.floor(Math.random() * 1e6).toString(36)}`;
 }
 
-export function loadVault(): VaultPrompt[] {
-  if (!isBrowser()) return [];
+function readKey(key: string): VaultPrompt[] {
   try {
-    const raw = window.localStorage.getItem(STORAGE_KEY);
+    const raw = window.localStorage.getItem(key);
     if (!raw) return [];
     const parsed = JSON.parse(raw);
     if (!Array.isArray(parsed)) return [];
@@ -53,12 +62,34 @@ export function loadVault(): VaultPrompt[] {
   }
 }
 
-function persist(prompts: VaultPrompt[]): void {
-  if (!isBrowser()) return;
+export function loadVault(): VaultPrompt[] {
+  if (!isBrowser()) return [];
+  const current = readKey(STORAGE_KEY);
+  if (current.length > 0) return current;
+  // One-time migration: pull prompts saved by an older build's key forward.
+  for (const legacy of LEGACY_STORAGE_KEYS) {
+    const old = readKey(legacy);
+    if (old.length > 0) {
+      persist(old);
+      return old;
+    }
+  }
+  return current;
+}
+
+function persist(prompts: VaultPrompt[]): boolean {
+  if (!isBrowser()) {
+    lastWriteOk = true;
+    return true;
+  }
   try {
     window.localStorage.setItem(STORAGE_KEY, JSON.stringify(prompts));
+    lastWriteOk = true;
+    return true;
   } catch {
-    // storage full or blocked — nothing we can do beyond failing silently
+    // storage full or blocked — surface it so the caller can warn the user
+    lastWriteOk = false;
+    return false;
   }
 }
 
@@ -132,4 +163,43 @@ export function allTags(prompts: VaultPrompt[]): string[] {
   const set = new Set<string>();
   for (const p of prompts) for (const t of p.tags) set.add(t);
   return [...set].sort();
+}
+
+// Serialize the whole vault into a downloadable backup file.
+export function exportVault(prompts: VaultPrompt[]): string {
+  return JSON.stringify(prompts, null, 2);
+}
+
+// Merge a backup file into the current vault, skipping ids already present.
+// Returns the merged list and how many new prompts were added (or an error).
+export function importVault(
+  prompts: VaultPrompt[],
+  json: string,
+): { prompts: VaultPrompt[]; added: number; error?: string } {
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(json);
+  } catch {
+    return { prompts, added: 0, error: "That file isn't valid JSON." };
+  }
+  if (!Array.isArray(parsed)) {
+    return { prompts, added: 0, error: "That backup file isn't in the expected format." };
+  }
+  const valid = parsed.filter(
+    (p): p is VaultPrompt =>
+      !!p &&
+      typeof p.id === "string" &&
+      typeof p.name === "string" &&
+      typeof p.mode === "string",
+  );
+  const existing = new Set(prompts.map((p) => p.id));
+  const incoming = valid
+    .filter((p) => !existing.has(p.id))
+    .map((p) => ({ ...p, tags: normalizeTags(Array.isArray(p.tags) ? p.tags : []) }));
+  if (incoming.length === 0) {
+    return { prompts, added: 0, error: valid.length ? "Those prompts are already in your vault." : "No valid prompts found in that file." };
+  }
+  const next = [...incoming, ...prompts];
+  persist(next);
+  return { prompts: next, added: incoming.length };
 }

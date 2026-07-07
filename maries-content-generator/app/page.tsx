@@ -17,6 +17,9 @@ import {
 } from "@/lib/modes";
 import {
   addPrompt,
+  exportVault,
+  importVault,
+  lastWriteSucceeded,
   loadVault,
   parseTagInput,
   removePrompt,
@@ -182,6 +185,7 @@ export default function Home() {
   const [saveName, setSaveName] = useState("");
   const [saveTags, setSaveTags] = useState("");
   const [savedFlash, setSavedFlash] = useState(false);
+  const [saveError, setSaveError] = useState("");
 
   const cfg = MODES[mode];
   const formats = useMemo(() => {
@@ -212,26 +216,48 @@ export default function Home() {
   function openSaveDialog() {
     setSaveName(topic.trim() ? `${topic.trim()} — ${format}` : format);
     setSaveTags("");
+    setSaveError("");
     setSaving(true);
   }
 
   function confirmSave() {
-    setVault((v) =>
-      addPrompt(v, saveName, parseTagInput(saveTags), {
-        mode,
-        platform,
-        format,
-        promoAngle: mode === "swc" ? promoAngle : undefined,
-        topic,
-        goal,
-        hookStyle,
-        extraContext: extraContext.trim() || undefined,
-        output: output || undefined,
-      }),
-    );
+    const next = addPrompt(vault, saveName, parseTagInput(saveTags), {
+      mode,
+      platform,
+      format,
+      promoAngle: mode === "swc" ? promoAngle : undefined,
+      topic,
+      goal,
+      hookStyle,
+      extraContext: extraContext.trim() || undefined,
+      output: output || undefined,
+    });
+    setVault(next);
+    if (!lastWriteSucceeded()) {
+      setSaveError(
+        "Couldn't save — your browser's storage looks full. Export a backup, then delete a few old prompts and try again.",
+      );
+      return;
+    }
+    setSaveError("");
     setSaving(false);
     setSavedFlash(true);
     setTimeout(() => setSavedFlash(false), 1600);
+  }
+
+  function exportVaultFile() {
+    const blob = new Blob([exportVault(vault)], { type: "application/json" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "contentforge-vault-backup.json";
+    a.click();
+    URL.revokeObjectURL(a.href);
+  }
+
+  function importVaultText(text: string): { added: number; error?: string } {
+    const res = importVault(vault, text);
+    if (!res.error) setVault(res.prompts);
+    return { added: res.added, error: res.error };
   }
 
   function loadFromVault(p: VaultPrompt) {
@@ -375,6 +401,8 @@ export default function Home() {
           onToggleFavorite={(id) => setVault((v) => toggleFavorite(v, id))}
           onUpdate={(id, patch) => setVault((v) => updatePrompt(v, id, patch))}
           onStartCreating={() => setView("create")}
+          onExport={exportVaultFile}
+          onImport={importVaultText}
         />
       )}
 
@@ -512,6 +540,7 @@ export default function Home() {
                   placeholder="e.g. skincare, promo, evergreen"
                 />
               </div>
+              {saveError && <div className="error-box">{saveError}</div>}
               <div className="save-dialog-actions">
                 <button className="btn btn-primary save-dialog-save" onClick={confirmSave}>
                   Save to Vault
