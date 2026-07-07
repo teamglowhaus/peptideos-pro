@@ -3,7 +3,9 @@
 // and sent per-request to this app's own API routes, which forward them to
 // Anthropic / Pexels. Server env vars still work and take precedence.
 
-const STORAGE_KEY = "contentforge-settings-v1";
+const STORAGE_KEY = "scriptline-settings-v1";
+// Keys used by earlier builds, migrated forward so a saved API key survives a rename.
+const LEGACY_STORAGE_KEYS = ["contentforge-settings-v1"];
 
 export interface Settings {
   anthropicKey: string;
@@ -16,19 +18,34 @@ function isBrowser(): boolean {
   return typeof window !== "undefined" && !!window.localStorage;
 }
 
-export function loadSettings(): Settings {
-  if (!isBrowser()) return { ...EMPTY };
+function readKey(key: string): Settings | null {
   try {
-    const raw = window.localStorage.getItem(STORAGE_KEY);
-    if (!raw) return { ...EMPTY };
+    const raw = window.localStorage.getItem(key);
+    if (!raw) return null;
     const parsed = JSON.parse(raw);
-    return {
+    const s: Settings = {
       anthropicKey: typeof parsed?.anthropicKey === "string" ? parsed.anthropicKey : "",
       pexelsKey: typeof parsed?.pexelsKey === "string" ? parsed.pexelsKey : "",
     };
+    return s.anthropicKey || s.pexelsKey ? s : null;
   } catch {
-    return { ...EMPTY };
+    return null;
   }
+}
+
+export function loadSettings(): Settings {
+  if (!isBrowser()) return { ...EMPTY };
+  const current = readKey(STORAGE_KEY);
+  if (current) return current;
+  // One-time migration: carry a saved key forward from an older build's key.
+  for (const legacy of LEGACY_STORAGE_KEYS) {
+    const old = readKey(legacy);
+    if (old) {
+      saveSettings(old);
+      return old;
+    }
+  }
+  return { ...EMPTY };
 }
 
 export function saveSettings(settings: Settings): boolean {

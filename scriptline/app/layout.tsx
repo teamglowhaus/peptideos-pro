@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "ContentForge",
+  title: "Scriptline",
   description:
     "UGC, Instagram, TikTok, and digital-product promo content in your voice — scripts, captions, and upload-ready images.",
 };

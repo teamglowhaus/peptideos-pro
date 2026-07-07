@@ -280,7 +280,7 @@ export default function Home() {
     const blob = new Blob([exportVault(vault)], { type: "application/json" });
     const a = document.createElement("a");
     a.href = URL.createObjectURL(blob);
-    a.download = "contentforge-vault-backup.json";
+    a.download = "scriptline-vault-backup.json";
     a.click();
     URL.revokeObjectURL(a.href);
   }
@@ -423,7 +423,7 @@ export default function Home() {
   return (
     <main className="app">
       <h1 className="app-title">
-        Content<span>Forge</span>
+        Script<span>line</span>
       </h1>
       <p className="app-sub">{view === "vault" ? "Your saved prompts — reload and reuse any time" : cfg.tagline}</p>
 
@@ -743,7 +743,7 @@ export default function Home() {
       )}
 
       <footer className="footer">
-        <b>ContentForge</b> · AI content in your voice
+        <b>Scriptline</b> · AI content in your voice
       </footer>
     </main>
   );

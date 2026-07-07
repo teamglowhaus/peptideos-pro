@@ -3,10 +3,10 @@
 
 import { MODES, type ModeId, type Platform } from "./modes";
 
-const STORAGE_KEY = "contentforge-prompt-vault-v1";
+const STORAGE_KEY = "scriptline-prompt-vault-v1";
 // Older builds stored the vault under these keys; loadVault migrates them forward
 // so nobody loses saved prompts when the app is renamed.
-const LEGACY_STORAGE_KEYS = ["maries-prompt-vault-v1"];
+const LEGACY_STORAGE_KEYS = ["contentforge-prompt-vault-v1", "maries-prompt-vault-v1"];
 
 // Tracks whether the most recent write to localStorage succeeded, so the UI can
 // warn the user (e.g. storage full) instead of silently losing their data.

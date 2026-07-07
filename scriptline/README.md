@@ -1,4 +1,4 @@
-# ContentForge
+# Scriptline
 
 A Next.js app that generates UGC, Instagram, TikTok, and digital-product promo content in your voice — scripts, captions, and upload-ready images.
 
@@ -32,7 +32,7 @@ If a server env var is set it takes precedence; otherwise the app uses the key s
 ## Local setup
 
 ```bash
-cd maries-content-generator
+cd scriptline
 npm install
 cp .env.example .env.local   # optional — or just use the in-app Settings
 npm run dev
@@ -40,7 +40,7 @@ npm run dev
 
 ## Deploy to Vercel
 
-1. Import the repo in Vercel and set the **Root Directory** to `maries-content-generator`.
+1. Import the repo in Vercel and set the **Root Directory** to `scriptline`.
 2. Add `ANTHROPIC_API_KEY` and `PEXELS_API_KEY` as environment variables.
 3. Deploy.
 
