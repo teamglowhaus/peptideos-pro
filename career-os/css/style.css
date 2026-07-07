@@ -361,6 +361,7 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 /* ============================ ATS KEYWORD CHECKER ============================ */
 #view-atscheck .field textarea{min-height:220px}
 #atsUseResume{margin-top:-6px;margin-bottom:4px}
+.ats-cap-note{margin:0 20px 4px;font-family:var(--f-mono);font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-faint)}
 .ats-cols{display:grid;grid-template-columns:1fr 1fr;gap:20px;padding:0 20px 20px}
 @media(max-width:600px){.ats-cols{grid-template-columns:1fr}}
 .ats-col h4{font-family:var(--f-mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:10px}
