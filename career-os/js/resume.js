@@ -87,6 +87,67 @@ function defaultResume(){
 }
 let resumeData = null;
 
+/* ---- RÉSUMÉ PROFILES (Phase 8) --------------------------------------------
+   Multiple named, saved résumés — e.g. one tailored per target role — instead
+   of a single slot. One namespaced key (`cos_resumes`) holds every profile;
+   `resumeData` always points at the ACTIVE profile's data object, so every
+   existing function that reads/writes resumeData's properties in place
+   (rather than reassigning the variable) keeps working unchanged. */
+let resumesStore = null;   // { activeId, profiles:[{id, name, isExample, data}] }
+
+function newProfileId(){
+  if(window.crypto && crypto.randomUUID) return crypto.randomUUID();
+  return "rp_" + Date.now().toString(36) + Math.random().toString(36).slice(2,7);
+}
+function activeProfile(){
+  return resumesStore.profiles.find(p => p.id === resumesStore.activeId) || resumesStore.profiles[0];
+}
+function syncActiveResumeData(){
+  const p = activeProfile();
+  resumeData = p.data;
+  RESUME_SECTION_ORDER.forEach(s => { if(!Array.isArray(resumeData[s])) resumeData[s] = []; });
+}
+function createResumeProfile(){
+  const name = (prompt('Name this résumé (e.g. "Nursing — General")', "Untitled résumé") || "").trim();
+  if(!name) return;
+  const id = newProfileId();
+  resumesStore.profiles.push({ id, name, isExample:false, data: defaultResume() });
+  resumesStore.activeId = id;
+  syncActiveResumeData();
+  saveResume();
+  renderResume();
+  toast("New résumé profile created");
+}
+function duplicateResumeProfile(){
+  const src = activeProfile();
+  const id = newProfileId();
+  resumesStore.profiles.push({ id, name: src.name + " (copy)", isExample: !!src.isExample, data: JSON.parse(JSON.stringify(src.data)) });
+  resumesStore.activeId = id;
+  syncActiveResumeData();
+  saveResume();
+  renderResume();
+  toast("Résumé duplicated");
+}
+function renameResumeProfile(){
+  const p = activeProfile();
+  const name = (prompt("Rename this résumé", p.name) || "").trim();
+  if(!name) return;
+  p.name = name;
+  saveResume();
+  renderResume();
+}
+function deleteResumeProfile(){
+  if(resumesStore.profiles.length <= 1){ toast("You need at least one résumé"); return; }
+  const p = activeProfile();
+  if(!confirm(`Delete "${p.name}"? This can't be undone.`)) return;
+  resumesStore.profiles = resumesStore.profiles.filter(x => x.id !== p.id);
+  resumesStore.activeId = resumesStore.profiles[0].id;
+  syncActiveResumeData();
+  saveResume();
+  renderResume();
+  toast("Résumé deleted");
+}
+
 /* ---- EXAMPLE RÉSUMÉS (Phase 7 — "Load example") ---------------------------
    One fully-written, occupation-aware example per edition. "Load example"
    drops a finished résumé into the builder so a buyer can see, edit, and
@@ -180,21 +241,17 @@ function hasResumeContent(d){
   });
 }
 
-// True while the builder holds unedited example data. Every field's every
-// name/company/school is fictional, but it's polished enough to look like a
-// finished, submittable résumé — so we keep a persistent banner (not just a
-// toast) up until the user actually edits something, to head off someone
-// exporting it as-is.
-let exampleActive = false;
-
+// isExample lives on the profile itself (not a single global flag), so
+// duplicating/switching profiles carries the right "still unedited sample"
+// state per profile instead of one flag shared across all of them.
 // Deep-clone so edits to the loaded example never mutate the shared template.
 function loadExampleResume(){
   const example = RESUME_EXAMPLES[store.occ] || RESUME_EXAMPLES.general;
   if(hasResumeContent(resumeData) &&
      !confirm("Replace your current résumé with a filled-in example? You can edit every field afterward. This can't be undone.")) return;
-  resumeData = JSON.parse(JSON.stringify(example));
+  Object.assign(resumeData, JSON.parse(JSON.stringify(example)));
   RESUME_SECTION_ORDER.forEach(s => { if(!Array.isArray(resumeData[s])) resumeData[s] = []; });
-  exampleActive = true;
+  activeProfile().isExample = true;
   saveResume();
   renderResume();
   toast("Example loaded — every name and detail is fictional, replace it all before you send this anywhere");
@@ -202,18 +259,30 @@ function loadExampleResume(){
 
 function renderExampleBanner(){
   const el = $('#resumeExampleBanner'); if(!el) return;
-  el.innerHTML = !exampleActive ? "" : `
+  const isExample = !!(resumesStore && activeProfile().isExample);
+  el.innerHTML = !isExample ? "" : `
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4M12 17h.01M10.3 3.9 2.5 17a2 2 0 0 0 1.7 3h15.6a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg>
     <span><b>Sample content.</b> Every name, employer, and result here is fictional — replace all of it before exporting or sending this résumé anywhere.</span>`;
 }
 
+// One-time migration: buyers who saved a résumé before profiles existed had
+// it under the old singular `cos_resume` key — fold it into profile 1 instead
+// of losing it, then retire the old key so there's only ever one copy.
 function loadResume(){
-  const saved = store.resume;            // single namespaced key (see app.js store.resume)
-  resumeData = Object.assign(defaultResume(), saved || {});
-  // guarantee every repeatable section is an array (forward-compatible)
-  RESUME_SECTION_ORDER.forEach(s => { if(!Array.isArray(resumeData[s])) resumeData[s] = []; });
+  resumesStore = store.resumes;
+  if(!resumesStore){
+    let legacy = null;
+    try { legacy = JSON.parse(localStorage.getItem('cos_resume') || 'null'); } catch {}
+    const id = newProfileId();
+    const data = Object.assign(defaultResume(), legacy || {});
+    RESUME_SECTION_ORDER.forEach(s => { if(!Array.isArray(data[s])) data[s] = []; });
+    resumesStore = { activeId:id, profiles:[{ id, name:"My Résumé", isExample:false, data }] };
+    store.resumes = resumesStore;
+    if(legacy) localStorage.removeItem('cos_resume');
+  }
+  syncActiveResumeData();
 }
-function saveResume(){ store.resume = resumeData; }   // autosave through the one store
+function saveResume(){ store.resumes = resumesStore; }   // autosave through the one store
 
 /* ---- FORM RENDER (rebuilt on structural change only) --------------------- */
 function renderResume(){
@@ -231,8 +300,21 @@ function renderResume(){
     return `<div class="field"><label>${l}</label>${ctrl}</div>`;
   };
 
+  // 0) Profile switcher — multiple named, saved résumés (Phase 8)
+  let html = `<div class="card rs-card rs-profile-bar">
+    <select id="resumeProfileSelect" aria-label="Résumé profile">
+      ${resumesStore.profiles.map(p => `<option value="${escapeAttr(p.id)}" ${p.id===resumesStore.activeId?'selected':''}>${escapeHtml(p.name)}</option>`).join("")}
+    </select>
+    <div class="rs-profile-actions">
+      <button class="btn-sm btn-link" id="rpNew">+ New</button>
+      <button class="btn-sm btn-link" id="rpDuplicate">Duplicate</button>
+      <button class="btn-sm btn-link" id="rpRename">Rename</button>
+      <button class="btn-sm btn-link" id="rpDelete" ${resumesStore.profiles.length<=1?'disabled':''}>Delete</button>
+    </div>
+  </div>`;
+
   // 1) Identity + contact
-  let html = `<div class="card rs-card">
+  html += `<div class="card rs-card">
     <div class="rs-head"><span class="rs-no">I.</span><h3>Identity</h3><span class="rule-dot"></span></div>
     ${F("name","Full name",resumeData.name,"Jordan Avery Rivera")}
     ${F("target","Target position",resumeData.target,o.roleEx)}
@@ -530,13 +612,18 @@ function initResumeBuilder(){
     if(t.dataset.f !== undefined){ resumeData[t.dataset.f] = t.value; }
     else if(t.dataset.sec !== undefined){ resumeData[t.dataset.sec][+t.dataset.i][t.dataset.k] = t.value; }
     else return;
-    exampleActive = false;
+    activeProfile().isExample = false;
     saveResume();
     renderResumePreview();
   });
 
   // structural actions → mutate arrays, autosave, full re-render
   form.addEventListener("click", e => {
+    if(e.target.closest("#rpNew"))       { createResumeProfile();     return; }
+    if(e.target.closest("#rpDuplicate")) { duplicateResumeProfile();  return; }
+    if(e.target.closest("#rpRename"))    { renameResumeProfile();     return; }
+    if(e.target.closest("#rpDelete"))    { deleteResumeProfile();     return; }
+
     const add = e.target.closest("[data-add]");
     const del = e.target.closest("[data-del]");
     const up  = e.target.closest("[data-up]");
@@ -546,7 +633,16 @@ function initResumeBuilder(){
     else if(up){ const s=up.dataset.up, i=+up.dataset.i; if(i>0) [resumeData[s][i-1],resumeData[s][i]]=[resumeData[s][i],resumeData[s][i-1]]; }
     else if(dn){ const s=dn.dataset.down, i=+dn.dataset.i; const a=resumeData[s]; if(i<a.length-1) [a[i+1],a[i]]=[a[i],a[i+1]]; }
     else return;
-    exampleActive = false;
+    activeProfile().isExample = false;
+    saveResume();
+    renderResume();
+  });
+
+  // switching the active profile
+  form.addEventListener("change", e => {
+    if(e.target.id !== "resumeProfileSelect") return;
+    resumesStore.activeId = e.target.value;
+    syncActiveResumeData();
     saveResume();
     renderResume();
   });

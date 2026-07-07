@@ -16,12 +16,14 @@ with five occupation editions.
   plus live application/interview/offer counts pulled straight from your Job
   Tracker.
 - **Résumé Builder** — a multi-section form with a live one-page preview and
-  export to **PDF (print), plain text, and Word (.doc)**. Autosaves. One-click
-  **Load example** drops in a polished, occupation-aware sample résumé to
-  edit from, and a live **Résumé Score** checklist tells you what's still
-  missing — both fully offline, no AI call.
+  export to **PDF (print), plain text, and Word (.doc)**. Autosaves. Save
+  **multiple named résumé profiles** (e.g. one tailored per target role) and
+  switch between them freely. One-click **Load example** drops in a polished,
+  occupation-aware sample résumé to edit from, and a live **Résumé Score**
+  checklist tells you what's still missing — both fully offline, no AI call.
 - **Job Tracker** — a drag-and-drop Kanban board (Wishlist → Applied →
-  Interview → Offer → Rejected) with search, filter, and autosave.
+  Interview → Offer → Rejected) with search, filter, autosave, and
+  **CSV export** for a real backup you can open in Excel or Sheets.
 - **40+ AI prompt tools** across **Build · Résumés · Apply · Interview · Track**.
   Each turns a few inputs into an expert-grade prompt you copy into Claude or
   ChatGPT — you never have to write the prompt yourself. Includes eight

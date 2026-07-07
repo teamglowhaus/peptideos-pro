@@ -33,9 +33,11 @@ const store = {
   get done(){ try { return JSON.parse(localStorage.getItem('cos_done') || '[]'); } catch { return []; } },
   markDone(id){ const d = new Set(this.done); d.add(id); localStorage.setItem('cos_done', JSON.stringify([...d])); },
 
-  // Resume Builder data — one namespaced key holds the whole résumé (Phase 3)
-  get resume(){ try { return JSON.parse(localStorage.getItem('cos_resume') || 'null'); } catch { return null; } },
-  set resume(v){ if(this.autosave) localStorage.setItem('cos_resume', JSON.stringify(v)); },
+  // Resume Builder data — one namespaced key holds ALL named résumé profiles
+  // (Phase 8). resume.js migrates the old singular `cos_resume` key on first
+  // load, so nothing reads/writes it through the store anymore.
+  get resumes(){ try { return JSON.parse(localStorage.getItem('cos_resumes') || 'null'); } catch { return null; } },
+  set resumes(v){ if(this.autosave) localStorage.setItem('cos_resumes', JSON.stringify(v)); },
 
   // Job Tracker board — one namespaced key holds the whole board (Phase 4)
   get board(){ try { return JSON.parse(localStorage.getItem('cos_board') || 'null'); } catch { return null; } },

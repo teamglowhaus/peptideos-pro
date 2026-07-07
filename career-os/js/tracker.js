@@ -50,6 +50,22 @@ function loadBoard(){
   board = store.board || defaultBoard();
   if(!Array.isArray(board.jobs)) board.jobs = [];
 }
+
+/* ---- CSV EXPORT (Phase 8) -------------------------------------------------
+   A real backup/portability option — Excel/Sheets-openable, not just
+   "print the page." Reuses downloadBlob() (defined in resume.js, loaded
+   first, so it's already a global by the time this ever runs). */
+function csvCell(v){
+  const s = String(v == null ? "" : v);
+  return /[",\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s;
+}
+function boardToCsv(){
+  const statusLabel = s => (TRACKER_COLUMNS.find(c => c.key === s) || {}).label || s;
+  const header = ["Company","Role","Status","Location","Salary / Comp","Link","Added","Notes"];
+  const rows = board.jobs.map(j => [j.company, j.role, statusLabel(j.status), j.location, j.comp, j.link, j.added, j.notes]);
+  // UTF-8 BOM so Excel renders accented characters correctly instead of mojibake
+  return "\uFEFF" + [header, ...rows].map(r => r.map(csvCell).join(",")).join("\r\n");
+}
 // autosave through the one store; also refreshes the Dashboard's live counts
 function saveBoard(){ store.board = board; if(typeof renderStats === 'function') renderStats(); }
 function getJob(id){ return board.jobs.find(j => j.id === id); }
@@ -227,6 +243,11 @@ function initJobTracker(){
   $('#trackerAdd').addEventListener("click", () => openJobModal(null));
   $('#trackerSearch').addEventListener("input", e => { trackerSearch = e.target.value; renderBoard(); });
   $('#trackerFilter').addEventListener("change", e => { trackerFilter = e.target.value; renderBoard(); });
+  $('#trackerExport').addEventListener("click", () => {
+    if(!board.jobs.length){ toast("Add a job before exporting"); return; }
+    downloadBlob(boardToCsv(), "job-tracker-" + todayStr().replace(/[^\w]+/g, "-") + ".csv", "text/csv");
+    toast("Job tracker exported");
+  });
 
   // --- modal ---
   $('#jobSave').addEventListener("click", saveJobFromModal);
