@@ -232,13 +232,15 @@ export default function Home() {
       extraContext: extraContext.trim() || undefined,
       output: output || undefined,
     });
-    setVault(next);
+    // Only reflect the save in the UI if it actually reached storage — otherwise
+    // the prompt would appear "saved" but vanish on reload.
     if (!lastWriteSucceeded()) {
       setSaveError(
         "Couldn't save — your browser's storage looks full. Export a backup, then delete a few old prompts and try again.",
       );
       return;
     }
+    setVault(next);
     setSaveError("");
     setSaving(false);
     setSavedFlash(true);

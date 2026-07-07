@@ -1,7 +1,7 @@
 // Client-side Prompt Vault — saves, organizes, and reuses generation setups.
 // Persisted to localStorage so saved prompts survive reloads.
 
-import type { ModeId, Platform } from "./modes";
+import { MODES, type ModeId, type Platform } from "./modes";
 
 const STORAGE_KEY = "contentforge-prompt-vault-v1";
 // Older builds stored the vault under these keys; loadVault migrates them forward
@@ -170,6 +170,37 @@ export function exportVault(prompts: VaultPrompt[]): string {
   return JSON.stringify(prompts, null, 2);
 }
 
+// Coerce one untrusted backup entry into a well-formed VaultPrompt, or null if
+// it's unusable. Critically, rejects unknown modes — MODES[mode] is read during
+// render, so an invalid mode would otherwise crash the whole vault view.
+function sanitizePrompt(raw: unknown): VaultPrompt | null {
+  if (!raw || typeof raw !== "object") return null;
+  const p = raw as Record<string, unknown>;
+  if (typeof p.id !== "string" || !p.id) return null;
+  if (typeof p.mode !== "string" || !(p.mode in MODES)) return null;
+  const now = Date.now();
+  const str = (v: unknown, fallback = "") => (typeof v === "string" ? v : fallback);
+  return {
+    id: p.id,
+    name: str(p.name, "Untitled prompt"),
+    mode: p.mode as ModeId,
+    platform: p.platform === "TikTok" ? "TikTok" : "Instagram",
+    format: str(p.format),
+    promoAngle: typeof p.promoAngle === "string" ? p.promoAngle : undefined,
+    topic: str(p.topic),
+    goal: str(p.goal),
+    hookStyle: str(p.hookStyle),
+    extraContext: typeof p.extraContext === "string" ? p.extraContext : undefined,
+    output: typeof p.output === "string" ? p.output : undefined,
+    tags: normalizeTags(
+      Array.isArray(p.tags) ? (p.tags as unknown[]).filter((t): t is string => typeof t === "string") : [],
+    ),
+    favorite: p.favorite === true,
+    createdAt: typeof p.createdAt === "number" ? p.createdAt : now,
+    updatedAt: typeof p.updatedAt === "number" ? p.updatedAt : now,
+  };
+}
+
 // Merge a backup file into the current vault, skipping ids already present.
 // Returns the merged list and how many new prompts were added (or an error).
 export function importVault(
@@ -182,24 +213,44 @@ export function importVault(
   } catch {
     return { prompts, added: 0, error: "That file isn't valid JSON." };
   }
-  if (!Array.isArray(parsed)) {
+  // Accept either a raw array or a { prompts: [...] } envelope (forward-compat).
+  const list = Array.isArray(parsed)
+    ? parsed
+    : parsed && typeof parsed === "object" && Array.isArray((parsed as { prompts?: unknown }).prompts)
+      ? ((parsed as { prompts: unknown[] }).prompts)
+      : null;
+  if (!list) {
     return { prompts, added: 0, error: "That backup file isn't in the expected format." };
   }
-  const valid = parsed.filter(
-    (p): p is VaultPrompt =>
-      !!p &&
-      typeof p.id === "string" &&
-      typeof p.name === "string" &&
-      typeof p.mode === "string",
-  );
+
   const existing = new Set(prompts.map((p) => p.id));
-  const incoming = valid
-    .filter((p) => !existing.has(p.id))
-    .map((p) => ({ ...p, tags: normalizeTags(Array.isArray(p.tags) ? p.tags : []) }));
-  if (incoming.length === 0) {
-    return { prompts, added: 0, error: valid.length ? "Those prompts are already in your vault." : "No valid prompts found in that file." };
+  const seen = new Set<string>();
+  const incoming: VaultPrompt[] = [];
+  for (const raw of list) {
+    const clean = sanitizePrompt(raw);
+    if (!clean || existing.has(clean.id) || seen.has(clean.id)) continue;
+    seen.add(clean.id);
+    incoming.push(clean);
   }
+
+  if (incoming.length === 0) {
+    return {
+      prompts,
+      added: 0,
+      error: list.length
+        ? "No new prompts to import — they're already in your vault, or the file is invalid."
+        : "No prompts found in that file.",
+    };
+  }
+
   const next = [...incoming, ...prompts];
-  persist(next);
+  if (!persist(next)) {
+    return {
+      prompts,
+      added: 0,
+      error:
+        "Couldn't save the import — your browser's storage may be full. Export a backup and remove old prompts first.",
+    };
+  }
   return { prompts: next, added: incoming.length };
 }
