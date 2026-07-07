@@ -123,6 +123,24 @@
       </div>
     </section>
 
+    <!-- COVER LETTER BUILDER (custom view — Phase 8) -->
+    <section class="view" id="view-coverletter" hidden>
+      <div class="resume-shell">
+        <div class="resume-form" id="clForm"></div>
+        <div class="resume-preview">
+          <div class="resume-preview-head">
+            <span class="rp-title">Live preview · one page</span>
+            <div class="resume-actions">
+              <button class="btn-sm btn-copy" id="clPrint"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V2h12v7M6 18H4a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2h-2M6 14h12v8H6z"/></svg>Print / PDF</button>
+              <button class="btn-sm btn-link" id="clCopy"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="9" y="9" width="11" height="11" rx="1.5"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>Copy text</button>
+              <button class="btn-sm btn-link" id="clDoc"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m0 0 4-4m-4 4-4-4M5 21h14"/></svg>Download .doc</button>
+            </div>
+          </div>
+          <div class="resume-sheet" id="clSheet"></div>
+        </div>
+      </div>
+    </section>
+
     <!-- JOB TRACKER (custom view — Phase 4) -->
     <section class="view" id="view-tracker" hidden>
       <div class="tracker-toolbar">
@@ -205,6 +223,7 @@
 <script src="js/occupations.js"></script>
 <script src="js/modules.js"></script>
 <script src="js/resume.js"></script>
+<script src="js/coverletter.js"></script>
 <script src="js/tracker.js"></script>
 <script src="js/extras.js"></script>
 <script src="js/app.js"></script>

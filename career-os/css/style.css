@@ -334,6 +334,15 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 .resume-sheet li{font-size:12.5px;color:#3a3322;margin-bottom:2px}
 .resume-sheet .r-inline{font-size:12.5px;color:#3a3322}
 
+/* Cover Letter Builder preview — shares .resume-sheet's base look */
+.resume-sheet .cl-header{margin-bottom:16px}
+.resume-sheet .cl-date{font-family:var(--f-mono);font-size:11px;color:#7a6c50;margin-top:20px}
+.resume-sheet .cl-recipient{font-size:12.5px;color:#3a3322;margin-top:12px;line-height:1.5}
+.resume-sheet .cl-body{margin-top:22px}
+.resume-sheet .cl-body p{font-size:12.5px;color:#3a3322;line-height:1.65;margin-bottom:14px}
+.resume-sheet .cl-signoff{margin-top:6px}
+.resume-sheet .cl-signoff p{font-size:12.5px;color:#3a3322;margin:0}
+
 /* ============================ JOB TRACKER (Kanban) ============================ */
 /* Toolbar: add button + search + column filter */
 .tracker-toolbar{display:flex;align-items:center;gap:10px;margin-bottom:22px;flex-wrap:wrap}

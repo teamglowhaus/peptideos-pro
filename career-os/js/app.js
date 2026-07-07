@@ -43,6 +43,10 @@ const store = {
   get board(){ try { return JSON.parse(localStorage.getItem('cos_board') || 'null'); } catch { return null; } },
   set board(v){ if(this.autosave) localStorage.setItem('cos_board', JSON.stringify(v)); },
 
+  // Cover Letter Builder — one namespaced key holds the one letter (Phase 8)
+  get coverletter(){ try { return JSON.parse(localStorage.getItem('cos_coverletter') || 'null'); } catch { return null; } },
+  set coverletter(v){ if(this.autosave) localStorage.setItem('cos_coverletter', JSON.stringify(v)); },
+
   // Wipe all saved user content + preferences (Settings → Clear data)
   clearAll(){ Object.keys(localStorage).filter(k => k.startsWith('cos_')).forEach(k => localStorage.removeItem(k)); },
 };
@@ -57,7 +61,9 @@ function navModules(){
     const i = mods.findIndex(m => m.group === 'Track');
     if(i >= 0) mods.splice(i, 0, TRACKER_MODULE); else mods.push(TRACKER_MODULE);
   }
-  const head = (typeof RESUME_MODULE !== 'undefined') ? [RESUME_MODULE] : [];
+  const head = [];
+  if(typeof RESUME_MODULE !== 'undefined') head.push(RESUME_MODULE);
+  if(typeof COVERLETTER_MODULE !== 'undefined') head.push(COVERLETTER_MODULE);
   return head.concat(mods);
 }
 function findNavModule(id){ return navModules().find(m => m.id === id); }
@@ -261,7 +267,7 @@ function fallbackCopy(text, done){
 }
 
 /* ---- 6. ROUTER + EVENTS -------------------------------------------------- */
-const VIEWS = ['dashboard','module','resume','tracker','settings','help','bonuses'];
+const VIEWS = ['dashboard','module','resume','coverletter','tracker','settings','help','bonuses'];
 function showView(name){
   VIEWS.forEach(v => { const el = $('#view-'+v); if(el) el.hidden = (v !== name); });
   if(name === 'dashboard'){
@@ -277,6 +283,7 @@ function navTo(mod){
   if(!mod) return;
   setActiveNav(document.querySelector(`.nav-item[data-mod="${mod.id}"]`));
   if(mod.custom && mod.id === 'resume'){ renderResume(); showView('resume'); }
+  else if(mod.custom && mod.id === 'coverletter'){ renderCoverLetter(); showView('coverletter'); }
   else if(mod.custom && mod.id === 'tracker'){ renderTracker(); showView('tracker'); }
   else renderModule(mod);
   closeDrawer();
@@ -364,6 +371,7 @@ function escapeAttr(s){ return String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','
   renderRing();
   bindStaticEvents();
   initResumeBuilder();          // Phase 3 — binds the Resume Builder's events once
+  initCoverLetterBuilder();     // Phase 8 — binds the Cover Letter Builder's events once
   initJobTracker();             // Phase 4 — binds the Job Tracker's events once
   if(typeof initExtras === 'function') initExtras();  // Phase 6 — Settings/Help/Bonuses
 })();

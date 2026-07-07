@@ -21,6 +21,10 @@ with five occupation editions.
   switch between them freely. One-click **Load example** drops in a polished,
   occupation-aware sample résumé to edit from, and a live **Résumé Score**
   checklist tells you what's still missing — both fully offline, no AI call.
+- **Cover Letter Builder** — the Résumé Builder's companion: write and format
+  an actual cover letter with a live preview and the same Print/PDF, text, and
+  Word exports (distinct from the "Cover Letter" prompt tool, which composes
+  an AI prompt instead).
 - **Job Tracker** — a drag-and-drop Kanban board (Wishlist → Applied →
   Interview → Offer → Rejected) with search, filter, autosave, and
   **CSV export** for a real backup you can open in Excel or Sheets.
@@ -87,8 +91,9 @@ career-os/
 ├─ css/style.css         "The Career Atelier" design system
 ├─ js/
 │  ├─ occupations.js     OCCUPATIONS config — the 5 editions
-│  ├─ modules.js         MODULES config — the 33 prompt tools
-│  ├─ resume.js          Résumé Builder (custom view)
+│  ├─ modules.js         MODULES config — the prompt tools
+│  ├─ resume.js          Résumé Builder (custom view, multiple profiles)
+│  ├─ coverletter.js     Cover Letter Builder (custom view)
 │  ├─ tracker.js         Job Tracker (custom view)
 │  ├─ extras.js          Settings / Help / Bonuses
 │  └─ app.js             engine: store, router, renderers, occupation reskin
