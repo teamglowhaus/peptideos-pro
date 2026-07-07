@@ -28,6 +28,11 @@ with five occupation editions.
 - **Job Tracker** — a drag-and-drop Kanban board (Wishlist → Applied →
   Interview → Offer → Rejected) with search, filter, autosave, and
   **CSV export** for a real backup you can open in Excel or Sheets.
+- **Offer Comparison Calculator** — real arithmetic on two offers (base,
+  signing bonus, annual bonus, equity annualized over its vesting period,
+  benefits value, optional cost-of-living adjustment) instead of asking an
+  AI to estimate the math. Pairs with the "Offer Comparison" prompt tool,
+  which handles the qualitative side (culture, growth, stability).
 - **40+ AI prompt tools** across **Build · Résumés · Apply · Interview · Track**.
   Each turns a few inputs into an expert-grade prompt you copy into Claude or
   ChatGPT — you never have to write the prompt yourself. Includes eight
@@ -100,6 +105,7 @@ career-os/
 │  ├─ resume.js          Résumé Builder (custom view, multiple profiles)
 │  ├─ coverletter.js     Cover Letter Builder (custom view)
 │  ├─ flashcards.js      Interview Flashcards (custom view)
+│  ├─ offercalc.js       Offer Comparison Calculator (custom view)
 │  ├─ tracker.js         Job Tracker (custom view)
 │  ├─ extras.js          Settings / Help / Bonuses
 │  └─ app.js             engine: store, router, renderers, occupation reskin

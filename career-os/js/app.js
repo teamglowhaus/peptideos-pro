@@ -61,6 +61,12 @@ function navModules(){
     const i = mods.findIndex(m => m.group === 'Track');
     if(i >= 0) mods.splice(i, 0, TRACKER_MODULE); else mods.push(TRACKER_MODULE);
   }
+  if(typeof OFFERCALC_MODULE !== 'undefined'){
+    // insert right after the Job Tracker, not just "first Track item" (which
+    // would now match the Tracker itself and land before it instead of after)
+    const i = mods.findIndex(m => m.id === 'tracker');
+    if(i >= 0) mods.splice(i + 1, 0, OFFERCALC_MODULE); else mods.push(OFFERCALC_MODULE);
+  }
   if(typeof FLASHCARDS_MODULE !== 'undefined'){
     const i = mods.findIndex(m => m.group === 'Interview');
     if(i >= 0) mods.splice(i, 0, FLASHCARDS_MODULE); else mods.push(FLASHCARDS_MODULE);
@@ -271,7 +277,7 @@ function fallbackCopy(text, done){
 }
 
 /* ---- 6. ROUTER + EVENTS -------------------------------------------------- */
-const VIEWS = ['dashboard','module','resume','coverletter','tracker','flashcards','settings','help','bonuses'];
+const VIEWS = ['dashboard','module','resume','coverletter','tracker','offercalc','flashcards','settings','help','bonuses'];
 function showView(name){
   VIEWS.forEach(v => { const el = $('#view-'+v); if(el) el.hidden = (v !== name); });
   if(name === 'dashboard'){
@@ -290,6 +296,7 @@ function navTo(mod){
   else if(mod.custom && mod.id === 'coverletter'){ renderCoverLetter(); showView('coverletter'); }
   else if(mod.custom && mod.id === 'tracker'){ renderTracker(); showView('tracker'); }
   else if(mod.custom && mod.id === 'flashcards'){ renderFlashcards(); showView('flashcards'); }
+  else if(mod.custom && mod.id === 'offercalc'){ renderOfferCalc(); showView('offercalc'); }
   else renderModule(mod);
   closeDrawer();
 }
@@ -379,5 +386,6 @@ function escapeAttr(s){ return String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','
   initCoverLetterBuilder();     // Phase 8 — binds the Cover Letter Builder's events once
   initJobTracker();             // Phase 4 — binds the Job Tracker's events once
   initFlashcards();             // Phase 8 — binds the Interview Flashcards' events once
+  initOfferCalc();               // Phase 8 — binds the Offer Comparison Calculator's events once
   if(typeof initExtras === 'function') initExtras();  // Phase 6 — Settings/Help/Bonuses
 })();
