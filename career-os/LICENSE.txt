@@ -1,0 +1,77 @@
+CAREER OS — LICENSE AGREEMENT
+=============================
+
+Career OS ("the Product") is a digital download. By purchasing and/or using the
+Product you ("the Licensee") agree to the terms below. The Product is licensed,
+not sold. The Author retains all intellectual-property rights not expressly
+granted here.
+
+There are two tiers. The tier you purchased is the one that applies to you.
+
+-------------------------------------------------------------------------------
+TIER 1 — PERSONAL USE LICENSE
+-------------------------------------------------------------------------------
+Granted to an individual buyer for their own personal career use.
+
+YOU MAY:
+- Use the Product on your own devices, for your own job search, indefinitely.
+- Customize the files for your personal use (colors, text, your own tools).
+- Export and use the résumés, prompts, and documents you create with it however
+  you like — your output is yours.
+
+YOU MAY NOT:
+- Resell, sublicense, redistribute, share, or give away the Product files
+  (in whole or in part), modified or unmodified.
+- Use the Product to deliver paid services to other people (e.g. as a career
+  coach, résumé writer, or agency). That requires the Commercial tier.
+- Post the Product files publicly or include them in any free or paid bundle,
+  course, template pack, or repository.
+
+-------------------------------------------------------------------------------
+TIER 2 — COMMERCIAL USE LICENSE
+-------------------------------------------------------------------------------
+Granted to a professional (career coach, résumé writer, recruiter, agency, or
+similar) for use in their own business.
+
+YOU MAY:
+- Everything in the Personal tier, plus:
+- Use the Product to deliver paid services to your own clients.
+- Customize and brand the Product for use within your business.
+
+YOU MAY NOT:
+- Resell, redistribute, or sublicense the Product files themselves as a product
+  (i.e. you may use it to serve clients, but you may not sell copies of it).
+- Represent the Product, or a lightly modified copy of it, as your own product
+  for sale or distribution.
+- Distribute the source files to clients or third parties.
+
+-------------------------------------------------------------------------------
+APPLIES TO BOTH TIERS
+-------------------------------------------------------------------------------
+FONTS: Fraunces, Jost, and Space Mono are bundled under the SIL Open Font
+License 1.1 and remain governed by it. This Agreement does not restrict your
+rights to those fonts under the OFL.
+
+NO WARRANTY: The Product is provided "AS IS", without warranty of any kind,
+express or implied, including but not limited to merchantability, fitness for a
+particular purpose, and non-infringement. Career guidance and AI-generated
+output are informational only and are not professional, legal, or financial
+advice. You are responsible for reviewing anything you create with the Product.
+
+LIMITATION OF LIABILITY: To the maximum extent permitted by law, the Author is
+not liable for any damages arising from the use of, or inability to use, the
+Product.
+
+TERMINATION: This license terminates automatically if you breach its terms, at
+which point you must stop using and delete the Product files.
+
+-------------------------------------------------------------------------------
+NOTE FOR THE SELLER
+-------------------------------------------------------------------------------
+This file is a plain-language license template to ship with the download. It is
+not legal advice. Insert your business/brand name below and have it reviewed by
+a qualified professional in your jurisdiction before relying on it commercially.
+
+Licensor: ____________________________   Contact: ____________________________
+
+© The Career Atelier. All rights reserved.
