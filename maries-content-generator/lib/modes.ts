@@ -1,4 +1,4 @@
-// Shared config for Marie's Content Generator — used by both the UI and API routes.
+// Shared config for ScrollStop Studio — used by both the UI and API routes.
 
 export type ModeId = "ugc" | "instagram" | "tiktok" | "swc";
 export type Platform = "Instagram" | "TikTok";
@@ -73,7 +73,7 @@ export const SWC_ANGLES = [
   "This is how I'd start over if I lost everything",
   "No face no followers no problem",
   "What I wish I knew before I started",
-  "Real talk: is SWC worth it?",
+  "Real talk: is this course worth it?",
   "Storytime: how I found this",
 ];
 
@@ -103,7 +103,7 @@ export const MODES: Record<ModeId, ModeConfig> = {
   ugc: {
     id: "ugc",
     label: "UGC Video Creator",
-    tagline: "Real content for brands Marie genuinely uses",
+    tagline: "Real content for brands you genuinely use",
     theme: {
       bg: "#1a1015",
       panel: "#241620",
@@ -144,7 +144,7 @@ export const MODES: Record<ModeId, ModeConfig> = {
   },
   swc: {
     id: "swc",
-    label: "SWC Course Promo",
+    label: "Digital Product Promo",
     tagline: "Real been-there honesty, never hype",
     theme: {
       bg: "#0d1117",

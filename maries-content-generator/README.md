@@ -1,12 +1,12 @@
-# Marie's Content Generator
+# ScrollStop Studio
 
-A Next.js app that generates UGC, Instagram, TikTok, and SWC course promo content in Marie's voice — scripts, captions, and upload-ready images.
+A Next.js app that generates UGC, Instagram, TikTok, and digital product promo content that stops the scroll — scripts, captions, and upload-ready images.
 
 ## What it does
 
-- **4 creator modes** (tabs): UGC Video Creator, Instagram Creator, TikTok Creator, SWC Course Promo — each with its own color system, formats, and voice rules.
-- **Script & copy generation** via the Anthropic API (server-side, key never exposed).
-- **Pexels image search** baked in: after generating, the app fetches 3 relevant background images.
+- **4 creator modes** (tabs): UGC Video Creator, Instagram Creator, TikTok Creator, Digital Product Promo — each with its own color system, formats, and voice rules.
+- **Script & copy generation** via the Anthropic API (server-side, key never exposed). Add your own story in the "Extra Context" box and the writing weaves it in naturally.
+- **Pexels image search baked in**: after generating, the app fetches 3 relevant background images.
 - **Visual preview panel** for static formats (Single Feed Post, Carousel, Stories): click an image, see your copy overlaid in bold white text, swipe carousel slides.
 - **Download PNG**: renders the image + text overlay to a 1080×1080 (feed) or 1080×1920 (story) PNG, ready to upload directly to Instagram or TikTok.
 - For video formats (Reels, TikToks, UGC) the 3 images are shown as labeled B-roll reference thumbnails.
