@@ -33,6 +33,10 @@ with five occupation editions.
   benefits value, optional cost-of-living adjustment) instead of asking an
   AI to estimate the math. Pairs with the "Offer Comparison" prompt tool,
   which handles the qualitative side (culture, growth, stability).
+- **ATS Keyword Checker** — paste your résumé and a job description and get
+  an instant, offline keyword/phrase match score with what's found and
+  what's missing. Real mechanical matching, not a guarantee — pairs with
+  the "ATS Audit" prompt tool for deeper, AI-assisted analysis.
 - **40+ AI prompt tools** across **Build · Résumés · Apply · Interview · Track**.
   Each turns a few inputs into an expert-grade prompt you copy into Claude or
   ChatGPT — you never have to write the prompt yourself. Includes eight
@@ -106,6 +110,7 @@ career-os/
 │  ├─ coverletter.js     Cover Letter Builder (custom view)
 │  ├─ flashcards.js      Interview Flashcards (custom view)
 │  ├─ offercalc.js       Offer Comparison Calculator (custom view)
+│  ├─ atscheck.js        ATS Keyword Checker (custom view)
 │  ├─ tracker.js         Job Tracker (custom view)
 │  ├─ extras.js          Settings / Help / Bonuses
 │  └─ app.js             engine: store, router, renderers, occupation reskin
