@@ -12,21 +12,31 @@ A Next.js app that generates UGC, Instagram, TikTok, and digital-product promo c
 - **Download PNG**: renders the image + text overlay to a 1080×1080 (feed) or 1080×1920 (story) PNG, ready to upload directly to Instagram or TikTok.
 - For video formats (Reels, TikToks, UGC) the 3 images are shown as labeled B-roll reference thumbnails.
 
-## Setup
+## Using your API keys
+
+There are **two ways** to supply the keys the app needs — pick whichever is easier:
+
+1. **In the app (no setup).** Open the app, click the **⚙️ Settings** button, and paste your
+   keys. They're stored only in your browser and used to talk directly to Anthropic / Pexels.
+   This is the easiest option and requires no server configuration or redeploy.
+2. **As server environment variables** (best if you're the only operator, or want the keys
+   set for everyone). See below.
+
+| Key | Where to get it | Needed for |
+|---|---|---|
+| `ANTHROPIC_API_KEY` | https://platform.claude.com → Billing → API Keys | Generating content (required) |
+| `PEXELS_API_KEY` | https://www.pexels.com/api/ (free) | Background image search (optional) |
+
+If a server env var is set it takes precedence; otherwise the app uses the key saved in Settings.
+
+## Local setup
 
 ```bash
 cd maries-content-generator
 npm install
-cp .env.example .env.local   # then fill in your keys
+cp .env.example .env.local   # optional — or just use the in-app Settings
 npm run dev
 ```
-
-Required environment variables (server-side only):
-
-| Variable | Where to get it |
-|---|---|
-| `ANTHROPIC_API_KEY` | https://platform.claude.com |
-| `PEXELS_API_KEY` | https://www.pexels.com/api/ (free) |
 
 ## Deploy to Vercel
 

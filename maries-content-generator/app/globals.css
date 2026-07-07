@@ -405,6 +405,92 @@ body {
   box-shadow: 0 0 0 1px var(--accent);
 }
 
+.view-nav-gear {
+  flex: 0 0 auto;
+  position: relative;
+  min-width: 52px;
+}
+
+.gear-dot {
+  position: absolute;
+  top: 7px;
+  right: 9px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent2);
+  box-shadow: 0 0 0 2px var(--panel);
+}
+
+/* ---- Settings panel ---- */
+.settings-panel {
+  border-color: var(--accent);
+}
+
+.settings-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.settings-head h2 {
+  font-size: 1.05rem;
+  font-weight: 800;
+}
+
+.settings-close {
+  background: none;
+  border: none;
+  color: var(--muted);
+  font-size: 1.1rem;
+  cursor: pointer;
+  line-height: 1;
+}
+
+.settings-note {
+  font-size: 0.85rem;
+  color: var(--muted);
+  line-height: 1.55;
+  margin-bottom: 16px;
+}
+
+.settings-panel .field {
+  margin-bottom: 14px;
+}
+
+.field-help {
+  display: block;
+  margin-top: 5px;
+  font-size: 0.72rem;
+  color: var(--muted);
+}
+
+.settings-show {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 0.82rem;
+  color: var(--muted);
+  margin-bottom: 16px;
+  cursor: pointer;
+}
+
+.settings-show input {
+  width: auto;
+}
+
+.settings-actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.settings-save {
+  width: auto;
+  margin-top: 0;
+}
+
 /* ---- Save dialog ---- */
 .save-dialog {
   border: 1px solid var(--accent);

@@ -28,6 +28,7 @@ import {
   type VaultPrompt,
 } from "@/lib/vault";
 import PromptVault from "./PromptVault";
+import { clearSettings, loadSettings, saveSettings, type Settings } from "@/lib/settings";
 
 interface Photo {
   id: number;
@@ -187,6 +188,13 @@ export default function Home() {
   const [savedFlash, setSavedFlash] = useState(false);
   const [saveError, setSaveError] = useState("");
 
+  // API-key settings (stored in the browser)
+  const [settingsOpen, setSettingsOpen] = useState(false);
+  const [anthropicKey, setAnthropicKey] = useState("");
+  const [pexelsKey, setPexelsKey] = useState("");
+  const [settingsSaved, setSettingsSaved] = useState(false);
+  const [showKeys, setShowKeys] = useState(false);
+
   const cfg = MODES[mode];
   const formats = useMemo(() => {
     if (mode === "swc") return platform === "Instagram" ? INSTAGRAM_FORMATS : TIKTOK_FORMATS;
@@ -208,10 +216,31 @@ export default function Home() {
     if (!formats.includes(format)) setFormat(formats[0]);
   }, [formats, format]);
 
-  // hydrate the vault from localStorage on mount
+  // hydrate the vault + saved API keys from localStorage on mount
   useEffect(() => {
     setVault(loadVault());
+    const s = loadSettings();
+    setAnthropicKey(s.anthropicKey);
+    setPexelsKey(s.pexelsKey);
   }, []);
+
+  const hasAnthropicKey = anthropicKey.trim().length > 0;
+
+  function currentSettings(): Settings {
+    return { anthropicKey, pexelsKey };
+  }
+
+  function saveKeys() {
+    saveSettings(currentSettings());
+    setSettingsSaved(true);
+    setTimeout(() => setSettingsSaved(false), 1600);
+  }
+
+  function clearKeys() {
+    clearSettings();
+    setAnthropicKey("");
+    setPexelsKey("");
+  }
 
   function openSaveDialog() {
     setSaveName(topic.trim() ? `${topic.trim()} — ${format}` : format);
@@ -298,6 +327,7 @@ export default function Home() {
           topic,
           mode,
           orientation: imageOrientation(mode, platform, format),
+          pexelsKey: pexelsKey.trim() || undefined,
         }),
       });
       const data = await res.json();
@@ -322,10 +352,27 @@ export default function Home() {
       const res = await fetch("/api/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ mode, format, platform, promoAngle, topic, goal, hookStyle, extraContext }),
+        body: JSON.stringify({
+          mode,
+          format,
+          platform,
+          promoAngle,
+          topic,
+          goal,
+          hookStyle,
+          extraContext,
+          apiKey: anthropicKey.trim() || undefined,
+        }),
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error ?? `Generation failed (${res.status})`);
+      if (!res.ok) {
+        // Missing key → send the user straight to Settings to fix it.
+        if (data.code === "NO_API_KEY") {
+          setSettingsOpen(true);
+          setView("create");
+        }
+        throw new Error(data.error ?? `Generation failed (${res.status})`);
+      }
       setOutput(data.content);
       fetchImages(); // kick off image search after the script lands
     } catch (e) {
@@ -393,7 +440,73 @@ export default function Home() {
         >
           📚 Prompt Vault{vault.length > 0 ? ` (${vault.length})` : ""}
         </button>
+        <button
+          className={`view-nav-btn view-nav-gear ${settingsOpen ? "active" : ""}`}
+          onClick={() => setSettingsOpen((o) => !o)}
+          title="API key settings"
+          aria-label="Settings"
+        >
+          ⚙️{!hasAnthropicKey ? <span className="gear-dot" title="No API key set" /> : ""}
+        </button>
       </div>
+
+      {settingsOpen && (
+        <div className="panel settings-panel">
+          <div className="settings-head">
+            <h2>Settings — your API keys</h2>
+            <button className="settings-close" onClick={() => setSettingsOpen(false)} aria-label="Close settings">
+              ✕
+            </button>
+          </div>
+          <p className="settings-note">
+            Paste your own keys here to use the app — no server setup needed. They&apos;re stored
+            <b> only in this browser</b> and sent straight to Anthropic / Pexels. They&apos;re never
+            shared with anyone else.
+          </p>
+
+          <div className="field full">
+            <label>Anthropic API key (required to generate content)</label>
+            <input
+              type={showKeys ? "text" : "password"}
+              value={anthropicKey}
+              onChange={(e) => setAnthropicKey(e.target.value)}
+              placeholder="sk-ant-…"
+              autoComplete="off"
+              spellCheck={false}
+            />
+            <small className="field-help">
+              Get one at platform.claude.com → Billing → API Keys.
+            </small>
+          </div>
+
+          <div className="field full">
+            <label>Pexels API key (optional — for background images)</label>
+            <input
+              type={showKeys ? "text" : "password"}
+              value={pexelsKey}
+              onChange={(e) => setPexelsKey(e.target.value)}
+              placeholder="Paste your free Pexels key…"
+              autoComplete="off"
+              spellCheck={false}
+            />
+            <small className="field-help">Free at pexels.com/api.</small>
+          </div>
+
+          <label className="settings-show">
+            <input type="checkbox" checked={showKeys} onChange={(e) => setShowKeys(e.target.checked)} />
+            Show keys
+          </label>
+
+          <div className="settings-actions">
+            <button className="btn btn-primary settings-save" onClick={saveKeys}>
+              {settingsSaved ? "Saved ✓" : "Save keys"}
+            </button>
+            <button className="btn btn-ghost" onClick={clearKeys}>
+              Clear
+            </button>
+          </div>
+        </div>
+      )}
 
       {view === "vault" && (
         <PromptVault

@@ -6,20 +6,29 @@ import { MODES, type ModeId } from "@/lib/modes";
 export const maxDuration = 60;
 
 export async function POST(req: Request) {
-  if (!process.env.ANTHROPIC_API_KEY) {
-    return NextResponse.json(
-      { error: "ANTHROPIC_API_KEY is not set on the server." },
-      { status: 500 },
-    );
-  }
-  const client = new Anthropic(); // reads ANTHROPIC_API_KEY server-side
-
-  let params: GenerateParams;
+  let body: GenerateParams & { apiKey?: string };
   try {
-    params = await req.json();
+    body = await req.json();
   } catch {
     return NextResponse.json({ error: "Invalid JSON body." }, { status: 400 });
   }
+
+  // Prefer a server-side env key; otherwise use the key the user saved in the app.
+  const clientKey = typeof body.apiKey === "string" ? body.apiKey.trim() : "";
+  const apiKey = process.env.ANTHROPIC_API_KEY || clientKey;
+  if (!apiKey) {
+    return NextResponse.json(
+      {
+        error:
+          "No Anthropic API key found. Open Settings (⚙️) and paste your key, or set ANTHROPIC_API_KEY on the server.",
+        code: "NO_API_KEY",
+      },
+      { status: 401 },
+    );
+  }
+  const client = new Anthropic({ apiKey });
+
+  const params: GenerateParams = body;
 
   if (!params.topic?.trim()) {
     return NextResponse.json({ error: "Product or topic is required." }, { status: 400 });
