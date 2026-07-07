@@ -161,6 +161,12 @@ function initFlashcards(){
   $('#fcCategory').addEventListener("change", e => { fcCategory = e.target.value; buildDeck(); renderFlashcardCard(); });
   $('#fcShuffle').addEventListener("click", () => { shuffleDeck(); renderFlashcardCard(); toast("Shuffled"); });
   $('#fcCard').addEventListener("click", () => { fcRevealed = !fcRevealed; renderFlashcardCard(); });
+  $('#fcCard').addEventListener("keydown", e => {
+    if(e.key !== "Enter" && e.key !== " " && e.key !== "Spacebar") return;
+    e.preventDefault();
+    fcRevealed = !fcRevealed;
+    renderFlashcardCard();
+  });
   $('#fcPrev').addEventListener("click", () => { if(fcIndex > 0){ fcIndex--; fcRevealed = false; renderFlashcardCard(); } });
   $('#fcNext').addEventListener("click", () => { if(fcIndex < fcDeck.length - 1){ fcIndex++; fcRevealed = false; renderFlashcardCard(); } });
 }

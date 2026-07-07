@@ -647,9 +647,20 @@ function initResumeBuilder(){
     renderResume();
   });
 
-  // exports
+  // exports — guarded so an empty résumé can't be printed/copied/downloaded
+  // as the "previews here as you type" placeholder
   $('#rsExample').addEventListener("click", loadExampleResume);
-  $('#rsPrint').addEventListener("click", () => window.print());
-  $('#rsCopy').addEventListener("click",  () => copyText(resumeToText(), "Résumé text copied"));
-  $('#rsDoc').addEventListener("click",   () => { downloadBlob(resumeToDoc(), resumeFilename("doc"), "application/msword"); toast("Word document downloaded"); });
+  $('#rsPrint').addEventListener("click", () => {
+    if(!hasResumeContent(resumeData)){ toast("Add some content first"); return; }
+    window.print();
+  });
+  $('#rsCopy').addEventListener("click", () => {
+    if(!hasResumeContent(resumeData)){ toast("Add some content first"); return; }
+    copyText(resumeToText(), "Résumé text copied");
+  });
+  $('#rsDoc').addEventListener("click", () => {
+    if(!hasResumeContent(resumeData)){ toast("Add some content first"); return; }
+    downloadBlob(resumeToDoc(), resumeFilename("doc"), "application/msword");
+    toast("Word document downloaded");
+  });
 }
