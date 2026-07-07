@@ -71,6 +71,11 @@ function navModules(){
     const i = mods.findIndex(m => m.group === 'Interview');
     if(i >= 0) mods.splice(i, 0, FLASHCARDS_MODULE); else mods.push(FLASHCARDS_MODULE);
   }
+  if(typeof ATSCHECK_MODULE !== 'undefined'){
+    // right after the "ATS Audit" prompt tool it pairs with
+    const i = mods.findIndex(m => m.id === 'ats');
+    if(i >= 0) mods.splice(i + 1, 0, ATSCHECK_MODULE); else mods.push(ATSCHECK_MODULE);
+  }
   const head = [];
   if(typeof RESUME_MODULE !== 'undefined') head.push(RESUME_MODULE);
   if(typeof COVERLETTER_MODULE !== 'undefined') head.push(COVERLETTER_MODULE);
@@ -277,7 +282,7 @@ function fallbackCopy(text, done){
 }
 
 /* ---- 6. ROUTER + EVENTS -------------------------------------------------- */
-const VIEWS = ['dashboard','module','resume','coverletter','tracker','offercalc','flashcards','settings','help','bonuses'];
+const VIEWS = ['dashboard','module','resume','coverletter','tracker','offercalc','flashcards','atscheck','settings','help','bonuses'];
 function showView(name){
   VIEWS.forEach(v => { const el = $('#view-'+v); if(el) el.hidden = (v !== name); });
   if(name === 'dashboard'){
@@ -297,6 +302,7 @@ function navTo(mod){
   else if(mod.custom && mod.id === 'tracker'){ renderTracker(); showView('tracker'); }
   else if(mod.custom && mod.id === 'flashcards'){ renderFlashcards(); showView('flashcards'); }
   else if(mod.custom && mod.id === 'offercalc'){ renderOfferCalc(); showView('offercalc'); }
+  else if(mod.custom && mod.id === 'atscheck'){ renderAtsCheck(); showView('atscheck'); }
   else renderModule(mod);
   closeDrawer();
 }
@@ -387,5 +393,6 @@ function escapeAttr(s){ return String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','
   initJobTracker();             // Phase 4 — binds the Job Tracker's events once
   initFlashcards();             // Phase 8 — binds the Interview Flashcards' events once
   initOfferCalc();               // Phase 8 — binds the Offer Comparison Calculator's events once
+  initAtsCheck();                 // Phase 9 — binds the ATS Keyword Checker's events once
   if(typeof initExtras === 'function') initExtras();  // Phase 6 — Settings/Help/Bonuses
 })();

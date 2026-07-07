@@ -188,6 +188,31 @@
       </div>
     </section>
 
+    <!-- ATS KEYWORD CHECKER (custom view — Phase 9) -->
+    <section class="view" id="view-atscheck" hidden>
+      <div class="mod-shell">
+        <div class="card panel">
+          <div class="panel-head">
+            <span class="eyebrow">Apply · Scan</span>
+            <h2>ATS Keyword Checker</h2>
+            <p>Real keyword/phrase matching against a job description — instant, offline, no AI call.</p>
+          </div>
+          <div class="field">
+            <label>Your résumé text</label>
+            <textarea id="atsResume" placeholder="Paste your résumé text…"></textarea>
+          </div>
+          <button class="btn-sm btn-link" id="atsUseResume"></button>
+          <div class="field" style="margin-top:14px">
+            <label>Job description</label>
+            <textarea id="atsJD" placeholder="Paste the job posting…"></textarea>
+          </div>
+        </div>
+        <div class="card panel" style="position:sticky;top:100px;padding:0">
+          <div id="atsResultPanel"></div>
+        </div>
+      </div>
+    </section>
+
     <!-- MODULE -->
     <section class="view" id="view-module" hidden>
       <div class="mod-shell">
@@ -248,6 +273,7 @@
 <script src="js/coverletter.js"></script>
 <script src="js/flashcards.js"></script>
 <script src="js/offercalc.js"></script>
+<script src="js/atscheck.js"></script>
 <script src="js/tracker.js"></script>
 <script src="js/extras.js"></script>
 <script src="js/app.js"></script>
