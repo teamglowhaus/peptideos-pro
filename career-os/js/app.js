@@ -61,6 +61,10 @@ function navModules(){
     const i = mods.findIndex(m => m.group === 'Track');
     if(i >= 0) mods.splice(i, 0, TRACKER_MODULE); else mods.push(TRACKER_MODULE);
   }
+  if(typeof FLASHCARDS_MODULE !== 'undefined'){
+    const i = mods.findIndex(m => m.group === 'Interview');
+    if(i >= 0) mods.splice(i, 0, FLASHCARDS_MODULE); else mods.push(FLASHCARDS_MODULE);
+  }
   const head = [];
   if(typeof RESUME_MODULE !== 'undefined') head.push(RESUME_MODULE);
   if(typeof COVERLETTER_MODULE !== 'undefined') head.push(COVERLETTER_MODULE);
@@ -267,7 +271,7 @@ function fallbackCopy(text, done){
 }
 
 /* ---- 6. ROUTER + EVENTS -------------------------------------------------- */
-const VIEWS = ['dashboard','module','resume','coverletter','tracker','settings','help','bonuses'];
+const VIEWS = ['dashboard','module','resume','coverletter','tracker','flashcards','settings','help','bonuses'];
 function showView(name){
   VIEWS.forEach(v => { const el = $('#view-'+v); if(el) el.hidden = (v !== name); });
   if(name === 'dashboard'){
@@ -285,6 +289,7 @@ function navTo(mod){
   if(mod.custom && mod.id === 'resume'){ renderResume(); showView('resume'); }
   else if(mod.custom && mod.id === 'coverletter'){ renderCoverLetter(); showView('coverletter'); }
   else if(mod.custom && mod.id === 'tracker'){ renderTracker(); showView('tracker'); }
+  else if(mod.custom && mod.id === 'flashcards'){ renderFlashcards(); showView('flashcards'); }
   else renderModule(mod);
   closeDrawer();
 }
@@ -373,5 +378,6 @@ function escapeAttr(s){ return String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','
   initResumeBuilder();          // Phase 3 — binds the Resume Builder's events once
   initCoverLetterBuilder();     // Phase 8 — binds the Cover Letter Builder's events once
   initJobTracker();             // Phase 4 — binds the Job Tracker's events once
+  initFlashcards();             // Phase 8 — binds the Interview Flashcards' events once
   if(typeof initExtras === 'function') initExtras();  // Phase 6 — Settings/Help/Bonuses
 })();

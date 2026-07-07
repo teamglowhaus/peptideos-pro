@@ -166,6 +166,22 @@
       <div class="tracker-board" id="trackerBoard"></div>
     </section>
 
+    <!-- INTERVIEW FLASHCARDS (custom view — Phase 8) -->
+    <section class="view" id="view-flashcards" hidden>
+      <div class="fc-toolbar">
+        <select class="tracker-filter" id="fcCategory" aria-label="Filter by category"></select>
+        <button class="btn-sm btn-link" id="fcShuffle">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5M4 20 21 3M21 16v5h-5M4 4l5 5"/></svg>Shuffle
+        </button>
+        <span class="fc-count" id="fcCount">1 / 32</span>
+      </div>
+      <div class="card fc-card" id="fcCard" role="button" tabindex="0" aria-label="Flashcard — click to reveal the coaching tip"></div>
+      <div class="fc-nav">
+        <button class="btn btn-ghost" id="fcPrev">← Previous</button>
+        <button class="btn btn-primary" id="fcNext">Next →</button>
+      </div>
+    </section>
+
     <!-- MODULE -->
     <section class="view" id="view-module" hidden>
       <div class="mod-shell">
@@ -224,6 +240,7 @@
 <script src="js/modules.js"></script>
 <script src="js/resume.js"></script>
 <script src="js/coverletter.js"></script>
+<script src="js/flashcards.js"></script>
 <script src="js/tracker.js"></script>
 <script src="js/extras.js"></script>
 <script src="js/app.js"></script>

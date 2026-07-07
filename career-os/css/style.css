@@ -343,6 +343,21 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 .resume-sheet .cl-signoff{margin-top:6px}
 .resume-sheet .cl-signoff p{font-size:12.5px;color:#3a3322;margin:0}
 
+/* ============================ INTERVIEW FLASHCARDS ============================ */
+.fc-toolbar{display:flex;align-items:center;gap:10px;margin-bottom:22px;flex-wrap:wrap}
+.fc-toolbar .tracker-filter{flex:1;max-width:320px}
+.fc-count{margin-left:auto;font-family:var(--f-mono);font-size:11px;letter-spacing:.08em;color:var(--ink-faint);white-space:nowrap}
+.fc-card{max-width:640px;margin:0 auto 22px;padding:52px 44px;min-height:280px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:18px;cursor:pointer;transition:border-color .18s ease,transform .18s ease}
+.fc-card:hover{border-color:var(--gold-line);transform:translateY(-2px)}
+.fc-tag{font-family:var(--f-mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);border:1px solid var(--gold-line);padding:4px 11px;border-radius:20px}
+.fc-question{font-family:var(--f-display);font-weight:600;font-size:24px;line-height:1.35;letter-spacing:-.005em;max-width:34ch}
+.fc-question-small{font-size:16px;color:var(--ink-soft);font-weight:500;max-width:38ch}
+.fc-hint{font-family:var(--f-mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint)}
+.fc-tip{font-size:15px;color:var(--ink-soft);line-height:1.6;max-width:42ch}
+.fc-card.revealed{border-color:var(--accent-line);background-color:var(--accent-soft)}
+.fc-nav{max-width:640px;margin:0 auto;display:flex;justify-content:space-between;gap:12px}
+.fc-nav button:disabled{opacity:.35;cursor:not-allowed}
+
 /* ============================ JOB TRACKER (Kanban) ============================ */
 /* Toolbar: add button + search + column filter */
 .tracker-toolbar{display:flex;align-items:center;gap:10px;margin-bottom:22px;flex-wrap:wrap}
@@ -471,6 +486,9 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 [data-fontsize="large"] .resume-sheet .r-summary,[data-fontsize="large"] .resume-sheet li,[data-fontsize="large"] .resume-sheet .r-inline{font-size:14px}
 [data-fontsize="large"] .faq p,[data-fontsize="large"] .help-note,[data-fontsize="large"] .set-label span{font-size:15px}
 [data-fontsize="large"] .rs-check{font-size:14px}
+[data-fontsize="large"] .fc-question{font-size:26px}
+[data-fontsize="large"] .fc-question-small{font-size:17px}
+[data-fontsize="large"] .fc-tip{font-size:16.5px}
 [data-fontsize="large"] .resume-score-note{font-size:13px}
 [data-fontsize="large"] .bonus-body pre{font-size:13px}
 

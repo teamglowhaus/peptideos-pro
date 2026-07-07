@@ -33,6 +33,11 @@ with five occupation editions.
   ChatGPT — you never have to write the prompt yourself. Includes eight
   role-specific résumés (Career Change, Executive, Federal, Healthcare, IT/Tech,
   Teacher, Student/New-Grad, Military Transition).
+- **Interview Flashcards** — 32 real interview questions (Behavioral,
+  Motivation & Fit, Strengths & Growth, Curveballs, and questions to ask
+  *them*) with a coaching tip on the back of each — click to reveal, filter
+  by category, shuffle. A practice mode, not another prompt composer — no
+  AI call needed.
 - **Bonuses** — 500 power verbs, an achievement library, résumé/ATS/interview/
   LinkedIn checklists, networking + professional email templates, salary
   research & negotiation scripts, and a career planning workbook.
@@ -94,6 +99,7 @@ career-os/
 │  ├─ modules.js         MODULES config — the prompt tools
 │  ├─ resume.js          Résumé Builder (custom view, multiple profiles)
 │  ├─ coverletter.js     Cover Letter Builder (custom view)
+│  ├─ flashcards.js      Interview Flashcards (custom view)
 │  ├─ tracker.js         Job Tracker (custom view)
 │  ├─ extras.js          Settings / Help / Bonuses
 │  └─ app.js             engine: store, router, renderers, occupation reskin
