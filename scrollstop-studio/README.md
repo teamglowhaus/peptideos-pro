@@ -14,7 +14,7 @@ A Next.js app that generates UGC, Instagram, TikTok, and digital product promo c
 ## Setup
 
 ```bash
-cd maries-content-generator
+cd scrollstop-studio
 npm install
 cp .env.example .env.local   # then fill in your keys
 npm run dev
@@ -29,9 +29,13 @@ Required environment variables (server-side only):
 
 ## Deploy to Vercel
 
-1. Import the repo in Vercel and set the **Root Directory** to `maries-content-generator`.
+1. Import the repo in Vercel and set the **Root Directory** to `scrollstop-studio`.
 2. Add `ANTHROPIC_API_KEY` and `PEXELS_API_KEY` as environment variables.
 3. Deploy.
+
+## License
+
+See [LICENSE.md](./LICENSE.md) for usage terms.
 
 ## Workflow tip — turning scripts into video
 
