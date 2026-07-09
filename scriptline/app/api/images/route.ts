@@ -20,19 +20,30 @@ function extractKeywords(topic: string): string {
 }
 
 export async function POST(req: Request) {
-  const apiKey = process.env.PEXELS_API_KEY;
-  if (!apiKey) {
-    return NextResponse.json(
-      { error: "PEXELS_API_KEY is not set on the server." },
-      { status: 500 },
-    );
-  }
-
-  let body: { topic?: string; mode?: ModeId; orientation?: "portrait" | "square" | "landscape" };
+  let body: {
+    topic?: string;
+    mode?: ModeId;
+    orientation?: "portrait" | "square" | "landscape";
+    pexelsKey?: string;
+  };
   try {
     body = await req.json();
   } catch {
     return NextResponse.json({ error: "Invalid JSON body." }, { status: 400 });
+  }
+
+  // Prefer a server-side env key; otherwise use the key the user saved in the app.
+  const clientKey = typeof body.pexelsKey === "string" ? body.pexelsKey.trim() : "";
+  const apiKey = process.env.PEXELS_API_KEY || clientKey;
+  if (!apiKey) {
+    return NextResponse.json(
+      {
+        error:
+          "No Pexels API key found. Open Settings (⚙️) and paste your free Pexels key to enable image search.",
+        code: "NO_PEXELS_KEY",
+      },
+      { status: 401 },
+    );
   }
 
   const topic = body.topic?.trim();

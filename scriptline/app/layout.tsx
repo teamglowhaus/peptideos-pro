@@ -4,7 +4,7 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "Scriptline",
   description:
-    "UGC, Instagram, TikTok, and digital product promo content that stops the scroll — scripts, captions, and upload-ready images.",
+    "UGC, Instagram, TikTok, and digital-product promo content in your voice — scripts, captions, and upload-ready images.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

@@ -64,16 +64,16 @@ export const UGC_STYLES = [
   "Skit / Funny concept",
 ];
 
-export const SWC_ANGLES = [
-  "I bought this and here's what's inside",
-  "How I'm making money between night shifts",
-  "Digital products explained for beginners",
-  "You don't need to make it from scratch",
-  "PLR / done-for-you products explainer",
-  "This is how I'd start over if I lost everything",
-  "No face no followers no problem",
+export const PROMO_ANGLES = [
+  "What's inside — full walkthrough",
+  "Who this is actually for",
+  "Why I made it / why I use it",
+  "Beginner's guide to what this is",
+  "You don't need to build it from scratch",
   "What I wish I knew before I started",
-  "Real talk: is this course worth it?",
+  "Honest review — is it worth it?",
+  "Common myths, debunked",
+  "Before vs after using it",
   "Storytime: how I found this",
 ];
 
@@ -191,5 +191,5 @@ export const MODE_IMAGE_KEYWORDS: Record<ModeId, string> = {
   ugc: "lifestyle product aesthetic",
   instagram: "aesthetic lifestyle",
   tiktok: "candid lifestyle",
-  swc: "laptop workspace hustle night",
+  swc: "laptop workspace hustle",
 };

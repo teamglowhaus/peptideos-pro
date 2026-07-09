@@ -1,54 +1,48 @@
 # Scriptline
 
-A Next.js app that generates UGC, Instagram, TikTok, and digital product promo content that stops the scroll — scripts, captions, and upload-ready images.
+A Next.js app that generates UGC, Instagram, TikTok, and digital-product promo content in your voice — scripts, captions, and upload-ready images.
 
 ## What it does
 
 - **4 creator modes** (tabs): UGC Video Creator, Instagram Creator, TikTok Creator, Digital Product Promo — each with its own color system, formats, and voice rules.
-- **Script & copy generation** via the Anthropic API (server-side, key never exposed). Add your own story in the "Extra Context" box and the writing weaves it in naturally.
-- **Pexels image search baked in**: after generating, the app fetches 3 relevant background images.
+- **Prompt Vault**: save any generation setup (mode, format, topic, goal, hook, extra context) plus the copy it produced, then search, tag, favorite, and reload/reuse it any time. Persisted client-side in the browser.
+- **Script & copy generation** via the Anthropic API (server-side, key never exposed).
+- **Pexels image search** baked in: after generating, the app fetches 3 relevant background images.
 - **Visual preview panel** for static formats (Single Feed Post, Carousel, Stories): click an image, see your copy overlaid in bold white text, swipe carousel slides.
 - **Download PNG**: renders the image + text overlay to a 1080×1080 (feed) or 1080×1920 (story) PNG, ready to upload directly to Instagram or TikTok.
 - For video formats (Reels, TikToks, UGC) the 3 images are shown as labeled B-roll reference thumbnails.
 
-## Setup
+## Using your API keys
+
+There are **two ways** to supply the keys the app needs — pick whichever is easier:
+
+1. **In the app (no setup).** Open the app, click the **⚙️ Settings** button, and paste your
+   keys. They're stored only in your browser and used to talk directly to Anthropic / Pexels.
+   This is the easiest option and requires no server configuration or redeploy.
+2. **As server environment variables** (best if you're the only operator, or want the keys
+   set for everyone). See below.
+
+| Key | Where to get it | Needed for |
+|---|---|---|
+| `ANTHROPIC_API_KEY` | https://platform.claude.com → Billing → API Keys | Generating content (required) |
+| `PEXELS_API_KEY` | https://www.pexels.com/api/ (free) | Background image search (optional) |
+
+If a server env var is set it takes precedence; otherwise the app uses the key saved in Settings.
+
+## Local setup
 
 ```bash
 cd scriptline
 npm install
-cp .env.example .env.local   # then fill in your keys
+cp .env.example .env.local   # optional — or just use the in-app Settings
 npm run dev
 ```
 
-Required environment variables (server-side only):
+## Deploy to Vercel
 
-| Variable | Where to get it |
-|---|---|
-| `ANTHROPIC_API_KEY` | https://platform.claude.com |
-| `PEXELS_API_KEY` | https://www.pexels.com/api/ (free) |
-
-## Deploy
-
-New to deploying apps? Follow **[SETUP-GUIDE.md](./SETUP-GUIDE.md)** for a
-plain-English, copy-paste walkthrough — no GitHub account required.
-
-Short version, for the already-comfortable:
-
-```bash
-npx vercel login
-npx vercel
-npx vercel env add ANTHROPIC_API_KEY production
-npx vercel env add PEXELS_API_KEY production
-npx vercel --prod
-```
-
-Prefer GitHub + the Vercel dashboard instead? Import the repo in Vercel and
-set the **Root Directory** to `scriptline`, then add both env vars in
-Project Settings before deploying.
-
-## License
-
-See [LICENSE.md](./LICENSE.md) for usage terms.
+1. Import the repo in Vercel and set the **Root Directory** to `scriptline`.
+2. Add `ANTHROPIC_API_KEY` and `PEXELS_API_KEY` as environment variables.
+3. Deploy.
 
 ## Workflow tip — turning scripts into video
 

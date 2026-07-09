@@ -6,7 +6,7 @@ import {
   HOOK_STYLES,
   INSTAGRAM_FORMATS,
   MODES,
-  SWC_ANGLES,
+  PROMO_ANGLES,
   TIKTOK_FORMATS,
   imageOrientation,
   isCarouselFormat,
@@ -15,6 +15,20 @@ import {
   type ModeId,
   type Platform,
 } from "@/lib/modes";
+import {
+  addPrompt,
+  exportVault,
+  importVault,
+  lastWriteSucceeded,
+  loadVault,
+  parseTagInput,
+  removePrompt,
+  toggleFavorite,
+  updatePrompt,
+  type VaultPrompt,
+} from "@/lib/vault";
+import PromptVault from "./PromptVault";
+import { clearSettings, loadSettings, saveSettings, type Settings } from "@/lib/settings";
 
 interface Photo {
   id: number;
@@ -149,7 +163,7 @@ export default function Home() {
   const [mode, setMode] = useState<ModeId>("ugc");
   const [platform, setPlatform] = useState<Platform>("Instagram");
   const [format, setFormat] = useState(MODES.ugc.formats[0]);
-  const [promoAngle, setPromoAngle] = useState(SWC_ANGLES[0]);
+  const [promoAngle, setPromoAngle] = useState(PROMO_ANGLES[0]);
   const [topic, setTopic] = useState("");
   const [goal, setGoal] = useState(GOALS[0]);
   const [hookStyle, setHookStyle] = useState(HOOK_STYLES[0]);
@@ -164,6 +178,22 @@ export default function Home() {
   const [slide, setSlide] = useState(0);
   const [copied, setCopied] = useState(false);
   const [downloading, setDownloading] = useState(false);
+
+  // Prompt Vault
+  const [view, setView] = useState<"create" | "vault">("create");
+  const [vault, setVault] = useState<VaultPrompt[]>([]);
+  const [saving, setSaving] = useState(false);
+  const [saveName, setSaveName] = useState("");
+  const [saveTags, setSaveTags] = useState("");
+  const [savedFlash, setSavedFlash] = useState(false);
+  const [saveError, setSaveError] = useState("");
+
+  // API-key settings (stored in the browser)
+  const [settingsOpen, setSettingsOpen] = useState(false);
+  const [anthropicKey, setAnthropicKey] = useState("");
+  const [pexelsKey, setPexelsKey] = useState("");
+  const [settingsSaved, setSettingsSaved] = useState(false);
+  const [showKeys, setShowKeys] = useState(false);
 
   const cfg = MODES[mode];
   const formats = useMemo(() => {
@@ -186,6 +216,99 @@ export default function Home() {
     if (!formats.includes(format)) setFormat(formats[0]);
   }, [formats, format]);
 
+  // hydrate the vault + saved API keys from localStorage on mount
+  useEffect(() => {
+    setVault(loadVault());
+    const s = loadSettings();
+    setAnthropicKey(s.anthropicKey);
+    setPexelsKey(s.pexelsKey);
+  }, []);
+
+  const hasAnthropicKey = anthropicKey.trim().length > 0;
+
+  function currentSettings(): Settings {
+    return { anthropicKey, pexelsKey };
+  }
+
+  function saveKeys() {
+    saveSettings(currentSettings());
+    setSettingsSaved(true);
+    setTimeout(() => setSettingsSaved(false), 1600);
+  }
+
+  function clearKeys() {
+    clearSettings();
+    setAnthropicKey("");
+    setPexelsKey("");
+  }
+
+  function openSaveDialog() {
+    setSaveName(topic.trim() ? `${topic.trim()} — ${format}` : format);
+    setSaveTags("");
+    setSaveError("");
+    setSaving(true);
+  }
+
+  function confirmSave() {
+    const next = addPrompt(vault, saveName, parseTagInput(saveTags), {
+      mode,
+      platform,
+      format,
+      promoAngle: mode === "swc" ? promoAngle : undefined,
+      topic,
+      goal,
+      hookStyle,
+      extraContext: extraContext.trim() || undefined,
+      output: output || undefined,
+    });
+    // Only reflect the save in the UI if it actually reached storage — otherwise
+    // the prompt would appear "saved" but vanish on reload.
+    if (!lastWriteSucceeded()) {
+      setSaveError(
+        "Couldn't save — your browser's storage looks full. Export a backup, then delete a few old prompts and try again.",
+      );
+      return;
+    }
+    setVault(next);
+    setSaveError("");
+    setSaving(false);
+    setSavedFlash(true);
+    setTimeout(() => setSavedFlash(false), 1600);
+  }
+
+  function exportVaultFile() {
+    const blob = new Blob([exportVault(vault)], { type: "application/json" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "scriptline-vault-backup.json";
+    a.click();
+    URL.revokeObjectURL(a.href);
+  }
+
+  function importVaultText(text: string): { added: number; error?: string } {
+    const res = importVault(vault, text);
+    if (!res.error) setVault(res.prompts);
+    return { added: res.added, error: res.error };
+  }
+
+  function loadFromVault(p: VaultPrompt) {
+    setMode(p.mode);
+    setPlatform(p.platform);
+    setFormat(p.format);
+    if (p.promoAngle) setPromoAngle(p.promoAngle);
+    setTopic(p.topic);
+    setGoal(p.goal);
+    setHookStyle(p.hookStyle);
+    setExtraContext(p.extraContext ?? "");
+    setOutput(p.output ?? "");
+    setPhotos([]);
+    setSelectedPhoto(null);
+    setSlide(0);
+    setError("");
+    setView("create");
+    if (typeof window !== "undefined") window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
   const sections = useMemo(() => parseSections(output), [output]);
   const staticFormat = isStaticFormat(format);
   const portrait = imageOrientation(mode, platform, format) === "portrait";
@@ -204,6 +327,7 @@ export default function Home() {
           topic,
           mode,
           orientation: imageOrientation(mode, platform, format),
+          pexelsKey: pexelsKey.trim() || undefined,
         }),
       });
       const data = await res.json();
@@ -228,10 +352,27 @@ export default function Home() {
       const res = await fetch("/api/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ mode, format, platform, promoAngle, topic, goal, hookStyle, extraContext }),
+        body: JSON.stringify({
+          mode,
+          format,
+          platform,
+          promoAngle,
+          topic,
+          goal,
+          hookStyle,
+          extraContext,
+          apiKey: anthropicKey.trim() || undefined,
+        }),
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error ?? `Generation failed (${res.status})`);
+      if (!res.ok) {
+        // Missing key → send the user straight to Settings to fix it.
+        if (data.code === "NO_API_KEY") {
+          setSettingsOpen(true);
+          setView("create");
+        }
+        throw new Error(data.error ?? `Generation failed (${res.status})`);
+      }
       setOutput(data.content);
       fetchImages(); // kick off image search after the script lands
     } catch (e) {
@@ -256,7 +397,7 @@ export default function Home() {
         selectedPhoto.full,
         overlayText,
         portrait,
-        `scriptline-post${suffix}.png`,
+        `content-post${suffix}.png`,
       );
     } catch (e) {
       setImagesError(e instanceof Error ? e.message : String(e));
@@ -284,8 +425,104 @@ export default function Home() {
       <h1 className="app-title">
         Script<span>line</span>
       </h1>
-      <p className="app-sub">{cfg.tagline}</p>
+      <p className="app-sub">{view === "vault" ? "Your saved prompts — reload and reuse any time" : cfg.tagline}</p>
 
+      <div className="view-nav">
+        <button
+          className={`view-nav-btn ${view === "create" ? "active" : ""}`}
+          onClick={() => setView("create")}
+        >
+          ✍️ Create
+        </button>
+        <button
+          className={`view-nav-btn ${view === "vault" ? "active" : ""}`}
+          onClick={() => setView("vault")}
+        >
+          📚 Prompt Vault{vault.length > 0 ? ` (${vault.length})` : ""}
+        </button>
+        <button
+          className={`view-nav-btn view-nav-gear ${settingsOpen ? "active" : ""}`}
+          onClick={() => setSettingsOpen((o) => !o)}
+          title="API key settings"
+          aria-label="Settings"
+        >
+          ⚙️{!hasAnthropicKey ? <span className="gear-dot" title="No API key set" /> : ""}
+        </button>
+      </div>
+
+      {settingsOpen && (
+        <div className="panel settings-panel">
+          <div className="settings-head">
+            <h2>Settings — your API keys</h2>
+            <button className="settings-close" onClick={() => setSettingsOpen(false)} aria-label="Close settings">
+              ✕
+            </button>
+          </div>
+          <p className="settings-note">
+            Paste your own keys here to use the app — no server setup needed. They&apos;re stored
+            <b> only in this browser</b> and sent straight to Anthropic / Pexels. They&apos;re never
+            shared with anyone else.
+          </p>
+
+          <div className="field full">
+            <label>Anthropic API key (required to generate content)</label>
+            <input
+              type={showKeys ? "text" : "password"}
+              value={anthropicKey}
+              onChange={(e) => setAnthropicKey(e.target.value)}
+              placeholder="sk-ant-…"
+              autoComplete="off"
+              spellCheck={false}
+            />
+            <small className="field-help">
+              Get one at platform.claude.com → Billing → API Keys.
+            </small>
+          </div>
+
+          <div className="field full">
+            <label>Pexels API key (optional — for background images)</label>
+            <input
+              type={showKeys ? "text" : "password"}
+              value={pexelsKey}
+              onChange={(e) => setPexelsKey(e.target.value)}
+              placeholder="Paste your free Pexels key…"
+              autoComplete="off"
+              spellCheck={false}
+            />
+            <small className="field-help">Free at pexels.com/api.</small>
+          </div>
+
+          <label className="settings-show">
+            <input type="checkbox" checked={showKeys} onChange={(e) => setShowKeys(e.target.checked)} />
+            Show keys
+          </label>
+
+          <div className="settings-actions">
+            <button className="btn btn-primary settings-save" onClick={saveKeys}>
+              {settingsSaved ? "Saved ✓" : "Save keys"}
+            </button>
+            <button className="btn btn-ghost" onClick={clearKeys}>
+              Clear
+            </button>
+          </div>
+        </div>
+      )}
+
+      {view === "vault" && (
+        <PromptVault
+          prompts={vault}
+          onLoad={loadFromVault}
+          onDelete={(id) => setVault((v) => removePrompt(v, id))}
+          onToggleFavorite={(id) => setVault((v) => toggleFavorite(v, id))}
+          onUpdate={(id, patch) => setVault((v) => updatePrompt(v, id, patch))}
+          onStartCreating={() => setView("create")}
+          onExport={exportVaultFile}
+          onImport={importVaultText}
+        />
+      )}
+
+      {view === "create" && (
+      <>
       <div className="tabs">
         {MODE_ORDER.map((id) => (
           <button
@@ -313,7 +550,7 @@ export default function Home() {
               <div className="field">
                 <label>Promo Angle</label>
                 <select value={promoAngle} onChange={(e) => setPromoAngle(e.target.value)}>
-                  {SWC_ANGLES.map((a) => (
+                  {PROMO_ANGLES.map((a) => (
                     <option key={a}>{a}</option>
                   ))}
                 </select>
@@ -353,7 +590,7 @@ export default function Home() {
             <input
               value={topic}
               onChange={(e) => setTopic(e.target.value)}
-              placeholder="e.g. lavender pillow spray, a digital course, vitamin C serum…"
+              placeholder="e.g. lavender pillow spray, my online course, vitamin C serum…"
             />
           </div>
 
@@ -362,13 +599,13 @@ export default function Home() {
             <textarea
               value={extraContext}
               onChange={(e) => setExtraContext(e.target.value)}
-              placeholder="Anything the writer should know — brand details, your story, what to avoid…"
+              placeholder="Anything else the AI should know — your story, niche, brand details, what to avoid…"
             />
           </div>
         </div>
 
         <button className="btn btn-primary" onClick={generate} disabled={loading}>
-          {loading ? "Writing your script…" : "Generate Content"}
+          {loading ? "Writing your content…" : "Generate Content"}
         </button>
       </div>
 
@@ -391,10 +628,44 @@ export default function Home() {
             <button className="btn btn-ghost" onClick={copyOutput}>
               {copied ? "Copied ✓" : "Copy to clipboard"}
             </button>
+            <button className="btn btn-ghost" onClick={openSaveDialog}>
+              {savedFlash ? "Saved ✓" : "💾 Save to Vault"}
+            </button>
             <button className="btn btn-ghost" onClick={generate}>
               Regenerate
             </button>
           </div>
+
+          {saving && (
+            <div className="save-dialog">
+              <div className="field full">
+                <label>Save as</label>
+                <input
+                  value={saveName}
+                  onChange={(e) => setSaveName(e.target.value)}
+                  placeholder="Name this prompt"
+                  autoFocus
+                />
+              </div>
+              <div className="field full">
+                <label>Tags (comma separated, optional)</label>
+                <input
+                  value={saveTags}
+                  onChange={(e) => setSaveTags(e.target.value)}
+                  placeholder="e.g. skincare, promo, evergreen"
+                />
+              </div>
+              {saveError && <div className="error-box">{saveError}</div>}
+              <div className="save-dialog-actions">
+                <button className="btn btn-primary save-dialog-save" onClick={confirmSave}>
+                  Save to Vault
+                </button>
+                <button className="btn btn-ghost" onClick={() => setSaving(false)}>
+                  Cancel
+                </button>
+              </div>
+            </div>
+          )}
           <div className="output">{renderedOutput}</div>
 
           {/* ---- Images ---- */}
@@ -468,9 +739,11 @@ export default function Home() {
           )}
         </div>
       )}
+      </>
+      )}
 
       <footer className="footer">
-        <b>Scriptline</b> · content that stops the scroll
+        <b>Scriptline</b> · AI content in your voice
       </footer>
     </main>
   );
