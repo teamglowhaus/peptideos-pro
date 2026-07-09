@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="description" content="Career OS — an AI-powered career atelier. Compose recruiter-grade prompts for Claude or ChatGPT. Works fully offline." />
+<title>Career OS — The Career Atelier</title>
+
+<!-- Fonts are bundled locally (offline-first). NO Google Fonts / CDN. -->
+<link rel="stylesheet" href="fonts/fonts.css" />
+<link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+<!-- ============================ SIDEBAR ============================ -->
+<aside class="sidebar">
+  <div class="brand">
+    <div class="seal" id="seal">C</div>
+    <div>
+      <div class="brand-house">The Career Atelier</div>
+      <div class="brand-name">Career <em>OS</em></div>
+      <div class="brand-edition" id="brandEdition">General Edition</div>
+    </div>
+  </div>
+  <nav id="nav"></nav>
+  <div class="sidebar-foot">
+    <div class="foot-nav">
+      <button class="foot-link" data-view="bonuses">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12v9H4v-9M2 7h20v5H2zM12 22V7M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7"/></svg>Bonuses
+      </button>
+      <button class="foot-link" data-view="help">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M9.6 9a2.4 2.4 0 0 1 4.8 0c0 1.6-2.4 2-2.4 3.4M12 17h.01"/></svg>Help
+      </button>
+      <button class="foot-link" data-view="settings">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-2.7 1.1V21a2 2 0 1 1-4 0v-.1A1.6 1.6 0 0 0 7 19.4a1.6 1.6 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0-1.1-2.7H1a2 2 0 1 1 0-4h.1A1.6 1.6 0 0 0 2.6 7a1.6 1.6 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1A1.6 1.6 0 0 0 7 2.6h.1A1.6 1.6 0 0 0 8.2 1.1V1a2 2 0 1 1 4 0v.1A1.6 1.6 0 0 0 15 2.6a1.6 1.6 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0-.3 1.8v.1a1.6 1.6 0 0 0 1.5 1.1h.1a2 2 0 1 1 0 4h-.1a1.6 1.6 0 0 0-1.4 1z"/></svg>Settings
+      </button>
+    </div>
+    <button class="theme-toggle" id="themeToggle">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M12 3v2M12 19v2M5 12H3M21 12h-2M6 6 4.5 4.5M19.5 19.5 18 18M18 6l1.5-1.5M4.5 19.5 6 18"/><circle cx="12" cy="12" r="3.6"/></svg>
+      <span id="themeLabel">Evening edition</span><span class="k">⇧D</span>
+    </button>
+  </div>
+</aside>
+
+<!-- ============================ MAIN ============================ -->
+<main class="main">
+  <header class="topbar">
+    <div class="topbar-left">
+      <button class="menu-btn" id="menuBtn" aria-label="Open navigation">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+      </button>
+      <div>
+        <div class="topbar-title" id="pageTitle">Atelier</div>
+        <div class="topbar-sub" id="pageSub">Your career command room</div>
+      </div>
+    </div>
+    <div class="occ-switch">
+      <button class="occ-btn" id="occBtn" aria-haspopup="menu">
+        <span class="occ-seal"></span><span id="occName">General</span>
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg>
+      </button>
+      <div class="occ-menu" id="occMenu" role="menu"></div>
+    </div>
+  </header>
+
+  <div class="scroll">
+    <!-- DASHBOARD -->
+    <section class="view" id="view-dashboard">
+      <div class="hero">
+        <div class="card hero-main">
+          <div class="hero-watermark" id="heroMark">C</div>
+          <span class="card-idx">№ 00</span>
+          <span class="eyebrow" id="heroEyebrow">Welcome back</span>
+          <h1 id="heroTitle">Built to get you <em>hired</em>.</h1>
+          <p id="heroCopy">Fill in a few details and the Atelier composes a recruiter-grade prompt for you to run in Claude or ChatGPT. No prompt-writing, no guesswork — just your story, sharpened.</p>
+          <div class="hero-cta">
+            <button class="btn btn-primary" data-go="bullets">Begin a draft
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h13M12 6l6 6-6 6"/></svg>
+            </button>
+            <button class="btn btn-ghost" data-go="ats">Audit against a job</button>
+          </div>
+        </div>
+
+        <div class="card cert">
+          <span class="eyebrow">Readiness</span>
+          <div class="ring-wrap">
+            <svg width="146" height="146" viewBox="0 0 146 146">
+              <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="var(--accent)"/><stop offset="100%" stop-color="var(--gold)"/></linearGradient></defs>
+              <circle class="ring-bg" cx="73" cy="73" r="59"/>
+              <circle class="ring-fg" id="ring" cx="73" cy="73" r="59" stroke-dasharray="371" stroke-dashoffset="371"/>
+            </svg>
+            <div class="ring-num"><b id="ringNum">0</b><small>Index</small></div>
+          </div>
+          <h3>Career Readiness</h3>
+          <p id="ringHint">Compose drafts to raise it</p>
+        </div>
+      </div>
+
+      <div class="stat-row" id="statRow"></div>
+
+      <div class="section-head"><span class="no">I.</span><h2>Begin here</h2><span class="rule-dot"></span><a href="#" data-go-first>The full atelier →</a></div>
+      <div class="qs-grid" id="qsGrid"></div>
+    </section>
+
+    <!-- RESUME BUILDER (custom view — Phase 3) -->
+    <section class="view" id="view-resume" hidden>
+      <div class="resume-shell">
+        <div class="resume-form" id="resumeForm"></div>
+        <div class="resume-preview">
+          <div class="resume-preview-head">
+            <span class="rp-title">Live preview · one page</span>
+            <div class="resume-actions">
+              <button class="btn-sm btn-link" id="rsExample"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M18.4 5.6l-2.1 2.1M7.7 16.3l-2.1 2.1"/></svg>Load example</button>
+              <button class="btn-sm btn-copy" id="rsPrint"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V2h12v7M6 18H4a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2h-2M6 14h12v8H6z"/></svg>Print / PDF</button>
+              <button class="btn-sm btn-link" id="rsCopy"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="9" y="9" width="11" height="11" rx="1.5"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>Copy text</button>
+              <button class="btn-sm btn-link" id="rsDoc"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m0 0 4-4m-4 4-4-4M5 21h14"/></svg>Download .doc</button>
+            </div>
+          </div>
+          <div class="resume-example-banner" id="resumeExampleBanner"></div>
+          <div class="resume-score" id="resumeScore" aria-live="polite"></div>
+          <div class="resume-sheet" id="resumeSheet"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- COVER LETTER BUILDER (custom view — Phase 8) -->
+    <section class="view" id="view-coverletter" hidden>
+      <div class="resume-shell">
+        <div class="resume-form" id="clForm"></div>
+        <div class="resume-preview">
+          <div class="resume-preview-head">
+            <span class="rp-title">Live preview · one page</span>
+            <div class="resume-actions">
+              <button class="btn-sm btn-link" id="clExample"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M18.4 5.6l-2.1 2.1M7.7 16.3l-2.1 2.1"/></svg>Load example</button>
+              <button class="btn-sm btn-copy" id="clPrint"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V2h12v7M6 18H4a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2h-2M6 14h12v8H6z"/></svg>Print / PDF</button>
+              <button class="btn-sm btn-link" id="clCopy"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="9" y="9" width="11" height="11" rx="1.5"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>Copy text</button>
+              <button class="btn-sm btn-link" id="clDoc"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m0 0 4-4m-4 4-4-4M5 21h14"/></svg>Download .doc</button>
+            </div>
+          </div>
+          <div class="resume-example-banner" id="clExampleBanner"></div>
+          <div class="resume-sheet" id="clSheet"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- JOB TRACKER (custom view — Phase 4) -->
+    <section class="view" id="view-tracker" hidden>
+      <div class="tracker-toolbar">
+        <button class="btn btn-primary" id="trackerAdd">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>Add job
+        </button>
+        <div class="tracker-search">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+          <input id="trackerSearch" type="search" placeholder="Search company or role…" aria-label="Search jobs" />
+        </div>
+        <select class="tracker-filter" id="trackerFilter" aria-label="Filter by column">
+          <option value="all">All columns</option>
+          <option value="wishlist">Wishlist</option>
+          <option value="applied">Applied</option>
+          <option value="interview">Interview</option>
+          <option value="offer">Offer</option>
+          <option value="rejected">Rejected</option>
+        </select>
+        <button class="btn-sm btn-link" id="trackerExport">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m0 0 4-4m-4 4-4-4M5 21h14"/></svg>Export CSV
+        </button>
+      </div>
+      <div class="tracker-board" id="trackerBoard"></div>
+    </section>
+
+    <!-- OFFER COMPARISON CALCULATOR (custom view — Phase 8) -->
+    <section class="view" id="view-offercalc" hidden>
+      <div id="ocForm"></div>
+      <div class="card oc-result" id="ocResult"></div>
+    </section>
+
+    <!-- INTERVIEW FLASHCARDS (custom view — Phase 8) -->
+    <section class="view" id="view-flashcards" hidden>
+      <div class="fc-toolbar">
+        <select class="tracker-filter" id="fcCategory" aria-label="Filter by category"></select>
+        <button class="btn-sm btn-link" id="fcShuffle">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5M4 20 21 3M21 16v5h-5M4 4l5 5"/></svg>Shuffle
+        </button>
+        <span class="fc-count" id="fcCount">1 / 32</span>
+      </div>
+      <div class="card fc-card" id="fcCard" role="button" tabindex="0" aria-label="Flashcard — click to reveal the coaching tip"></div>
+      <div class="fc-nav">
+        <button class="btn btn-ghost" id="fcPrev">← Previous</button>
+        <button class="btn btn-primary" id="fcNext">Next →</button>
+      </div>
+    </section>
+
+    <!-- ATS KEYWORD CHECKER (custom view — Phase 9) -->
+    <section class="view" id="view-atscheck" hidden>
+      <div class="mod-shell">
+        <div class="card panel">
+          <div class="panel-head">
+            <span class="eyebrow">Apply · Scan</span>
+            <h2>ATS Keyword Checker</h2>
+            <p>Real keyword/phrase matching against a job description — instant, offline, no AI call.</p>
+          </div>
+          <div class="field">
+            <label>Your résumé text</label>
+            <textarea id="atsResume" placeholder="Paste your résumé text…"></textarea>
+          </div>
+          <button class="btn-sm btn-link" id="atsUseResume"></button>
+          <div class="field" style="margin-top:14px">
+            <label>Job description</label>
+            <textarea id="atsJD" placeholder="Paste the job posting…"></textarea>
+          </div>
+        </div>
+        <div class="card panel" style="position:sticky;top:100px;padding:0">
+          <div id="atsResultPanel"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- MODULE -->
+    <section class="view" id="view-module" hidden>
+      <div class="mod-shell">
+        <div class="card panel">
+          <span class="card-idx" id="modIdx">№ 01</span>
+          <div class="panel-head">
+            <span class="eyebrow" id="modEyebrow">Module</span>
+            <h2 id="modTitle"></h2>
+            <p id="modIntro"></p>
+          </div>
+          <div id="modForm"></div>
+          <button class="btn btn-primary" id="genBtn" style="width:100%;justify-content:center;margin-top:8px">Compose prompt
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M18.4 5.6l-2.1 2.1M7.7 16.3l-2.1 2.1"/></svg>
+          </button>
+        </div>
+        <div class="card panel" style="position:sticky;top:100px;padding:0">
+          <div id="outShell"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SETTINGS / HELP / BONUSES (meta views — Phase 6, rendered by extras.js) -->
+    <section class="view" id="view-settings" hidden></section>
+    <section class="view" id="view-help" hidden></section>
+    <section class="view" id="view-bonuses" hidden></section>
+  </div>
+</main>
+
+<!-- mobile drawer scrim -->
+<div class="scrim" id="scrim"></div>
+<div class="toast" id="toast"></div>
+
+<!-- Job Tracker add/edit modal (Phase 4) -->
+<div class="modal" id="jobModal" role="dialog" aria-modal="true" aria-labelledby="jobModalTitle">
+  <div class="modal-scrim" id="jobModalScrim"></div>
+  <div class="modal-card">
+    <div class="modal-head">
+      <h3 id="jobModalTitle">Add a job</h3>
+      <span class="rule-dot"></span>
+      <button class="modal-close" id="jobModalClose" aria-label="Close">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="rs-grid2" id="jobModalFields"></div>
+    <div class="modal-actions">
+      <button class="btn-danger" id="jobDelete">Delete</button>
+      <span class="spacer"></span>
+      <button class="btn-sm btn-link" id="jobModalCancelHint" tabindex="-1" style="pointer-events:none;border:none;color:var(--ink-faint)">⌘↵ to save</button>
+      <button class="btn btn-primary" id="jobSave">Save job</button>
+    </div>
+  </div>
+</div>
+
+<!-- Load order matters: configs first, then the engine. -->
+<script src="js/occupations.js"></script>
+<script src="js/modules.js"></script>
+<script src="js/resume.js"></script>
+<script src="js/coverletter.js"></script>
+<script src="js/flashcards.js"></script>
+<script src="js/offercalc.js"></script>
+<script src="js/atscheck.js"></script>
+<script src="js/tracker.js"></script>
+<script src="js/extras.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
