@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "ScrollStop Studio",
+  title: "Scriptline",
   description:
     "UGC, Instagram, TikTok, and digital product promo content that stops the scroll — scripts, captions, and upload-ready images.",
 };

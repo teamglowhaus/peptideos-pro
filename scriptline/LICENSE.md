@@ -1,19 +1,19 @@
-# ScrollStop Studio — License & Terms of Use
+# Scriptline — License & Terms of Use
 
-Thanks for purchasing ScrollStop Studio! This document explains what you can
+Thanks for purchasing Scriptline! This document explains what you can
 and can't do with it. By downloading or using this product, you agree to
 these terms.
 
 ## What you get
 
-The complete source code for ScrollStop Studio: a Next.js application with
+The complete source code for Scriptline: a Next.js application with
 four content-generation modes (UGC, Instagram, TikTok, Digital Product
 Promo), server-side integrations with the Anthropic API and the Pexels API,
 and a visual post-preview/download system.
 
 ## What you CAN do
 
-- **Use it yourself.** Run ScrollStop Studio for your own content creation,
+- **Use it yourself.** Run Scriptline for your own content creation,
   personal brand, or business — unlimited use, forever.
 - **Deploy it under your own name/brand.** Rename it, restyle it, put your
   own logo and colors on it, and host it at your own domain.
@@ -44,7 +44,7 @@ from use of this software.
 
 ## Third-party services
 
-ScrollStop Studio connects to the Anthropic API and the Pexels API. Use of
+Scriptline connects to the Anthropic API and the Pexels API. Use of
 those services is governed by their own terms, and any usage costs
 (Anthropic API billing) are your responsibility.
 

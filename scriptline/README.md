@@ -1,4 +1,4 @@
-# ScrollStop Studio
+# Scriptline
 
 A Next.js app that generates UGC, Instagram, TikTok, and digital product promo content that stops the scroll — scripts, captions, and upload-ready images.
 
@@ -14,7 +14,7 @@ A Next.js app that generates UGC, Instagram, TikTok, and digital product promo c
 ## Setup
 
 ```bash
-cd scrollstop-studio
+cd scriptline
 npm install
 cp .env.example .env.local   # then fill in your keys
 npm run dev
@@ -27,11 +27,24 @@ Required environment variables (server-side only):
 | `ANTHROPIC_API_KEY` | https://platform.claude.com |
 | `PEXELS_API_KEY` | https://www.pexels.com/api/ (free) |
 
-## Deploy to Vercel
+## Deploy
 
-1. Import the repo in Vercel and set the **Root Directory** to `scrollstop-studio`.
-2. Add `ANTHROPIC_API_KEY` and `PEXELS_API_KEY` as environment variables.
-3. Deploy.
+New to deploying apps? Follow **[SETUP-GUIDE.md](./SETUP-GUIDE.md)** for a
+plain-English, copy-paste walkthrough — no GitHub account required.
+
+Short version, for the already-comfortable:
+
+```bash
+npx vercel login
+npx vercel
+npx vercel env add ANTHROPIC_API_KEY production
+npx vercel env add PEXELS_API_KEY production
+npx vercel --prod
+```
+
+Prefer GitHub + the Vercel dashboard instead? Import the repo in Vercel and
+set the **Root Directory** to `scriptline`, then add both env vars in
+Project Settings before deploying.
 
 ## License
 
