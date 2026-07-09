@@ -1,4 +1,4 @@
-// Shared config for ScrollStop Studio — used by both the UI and API routes.
+// Shared config for Scriptline — used by both the UI and API routes.
 
 export type ModeId = "ugc" | "instagram" | "tiktok" | "swc";
 export type Platform = "Instagram" | "TikTok";

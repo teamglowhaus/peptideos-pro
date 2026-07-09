@@ -256,7 +256,7 @@ export default function Home() {
         selectedPhoto.full,
         overlayText,
         portrait,
-        `scrollstop-post${suffix}.png`,
+        `scriptline-post${suffix}.png`,
       );
     } catch (e) {
       setImagesError(e instanceof Error ? e.message : String(e));
@@ -282,7 +282,7 @@ export default function Home() {
   return (
     <main className="app">
       <h1 className="app-title">
-        ScrollStop <span>Studio</span>
+        Script<span>line</span>
       </h1>
       <p className="app-sub">{cfg.tagline}</p>
 
@@ -470,7 +470,7 @@ export default function Home() {
       )}
 
       <footer className="footer">
-        <b>ScrollStop Studio</b> · content that stops the scroll
+        <b>Scriptline</b> · content that stops the scroll
       </footer>
     </main>
   );
