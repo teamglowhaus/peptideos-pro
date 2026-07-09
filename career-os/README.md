@@ -116,8 +116,30 @@ career-os/
 │  ├─ extras.js          Settings / Help / Bonuses
 │  └─ app.js             engine: store, router, renderers, occupation reskin
 ├─ fonts/                Fraunces · Jost · Space Mono (bundled .woff2, offline)
-└─ assets/icons/
+├─ assets/icons/
+└─ build/                turns the 23 source files above into the one .zip sold on Etsy
 ```
+
+---
+
+## Building the buyer package (the .zip sold on Etsy)
+
+Editing the source files above is how you develop the app — but **buyers never
+see them**. Etsy buyers get one .zip containing exactly three flat files: the
+whole app inlined into a single self-contained .html (fonts, CSS, and all JS
+baked in as one file — no folders, no relative paths, nothing to break), plus
+a Quick Start and the license.
+
+Whenever you change anything in `index.html`, `css/`, or `js/`, regenerate it:
+
+```
+node build/package.js
+```
+
+This writes `dist/Career-OS.zip` — the exact file to re-upload to the Etsy
+listing. (`dist/` is gitignored; it's a build output, not source.) Run
+`node build/build-single-file.js` alone if you just want the unzipped single
+.html without repackaging the .zip.
 
 ---
 
