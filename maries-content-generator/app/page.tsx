@@ -256,7 +256,7 @@ export default function Home() {
         selectedPhoto.full,
         overlayText,
         portrait,
-        `maries-post${suffix}.png`,
+        `scrollstop-post${suffix}.png`,
       );
     } catch (e) {
       setImagesError(e instanceof Error ? e.message : String(e));
@@ -282,7 +282,7 @@ export default function Home() {
   return (
     <main className="app">
       <h1 className="app-title">
-        Marie&apos;s <span>Content Generator</span>
+        ScrollStop <span>Studio</span>
       </h1>
       <p className="app-sub">{cfg.tagline}</p>
 
@@ -353,7 +353,7 @@ export default function Home() {
             <input
               value={topic}
               onChange={(e) => setTopic(e.target.value)}
-              placeholder="e.g. lavender pillow spray, SWC 2.0 course, vitamin C serum…"
+              placeholder="e.g. lavender pillow spray, a digital course, vitamin C serum…"
             />
           </div>
 
@@ -362,13 +362,13 @@ export default function Home() {
             <textarea
               value={extraContext}
               onChange={(e) => setExtraContext(e.target.value)}
-              placeholder="Anything else Marie should know — brand details, story beats, what to avoid…"
+              placeholder="Anything the writer should know — brand details, your story, what to avoid…"
             />
           </div>
         </div>
 
         <button className="btn btn-primary" onClick={generate} disabled={loading}>
-          {loading ? "Writing in Marie's voice…" : "Generate Content"}
+          {loading ? "Writing your script…" : "Generate Content"}
         </button>
       </div>
 
@@ -470,7 +470,7 @@ export default function Home() {
       )}
 
       <footer className="footer">
-        <b>@mariesdigitalmanifesto</b> · <b>@scrubs2sales</b>
+        <b>ScrollStop Studio</b> · content that stops the scroll
       </footer>
     </main>
   );
