@@ -6,14 +6,14 @@
      • swaps example placeholder text + the greeting / tagline / seal letter.
 
    The parchment + gold identity NEVER changes, so all editions feel like one
-   line. To ship "Career OS — Nursing Edition" you duplicate the folder and
+   line. To ship "Career OS — Healthcare Edition" you duplicate the folder and
    change the default in js/app.js — you do NOT touch any view code.
 
    ----- HOW TO ADD A NEW EDITION (copy an entry, change the values) -----
    key:  { name, edition, seal, accent, accent2, tagline, greet, roleEx, skillEx }
 
      key      short id used internally + saved to localStorage (lowercase).
-     name     label shown in the switcher + topbar ("General", "Nursing"…).
+     name     label shown in the switcher + topbar ("General", "Healthcare"…).
      edition  the stamped sub-title under the brand ("Clinical Edition").
      seal     ONE letter shown in the brand seal + hero watermark.
      accent   the jewel accent hex — the ONLY color that changes per edition.
@@ -37,9 +37,9 @@ const OCCUPATIONS = {
     skillEx: "stakeholder management, Agile, budgeting",
   },
 
-  // Nursing / Healthcare — deep peacock.
+  // Healthcare — deep peacock.
   nurse: {
-    name: "Nursing",    edition: "Clinical Edition",  seal: "N",
+    name: "Healthcare", edition: "Clinical Edition",  seal: "N",
     accent: "#0E5A57",  accent2: "#15807A",
     tagline: "Composed for clinical careers",
     greet: "Land the <em>unit</em> you actually want.",

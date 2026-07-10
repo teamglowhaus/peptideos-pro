@@ -19,7 +19,7 @@ in your browser.
 2. CHOOSE YOUR EDITION
 
    Top right, click the edition switcher and pick the field closest to
-   yours — General, Nursing, Tech, Education, or Executive. The whole app
+   yours — General, Healthcare, Tech, Education, or Executive. The whole app
    re-skins and every tool starts speaking your industry's language. (You
    can also change this later in Settings.)
 

@@ -76,7 +76,7 @@ constant. Switch any time via the top-right edition switcher or **Settings**:
 | Edition | Accent |
 | --- | --- |
 | General | Oxblood |
-| Nursing / Healthcare | Peacock |
+| Healthcare | Peacock |
 | Software / Tech | Indigo |
 | Teaching / Education | Cognac |
 | Executive | Graphite |
@@ -182,7 +182,7 @@ Also add a matching entry to `RESUME_EXAMPLES` in `js/resume.js` — without
 one, the Résumé Builder's "Load example" falls back to the General edition's
 sample for the new occupation instead of one tailored to it.
 
-To sell a niche edition (e.g. *Career OS — Nursing Edition*), duplicate the
+To sell a niche edition (e.g. *Career OS — Healthcare Edition*), duplicate the
 whole folder, set the default edition, tweak the example variables, and list it
 separately. Same engine, new skin.
 

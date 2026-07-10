@@ -34,7 +34,7 @@
    success state with Copy / Open Claude / Open ChatGPT and a "View prompt"
    disclosure. The buyer never writes a prompt and isn't shown one unless asked.
 
-   Convention used below: o.name = edition label (e.g. "Nursing"),
+   Convention used below: o.name = edition label (e.g. "Healthcare"),
    o.roleEx = an example role, o.skillEx = example skills. Lean on these for
    occupation-aware keywording so one config serves every edition.
    ========================================================================= */
