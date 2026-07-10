@@ -2,15 +2,24 @@ import Anthropic from "@anthropic-ai/sdk";
 import { NextResponse } from "next/server";
 import { buildSystemPrompt, buildUserPrompt, type GenerateParams } from "@/lib/prompts";
 import { MODES, type ModeId } from "@/lib/modes";
+import { isValidAccessCode } from "@/lib/access";
 
 export const maxDuration = 60;
 
 export async function POST(req: Request) {
-  let body: GenerateParams & { apiKey?: string };
+  let body: GenerateParams & { apiKey?: string; accessCode?: string };
   try {
     body = await req.json();
   } catch {
     return NextResponse.json({ error: "Invalid JSON body." }, { status: 400 });
+  }
+
+  // Access gate (only enforced when ACCESS_CODES is set on the server).
+  if (!isValidAccessCode(body.accessCode)) {
+    return NextResponse.json(
+      { error: "This app is locked. Enter a valid access code to continue.", code: "BAD_ACCESS" },
+      { status: 401 },
+    );
   }
 
   // Prefer a server-side env key; otherwise use the key the user saved in the app.

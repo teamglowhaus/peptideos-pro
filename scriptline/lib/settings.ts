@@ -10,9 +10,10 @@ const LEGACY_STORAGE_KEYS = ["contentforge-settings-v1"];
 export interface Settings {
   anthropicKey: string;
   pexelsKey: string;
+  accessCode: string;
 }
 
-const EMPTY: Settings = { anthropicKey: "", pexelsKey: "" };
+const EMPTY: Settings = { anthropicKey: "", pexelsKey: "", accessCode: "" };
 
 function isBrowser(): boolean {
   return typeof window !== "undefined" && !!window.localStorage;
@@ -26,8 +27,9 @@ function readKey(key: string): Settings | null {
     const s: Settings = {
       anthropicKey: typeof parsed?.anthropicKey === "string" ? parsed.anthropicKey : "",
       pexelsKey: typeof parsed?.pexelsKey === "string" ? parsed.pexelsKey : "",
+      accessCode: typeof parsed?.accessCode === "string" ? parsed.accessCode : "",
     };
-    return s.anthropicKey || s.pexelsKey ? s : null;
+    return s.anthropicKey || s.pexelsKey || s.accessCode ? s : null;
   } catch {
     return null;
   }
@@ -56,6 +58,7 @@ export function saveSettings(settings: Settings): boolean {
       JSON.stringify({
         anthropicKey: settings.anthropicKey.trim(),
         pexelsKey: settings.pexelsKey.trim(),
+        accessCode: settings.accessCode.trim(),
       }),
     );
     return true;
