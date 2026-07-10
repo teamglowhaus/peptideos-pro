@@ -15,7 +15,7 @@ offline.
 ## 2. Choose your edition
 
 Top right, click the **edition switcher** and pick the field closest to yours —
-General, Nursing, Tech, Education, or Executive. The whole app re-skins and every
+General, Healthcare, Tech, Education, or Executive. The whole app re-skins and every
 tool starts speaking your industry's language. (You can also do this in
 **Settings**.)
 
