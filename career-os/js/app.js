@@ -20,6 +20,11 @@ const store = {
   // --- Settings (Phase 6) — always persisted; these are tiny preferences ---
   get fontSize(){ return localStorage.getItem('cos_fontsize') || 'comfortable'; },
   set fontSize(v){ localStorage.setItem('cos_fontsize', v); },
+  // whether the first-run welcome modal has been dismissed — a UI preference,
+  // not user content, so (like theme/fontSize) it always persists regardless
+  // of the autosave toggle; otherwise it'd reappear every reload with autosave off.
+  get welcomed(){ return localStorage.getItem('cos_welcomed') === '1'; },
+  set welcomed(v){ localStorage.setItem('cos_welcomed', v ? '1' : '0'); },
   // autosave gates whether USER CONTENT (form fields, résumé, board) is written
   // to disk. Preferences above always persist. Default: on.
   get autosave(){ return localStorage.getItem('cos_autosave') !== 'off'; },
@@ -43,7 +48,7 @@ const store = {
   get board(){ try { return JSON.parse(localStorage.getItem('cos_board') || 'null'); } catch { return null; } },
   set board(v){ if(this.autosave) localStorage.setItem('cos_board', JSON.stringify(v)); },
 
-  // Cover Letter Builder — one namespaced key holds the one letter (Phase 8)
+  // Cover Letter Builder — one namespaced key holds every named letter profile
   get coverletter(){ try { return JSON.parse(localStorage.getItem('cos_coverletter') || 'null'); } catch { return null; } },
   set coverletter(v){ if(this.autosave) localStorage.setItem('cos_coverletter', JSON.stringify(v)); },
 
@@ -360,8 +365,21 @@ function bindStaticEvents(){
   $('#themeToggle').addEventListener('click', () => applyTheme(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark'));
   document.addEventListener('keydown', e => {
     if((e.shiftKey && e.key.toLowerCase() === 'd') && !/input|textarea/i.test(e.target.tagName)) $('#themeToggle').click();
-    if(e.key === 'Escape'){ $('#occMenu').classList.remove('open'); closeDrawer(); }
+    if(e.key === 'Escape'){
+      $('#occMenu').classList.remove('open'); closeDrawer();
+      if($('#welcomeModal').classList.contains('open')) closeWelcomeModal();
+    }
   });
+}
+
+/* ---- WELCOME MODAL (first-run orientation; replayable from Settings) ----- */
+function openWelcomeModal(){ $('#welcomeModal').classList.add('open'); }
+function closeWelcomeModal(){ $('#welcomeModal').classList.remove('open'); store.welcomed = true; }
+function bindWelcomeModal(){
+  $('#welcomeModalClose').addEventListener('click', closeWelcomeModal);
+  $('#welcomeModalScrim').addEventListener('click', closeWelcomeModal);
+  $('#welcomeSkip').addEventListener('click', closeWelcomeModal);
+  $('#welcomeStart').addEventListener('click', () => { closeWelcomeModal(); navTo(findNavModule('resume')); });
 }
 
 /* ---- 8. EDITION MENU (built from OCCUPATIONS) ---------------------------- */
@@ -388,6 +406,7 @@ function escapeAttr(s){ return String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','
   applyOccupation(store.occ);   // sets accent + edition-aware text, renders quick-start
   renderRing();
   bindStaticEvents();
+  bindWelcomeModal();
   initResumeBuilder();          // Phase 3 — binds the Resume Builder's events once
   initCoverLetterBuilder();     // Phase 8 — binds the Cover Letter Builder's events once
   initJobTracker();             // Phase 4 — binds the Job Tracker's events once
@@ -395,4 +414,5 @@ function escapeAttr(s){ return String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','
   initOfferCalc();               // Phase 8 — binds the Offer Comparison Calculator's events once
   initAtsCheck();                 // Phase 9 — binds the ATS Keyword Checker's events once
   if(typeof initExtras === 'function') initExtras();  // Phase 6 — Settings/Help/Bonuses
+  if(!store.welcomed) openWelcomeModal();   // first-run orientation, once per device
 })();

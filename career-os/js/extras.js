@@ -55,6 +55,13 @@ function renderSettings(){
             {val:'large',      label:'Large',      active:fs==='large'},
           ])}</div>
         </div>
+
+        <hr class="rule"/>
+
+        <div class="set-row">
+          <div class="set-label"><b>New here?</b><span>Replay the welcome tour — the three-thing orientation you saw on first launch.</span></div>
+          <button class="btn-sm btn-link" data-action="welcome">Replay welcome tour</button>
+        </div>
       </div>
 
       <div class="card set-card">
@@ -488,6 +495,7 @@ function initExtras(){
         setTimeout(() => location.reload(), 600);
       }
     }
+    if(e.target.closest("[data-action='welcome']")) openWelcomeModal();
   });
 
   // Bonuses copy buttons

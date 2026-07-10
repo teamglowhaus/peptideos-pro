@@ -268,6 +268,31 @@
   </div>
 </div>
 
+<!-- First-run welcome (shows once; replay it any time from Settings) -->
+<div class="modal" id="welcomeModal" role="dialog" aria-modal="true" aria-labelledby="welcomeModalTitle">
+  <div class="modal-scrim" id="welcomeModalScrim"></div>
+  <div class="modal-card welcome-card">
+    <div class="modal-head">
+      <h3 id="welcomeModalTitle">Welcome to Career OS</h3>
+      <span class="rule-dot"></span>
+      <button class="modal-close" id="welcomeModalClose" aria-label="Close">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <p class="welcome-lead">Everything here runs <b>entirely on this device</b> — no account, no internet, nothing you type is ever uploaded. Three things to know before you start:</p>
+    <ul class="welcome-list">
+      <li><b>Pick your edition.</b> Top right — General, Nursing, Tech, Education, or Executive. Every tool re-skins to speak your field.</li>
+      <li><b>It autosaves as you go.</b> Come back any time — turn it off in Settings on a shared computer.</li>
+      <li><b>The 40+ tools compose prompts, not final text.</b> Fill a short form, copy the prompt, paste it into Claude or ChatGPT, and it writes the finished draft.</li>
+    </ul>
+    <div class="modal-actions">
+      <button class="btn-sm btn-link" id="welcomeSkip">Skip, I'll explore</button>
+      <span class="spacer"></span>
+      <button class="btn btn-primary" id="welcomeStart">Build my résumé</button>
+    </div>
+  </div>
+</div>
+
 <!-- Load order matters: configs first, then the engine. -->
 <script src="js/occupations.js"></script>
 <script src="js/modules.js"></script>
