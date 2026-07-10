@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { MODE_IMAGE_KEYWORDS, type ModeId } from "@/lib/modes";
+import { isValidAccessCode } from "@/lib/access";
 
 export const maxDuration = 30;
 
@@ -25,11 +26,20 @@ export async function POST(req: Request) {
     mode?: ModeId;
     orientation?: "portrait" | "square" | "landscape";
     pexelsKey?: string;
+    accessCode?: string;
   };
   try {
     body = await req.json();
   } catch {
     return NextResponse.json({ error: "Invalid JSON body." }, { status: 400 });
+  }
+
+  // Access gate (only enforced when ACCESS_CODES is set on the server).
+  if (!isValidAccessCode(body.accessCode)) {
+    return NextResponse.json(
+      { error: "This app is locked.", code: "BAD_ACCESS" },
+      { status: 401 },
+    );
   }
 
   // Prefer a server-side env key; otherwise use the key the user saved in the app.

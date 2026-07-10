@@ -28,7 +28,7 @@ import {
   type VaultPrompt,
 } from "@/lib/vault";
 import PromptVault from "./PromptVault";
-import { clearSettings, loadSettings, saveSettings, type Settings } from "@/lib/settings";
+import { loadSettings, saveSettings, type Settings } from "@/lib/settings";
 
 interface Photo {
   id: number;
@@ -195,6 +195,15 @@ export default function Home() {
   const [settingsSaved, setSettingsSaved] = useState(false);
   const [showKeys, setShowKeys] = useState(false);
 
+  // Access-code gate (for hosted/sold instances)
+  const [accessCode, setAccessCode] = useState("");
+  const [accessChecked, setAccessChecked] = useState(false);
+  const [accessRequired, setAccessRequired] = useState(false);
+  const [accessGranted, setAccessGranted] = useState(false);
+  const [codeInput, setCodeInput] = useState("");
+  const [unlocking, setUnlocking] = useState(false);
+  const [unlockError, setUnlockError] = useState("");
+
   const cfg = MODES[mode];
   const formats = useMemo(() => {
     if (mode === "swc") return platform === "Instagram" ? INSTAGRAM_FORMATS : TIKTOK_FORMATS;
@@ -216,18 +225,38 @@ export default function Home() {
     if (!formats.includes(format)) setFormat(formats[0]);
   }, [formats, format]);
 
-  // hydrate the vault + saved API keys from localStorage on mount
+  // hydrate the vault + saved API keys from localStorage, then check the access gate
   useEffect(() => {
     setVault(loadVault());
     const s = loadSettings();
     setAnthropicKey(s.anthropicKey);
     setPexelsKey(s.pexelsKey);
+    setAccessCode(s.accessCode);
+    (async () => {
+      try {
+        const res = await fetch("/api/access", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ code: s.accessCode || "" }),
+        });
+        const data = await res.json();
+        setAccessRequired(!!data.required);
+        setAccessGranted(!data.required || !!data.valid);
+      } catch {
+        // If the check itself fails, don't hard-lock the UI — generation is still
+        // gated server-side, so nothing leaks.
+        setAccessRequired(false);
+        setAccessGranted(true);
+      } finally {
+        setAccessChecked(true);
+      }
+    })();
   }, []);
 
   const hasAnthropicKey = anthropicKey.trim().length > 0;
 
   function currentSettings(): Settings {
-    return { anthropicKey, pexelsKey };
+    return { anthropicKey, pexelsKey, accessCode };
   }
 
   function saveKeys() {
@@ -237,9 +266,39 @@ export default function Home() {
   }
 
   function clearKeys() {
-    clearSettings();
+    // Clear the API keys but keep the access code, or the user would lock themselves out.
     setAnthropicKey("");
     setPexelsKey("");
+    saveSettings({ anthropicKey: "", pexelsKey: "", accessCode });
+  }
+
+  async function submitAccessCode() {
+    const code = codeInput.trim();
+    if (!code) {
+      setUnlockError("Enter your access code.");
+      return;
+    }
+    setUnlocking(true);
+    setUnlockError("");
+    try {
+      const res = await fetch("/api/access", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ code }),
+      });
+      const data = await res.json();
+      if (data.valid) {
+        setAccessCode(code);
+        saveSettings({ anthropicKey, pexelsKey, accessCode: code });
+        setAccessGranted(true);
+      } else {
+        setUnlockError("That code isn't valid. Double-check it and try again.");
+      }
+    } catch {
+      setUnlockError("Couldn't verify the code — check your connection and try again.");
+    } finally {
+      setUnlocking(false);
+    }
   }
 
   function openSaveDialog() {
@@ -328,6 +387,7 @@ export default function Home() {
           mode,
           orientation: imageOrientation(mode, platform, format),
           pexelsKey: pexelsKey.trim() || undefined,
+          accessCode: accessCode.trim() || undefined,
         }),
       });
       const data = await res.json();
@@ -362,10 +422,16 @@ export default function Home() {
           hookStyle,
           extraContext,
           apiKey: anthropicKey.trim() || undefined,
+          accessCode: accessCode.trim() || undefined,
         }),
       });
       const data = await res.json();
       if (!res.ok) {
+        // Access code revoked mid-session → drop back to the lock screen.
+        if (data.code === "BAD_ACCESS") {
+          setAccessGranted(false);
+          setAccessRequired(true);
+        }
         // Missing key → send the user straight to Settings to fix it.
         if (data.code === "NO_API_KEY") {
           setSettingsOpen(true);
@@ -419,6 +485,52 @@ export default function Home() {
       return <span key={i}>{line + "\n"}</span>;
     });
   }, [output]);
+
+  // Brief hold while we check the access gate, so the app doesn't flash before locking.
+  if (!accessChecked) {
+    return (
+      <main className="app gate-loading">
+        <div className="dots">
+          <span />
+          <span />
+          <span />
+        </div>
+      </main>
+    );
+  }
+
+  // Locked instance: buyer must enter their access code before anything loads.
+  if (accessRequired && !accessGranted) {
+    return (
+      <main className="app gate-wrap">
+        <div className="gate-card">
+          <div className="gate-lock" aria-hidden>🔒</div>
+          <h1 className="gate-title">
+            Script<span>line</span>
+          </h1>
+          <p className="gate-sub">
+            Enter the access code from your purchase to unlock the app.
+          </p>
+          <input
+            className="gate-input"
+            value={codeInput}
+            onChange={(e) => setCodeInput(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && submitAccessCode()}
+            placeholder="Your access code"
+            autoFocus
+            autoComplete="off"
+            spellCheck={false}
+            aria-label="Access code"
+          />
+          {unlockError && <div className="gate-error">{unlockError}</div>}
+          <button className="btn btn-primary gate-btn" onClick={submitAccessCode} disabled={unlocking}>
+            {unlocking ? "Checking…" : "Unlock"}
+          </button>
+          <p className="gate-foot">Lost your code? Check your order confirmation email.</p>
+        </div>
+      </main>
+    );
+  }
 
   return (
     <main className="app">

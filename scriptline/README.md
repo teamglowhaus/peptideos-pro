@@ -29,6 +29,27 @@ There are **two ways** to supply the keys the app needs — pick whichever is ea
 
 If a server env var is set it takes precedence; otherwise the app uses the key saved in Settings.
 
+## Selling access with access codes (hosted model)
+
+If you want to host one instance and sell **access** (buyers just open a link and type a code —
+no keys or setup on their end), set two server environment variables:
+
+| Env var | What it does |
+|---|---|
+| `ANTHROPIC_API_KEY` | Your key. The server uses it for everyone, so **you** pay for usage. |
+| `ACCESS_CODES` | Comma-separated list of codes, e.g. `sunrise-42,vip-panda,launch-code`. Visitors must enter one to unlock the app. |
+
+How it works:
+
+- When `ACCESS_CODES` is set, visitors see a **lock screen** and must enter a valid code before
+  they can generate anything. Codes are matched case-insensitively.
+- Give each buyer a code with their purchase (e.g. deliver "link + code" via Etsy/Gumroad).
+- To revoke access, remove or change a code in `ACCESS_CODES` and redeploy.
+- When `ACCESS_CODES` is **not** set, the gate is off and the app is open (personal use).
+
+The access gate is enforced server-side on every generation request, so it can't be bypassed by
+editing the page. (One shared code list — for unique per-buyer codes you'd add a backend.)
+
 ## Local setup
 
 ```bash

@@ -782,3 +782,136 @@ body {
     height: 150px;
   }
 }
+
+/* ============================================================
+   Premium polish
+   ============================================================ */
+
+body {
+  background:
+    radial-gradient(1100px 560px at 50% -12%, color-mix(in srgb, var(--accent) 20%, transparent), transparent 62%),
+    radial-gradient(900px 500px at 100% 0%, color-mix(in srgb, var(--accent2) 12%, transparent), transparent 60%),
+    var(--bg);
+  background-attachment: fixed;
+}
+
+.app-title {
+  font-size: 1.8rem;
+}
+
+/* Gradient wordmark that adapts to each mode's theme */
+.app-title span,
+.gate-title span {
+  color: var(--accent); /* fallback */
+  background: linear-gradient(115deg, var(--accent), var(--accent2));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.panel {
+  box-shadow:
+    0 1px 0 0 rgba(255, 255, 255, 0.05) inset,
+    0 18px 40px -24px rgba(0, 0, 0, 0.7);
+}
+
+.btn-primary {
+  box-shadow: 0 10px 26px -10px color-mix(in srgb, var(--accent) 70%, transparent);
+  transition: transform 0.12s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+}
+
+.btn-primary:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 16px 34px -10px color-mix(in srgb, var(--accent) 80%, transparent);
+}
+
+.tab {
+  transition: transform 0.12s ease, border-color 0.2s ease, box-shadow 0.2s ease, color 0.2s ease;
+}
+
+.tab:hover {
+  transform: translateY(-1px);
+  color: var(--text);
+}
+
+/* ============================================================
+   Access-code lock screen
+   ============================================================ */
+
+.gate-loading,
+.gate-wrap {
+  max-width: none;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.gate-card {
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 40px 30px 30px;
+  box-shadow:
+    0 1px 0 0 rgba(255, 255, 255, 0.06) inset,
+    0 30px 70px -30px rgba(0, 0, 0, 0.85),
+    0 0 0 1px color-mix(in srgb, var(--accent) 22%, transparent);
+}
+
+.gate-lock {
+  font-size: 2.4rem;
+  margin-bottom: 12px;
+}
+
+.gate-title {
+  font-size: 1.9rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin-bottom: 10px;
+}
+
+.gate-sub {
+  color: var(--muted);
+  font-size: 0.92rem;
+  line-height: 1.55;
+  margin-bottom: 22px;
+}
+
+.gate-input {
+  width: 100%;
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  color: var(--text);
+  padding: 14px 16px;
+  font-size: 1rem;
+  text-align: center;
+  letter-spacing: 0.06em;
+  font-family: inherit;
+}
+
+.gate-input:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 25%, transparent);
+}
+
+.gate-error {
+  color: #ff9b9b;
+  font-size: 0.85rem;
+  margin-top: 12px;
+}
+
+.gate-btn {
+  margin-top: 16px;
+}
+
+.gate-foot {
+  color: var(--muted);
+  font-size: 0.78rem;
+  margin-top: 18px;
+}
