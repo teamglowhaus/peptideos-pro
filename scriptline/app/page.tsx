@@ -391,7 +391,12 @@ export default function Home() {
         }),
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error ?? `Image search failed (${res.status})`);
+      if (!res.ok) {
+        // Background images are an optional extra. If the host hasn't set a
+        // Pexels key, just skip images silently — never show a scary error.
+        if (data.code === "NO_PEXELS_KEY") return;
+        throw new Error(data.error ?? `Image search failed (${res.status})`);
+      }
       setPhotos(data.photos);
       if (data.photos.length > 0) setSelectedPhoto(data.photos[0]);
     } catch (e) {
