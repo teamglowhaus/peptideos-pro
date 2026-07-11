@@ -6,7 +6,29 @@ install, or account is required — everything runs entirely offline, right
 in your browser.
 
 
-1. OPEN IT
+0. FIND YOUR DOWNLOAD (if you haven't already)
+
+   On Etsy: click your profile icon -> "Purchases and reviews" -> find this
+   order -> "Download files." (Etsy also emails you a receipt with a
+   download link.) Save the .zip file somewhere easy to find, like your
+   Desktop or Downloads folder.
+
+
+1. UNZIP THE FOLDER
+
+   You downloaded one .zip file containing three items — this Quick Start,
+   a License file, and the app itself. You need to unzip it before opening
+   anything inside.
+
+   - Windows: right-click the .zip file -> "Extract All" -> Extract.
+   - Mac: just double-click the .zip file — it unzips automatically into a
+     new folder next to it.
+
+   Open that newly-extracted folder — that's where you'll find the three
+   flat files, including this one.
+
+
+2. OPEN IT
 
    Double-click "Career OS — Open This File.html" (the other file in this
    folder). It opens in your default web browser and works completely
@@ -16,7 +38,7 @@ in your browser.
    web browser (Chrome, Edge, Safari, or Firefox).
 
 
-2. CHOOSE YOUR EDITION
+3. CHOOSE YOUR EDITION
 
    Top right, click the edition switcher and pick the field closest to
    yours — General, Healthcare, Tech, Education, or Executive. The whole app
@@ -24,7 +46,7 @@ in your browser.
    can also change this later in Settings.)
 
 
-3. BUILD YOUR RÉSUMÉ
+4. BUILD YOUR RÉSUMÉ
 
    - Sidebar -> Résumé Builder
    - Fill in your details; watch the live preview update on the right
@@ -34,7 +56,7 @@ in your browser.
    - Try "Load example" if you want to see a filled-in sample first
 
 
-4. COMPOSE WITH A TOOL
+5. COMPOSE WITH A TOOL
 
    - Pick any tool (e.g. Build -> Resume Bullets, or Interview -> Mock
      Interview Simulator)
@@ -43,7 +65,7 @@ in your browser.
    - The AI returns your finished writing
 
 
-5. TRACK YOUR APPLICATIONS
+6. TRACK YOUR APPLICATIONS
 
    - Sidebar -> Job Tracker
    - "Add job" — it lands in Wishlist
