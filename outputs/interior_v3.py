@@ -427,7 +427,66 @@ def build_title_page(c, pn):
     footer(c, pn)
 
 
-# ── Page 3: Welcome (dark) ─────────────────────────────────────────────────────
+# ── Page 3: License & Terms of Use ────────────────────────────────────────────
+
+def build_license_page(c, pn):
+    cream_bg(c)
+    corner_marks(c)
+
+    y = H - M - 22
+    c.setFillColor(GOLD)
+    c.setFont("Arsenal", 10)
+    c.drawCentredString(W / 2, y, "✶   L I C E N S E   &   T E R M S   ✶")
+    y -= 38
+
+    c.setFillColor(INK)
+    c.setFont("Italiana", 28)
+    c.drawCentredString(W / 2, y, "Terms of Use")
+    y -= 18
+    gold_rule(c, y, diamond=True)
+    y -= 36
+
+    terms = [
+        ("PERSONAL USE ONLY",
+         "This journal is licensed for your personal use only. One license per purchaser. "
+         "You may print this file for your own personal journaling practice as many times as you wish."),
+        ("NO REDISTRIBUTION",
+         "You may not share, email, upload, resell, or redistribute this file in any "
+         "form — digital or printed — to any other person or platform."),
+        ("NO COMMERCIAL USE",
+         "You may not use this journal or its contents to create products for sale, "
+         "bundles, courses, coaching programs, or any commercial purpose."),
+        ("NO ALTERATIONS",
+         "You may not modify, edit, rebrand, or claim this work as your own. "
+         "All text, design, layout, and content remain the intellectual property of GlowHausDigital."),
+        ("PRINTING",
+         "You are welcome to print this file at home or at a local print shop for your "
+         "own personal use. Commercial printing and resale of printed copies is not permitted."),
+    ]
+
+    for heading, body in terms:
+        c.setFillColor(GOLD)
+        c.setFont("Arsenal", 10)
+        c.drawString(M, y, heading)
+        y -= 18
+        draw_wrapped(c, body, M + 4, y, IW - 8, "CrimsonPro", 12, color=INK, line_h=18)
+        lines_needed = len(body) // 62 + 1
+        y -= lines_needed * 18 + 14
+
+    y -= 8
+    gold_rule(c, y, diamond=False)
+    y -= 28
+
+    c.setFillColor(INK)
+    c.setFont("CrimsonItal", 12)
+    c.drawCentredString(W / 2, y, f"© 2026 GlowHausDigital  ·  All Rights Reserved")
+    y -= 20
+    c.drawCentredString(W / 2, y, "Questions? teamglowhaus@gmail.com")
+
+    footer(c, pn)
+
+
+# ── Page 4: Welcome (dark) ─────────────────────────────────────────────────────
 
 def build_welcome(c, pn):
     dark_bg(c)
@@ -1544,6 +1603,61 @@ def build_closing(c, pn):
     footer(c, pn, dark=True)
 
 
+# ── Thank You Page (dark) ──────────────────────────────────────────────────────
+
+def build_thank_you(c, pn):
+    dark_bg(c)
+    corner_marks(c, LGOLD)
+    flower_of_life(c, W / 2, H * 0.50, 34, rings=1, color=LGOLD, alpha=0.08)
+
+    y = H - M - 36
+    c.setFillColor(LGOLD)
+    c.setFont("Arsenal", 10)
+    c.drawCentredString(W / 2, y, "✶   T H A N K   Y O U   ✶")
+
+    y = H * 0.50 + 110
+    c.setFillColor(WTEXT)
+    c.setFont("Italiana", 42)
+    c.drawCentredString(W / 2, y, "With Gratitude")
+    y -= 16
+    dark_rule(c, y)
+    y -= 34
+
+    lines = [
+        "Thank you for choosing the 369 Portal Manifestation Journal.",
+        "It was crafted with intention, love, and deep belief",
+        "in the power of your desires.",
+        "",
+        "Your purchase supports an independent creator who pours",
+        "everything into making tools that truly transform lives.",
+        "",
+        "If this journal moves you, please consider leaving a review",
+        "on Etsy — it means the world and helps others find their portal.",
+        "",
+        "You are worthy of everything you are calling in.",
+        "Trust the process. Keep writing. The universe is listening.",
+    ]
+
+    c.setFont("CrimsonPro", 13)
+    for line in lines:
+        if line == "":
+            y -= 8
+        else:
+            c.setFillColor(WTEXT)
+            c.drawCentredString(W / 2, y, line)
+            y -= 22
+
+    y -= 20
+    dark_rule(c, y)
+    y -= 28
+
+    c.setFillColor(LGOLD)
+    c.setFont("Arsenal", 11)
+    c.drawCentredString(W / 2, y, "GlowHausDigital  ·  teamglowhaus@gmail.com")
+
+    footer(c, pn, dark=True)
+
+
 # ══════════════════════════════════════════════════════════════════════════════
 #  MAIN BUILD
 # ══════════════════════════════════════════════════════════════════════════════
@@ -1558,15 +1672,16 @@ def main():
 
     pn = 1  # running page counter
 
-    # ── Front matter (pages 1-8) ─────────────────────────────────────────────
-    build_cover(c);           c.showPage(); pn += 1   # 1
-    build_title_page(c, pn);  c.showPage(); pn += 1   # 2
-    build_welcome(c, pn);     c.showPage(); pn += 1   # 3
-    build_method(c, pn);      c.showPage(); pn += 1   # 4
-    build_how_to_use(c, pn);  c.showPage(); pn += 1   # 5
-    build_portal_intention(c, pn); c.showPage(); pn += 1  # 6
-    build_commitments(c, pn); c.showPage(); pn += 1   # 7
-    build_moon_overview(c, pn); c.showPage(); pn += 1 # 8
+    # ── Front matter (pages 1-9) ─────────────────────────────────────────────
+    build_cover(c);              c.showPage(); pn += 1   # 1
+    build_title_page(c, pn);     c.showPage(); pn += 1   # 2
+    build_license_page(c, pn);   c.showPage(); pn += 1   # 3
+    build_welcome(c, pn);        c.showPage(); pn += 1   # 4
+    build_method(c, pn);         c.showPage(); pn += 1   # 5
+    build_how_to_use(c, pn);     c.showPage(); pn += 1   # 6
+    build_portal_intention(c, pn); c.showPage(); pn += 1 # 7
+    build_commitments(c, pn);    c.showPage(); pn += 1   # 8
+    build_moon_overview(c, pn);  c.showPage(); pn += 1   # 9
 
     # ── Daily pages (pages 9-64: 28 days × 2 pages) ──────────────────────────
     for day in range(1, 29):
@@ -1606,9 +1721,9 @@ def main():
         build_bonus_page(c, i, pn); c.showPage(); pn += 1
     # now pn = 121
 
-    # ── Closing (page 121) ───────────────────────────────────────────────────
-    build_closing(c, pn)
-    c.showPage()
+    # ── Closing & Thank You (pages 122-123) ─────────────────────────────────
+    build_closing(c, pn);   c.showPage(); pn += 1
+    build_thank_you(c, pn); c.showPage()
 
     c.save()
     print(f"Saved {out_path}  ({pn} pages)")

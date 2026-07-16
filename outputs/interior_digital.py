@@ -184,6 +184,9 @@ def _build_all(c):
     _bm(c, "Title Page")
     _dark_page[0] = False; base.build_title_page(c, pn);    _showpage(c); pn += 1
 
+    _bm(c, "License & Terms")
+    _dark_page[0] = False; base.build_license_page(c, pn);  _showpage(c); pn += 1
+
     _bm(c, "Welcome")
     _dark_page[0] = True;  base.build_welcome(c, pn);       _showpage(c); pn += 1
 
@@ -257,7 +260,11 @@ def _build_all(c):
 
     _bm(c, "Closing", level=0)
     _dark_page[0] = True
-    base.build_closing(c, pn)
+    base.build_closing(c, pn);  _showpage(c); pn += 1
+
+    _bm(c, "Thank You", level=0)
+    _dark_page[0] = True
+    base.build_thank_you(c, pn)
     _showpage(c)
 
     return pn
@@ -337,6 +344,7 @@ def _build_fc_print(out_path, pagesize, label):
     pn = 1
     base.build_cover(c);             c.showPage(); pn += 1
     base.build_title_page(c, pn);    c.showPage(); pn += 1
+    base.build_license_page(c, pn);  c.showPage(); pn += 1
     base.build_welcome(c, pn);       c.showPage(); pn += 1
     base.build_method(c, pn);        c.showPage(); pn += 1
     base.build_how_to_use(c, pn);    c.showPage(); pn += 1
@@ -360,7 +368,8 @@ def _build_fc_print(out_path, pagesize, label):
             c.showPage(); pn += 1
     for i in range(8):
         base.build_bonus_page(c, i, pn); c.showPage(); pn += 1
-    base.build_closing(c, pn); c.showPage()
+    base.build_closing(c, pn);   c.showPage(); pn += 1
+    base.build_thank_you(c, pn); c.showPage()
 
     c.save()
     base.PRINT_SAFE = False
@@ -389,6 +398,7 @@ def build_a4(out_path):
     pn = 1
     base.build_cover(c);             c.showPage(); pn += 1
     base.build_title_page(c, pn);    c.showPage(); pn += 1
+    base.build_license_page(c, pn);  c.showPage(); pn += 1
     base.build_welcome(c, pn);       c.showPage(); pn += 1
     base.build_method(c, pn);        c.showPage(); pn += 1
     base.build_how_to_use(c, pn);    c.showPage(); pn += 1
@@ -412,7 +422,8 @@ def build_a4(out_path):
             c.showPage(); pn += 1
     for i in range(8):
         base.build_bonus_page(c, i, pn); c.showPage(); pn += 1
-    base.build_closing(c, pn); c.showPage()
+    base.build_closing(c, pn);   c.showPage(); pn += 1
+    base.build_thank_you(c, pn); c.showPage()
 
     c.save()
     print(f"Saved  {out_path}  ({pn} pages, {os.path.getsize(out_path)//1024} KB)  [A4 PRINT]")
