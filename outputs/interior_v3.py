@@ -25,6 +25,10 @@ M     = 0.75 * inch      # margin = 54 pt
 IW    = W - 2 * M        # inner width = 504 pt
 FY    = 26               # footer centre Y (pt from bottom)
 
+# When True, pages that have write lines use cream backgrounds so handwriting
+# shows up on printed paper. Digital editions leave this False.
+PRINT_SAFE = False
+
 # ── Colour palette ─────────────────────────────────────────────────────────────
 INK     = HexColor("#1a1410")  # ALL readable text on cream pages
 INK2    = HexColor("#2e2620")  # secondary body text
@@ -731,20 +735,33 @@ def build_commitments(c, pn):
 # ── Page 8: Moon Phase Overview (dark) ─────────────────────────────────────────
 
 def build_moon_overview(c, pn):
-    dark_bg(c)
-    corner_marks(c, LGOLD)
+    # Print-safe: swap to cream so handwritten notes show on paper
+    if PRINT_SAFE:
+        cream_bg(c)
+        corner_marks(c)
+        hdr_color  = GOLD
+        title_color = INK
+        text_color  = INK
+        rule_fn    = gold_rule
+    else:
+        dark_bg(c)
+        corner_marks(c, LGOLD)
+        hdr_color  = LGOLD
+        title_color = WTEXT
+        text_color  = WTEXT
+        rule_fn    = dark_rule
 
     y = H - M - 22
-    c.setFillColor(LGOLD)
+    c.setFillColor(hdr_color)
     c.setFont("Arsenal", 10)
     c.drawCentredString(W / 2, y, "✶   THE MOON  ·  YOUR COSMIC PARTNER   ✶")
     y -= 42
 
-    c.setFillColor(WTEXT)
+    c.setFillColor(title_color)
     c.setFont("Italiana", 34)
     c.drawCentredString(W / 2, y, "Moon Phase Guide")
     y -= 18
-    dark_rule(c, y)
+    rule_fn(c, y)
     y -= 36
 
     phases = [
@@ -774,44 +791,43 @@ def build_moon_overview(c, pn):
         x = M + col * (col_w + 20)
         row_y = y - row * ROW_H
 
-        c.setFillColor(LGOLD)
+        c.setFillColor(hdr_color)
         c.setFont("Arsenal", 11)
         c.drawString(x, row_y, phase)
-        c.setFillColor(WTEXT)
+        c.setFillColor(text_color)
         c.setFont("CrimsonPro", 12)
         draw_wrapped(c, desc, x + 5, row_y - 18, col_w - 10,
-                     "CrimsonPro", 12, color=WTEXT, line_h=17)
+                     "CrimsonPro", 12, color=text_color, line_h=17)
 
     y -= (4 * ROW_H) + 16
-    dark_rule(c, y)
+    rule_fn(c, y)
     y -= 28
 
-    c.setFillColor(WTEXT)
+    c.setFillColor(text_color)
     c.setFont("CrimsonItal", 13)
     c.drawCentredString(W / 2, y, "Work with the moon’s energy to amplify your 369 practice.")
     y -= 22
     c.drawCentredString(W / 2, y, "New moons are the most potent time to begin a new portal.")
     y -= 36
 
-    dark_rule(c, y)
+    rule_fn(c, y)
     y -= 28
 
-    c.setFillColor(LGOLD)
+    c.setFillColor(hdr_color)
     c.setFont("Arsenal", 10)
     c.drawString(M, y, "MY MOON NOTES FOR THIS PORTAL CYCLE")
     y -= 22
-    # Gold lines — fully visible against the dark background
+    line_color = GOLD if PRINT_SAFE else LGOLD
     c.saveState()
-    c.setStrokeColor(LGOLD)
-    c.setStrokeAlpha(1.0)
-    c.setFillAlpha(1.0)
+    c.setStrokeColor(line_color)
+    c.setStrokeAlpha(0.65 if PRINT_SAFE else 1.0)
     c.setLineWidth(0.65)
     for _ in range(4):
         c.line(M, y, W - M, y)
         y -= 28
     c.restoreState()
 
-    footer(c, pn, dark=True)
+    footer(c, pn, dark=not PRINT_SAFE)
 
 
 # ── Daily Pages ────────────────────────────────────────────────────────────────
@@ -911,8 +927,8 @@ def build_evening_page(c, day, pn):
     """Evening (9×) + Reflection page."""
     cream_bg(c)
     corner_marks(c)
-    # Subtle watermark centred in the 9-write-lines area — well clear of release statement
-    flower_of_life(c, W / 2, H * 0.65, 22, rings=2, color=GOLD, alpha=0.06)
+    # Watermark in the blank space between write-lines section and energy bar
+    flower_of_life(c, W / 2, H * 0.52, 18, rings=1, color=GOLD, alpha=0.04)
 
     week = (day - 1) // 7 + 1
     y = H - M - 14
@@ -990,13 +1006,13 @@ def build_evening_page(c, day, pn):
     write_line(c, M, y, IW)
     y -= 32
 
-    # ── RELEASE STATEMENT ───────────────────────────────────────────────────────
-    gold_rule(c, y, diamond=False)
-    y -= 20
+    # ── RELEASE STATEMENT (fixed above footer — never overlaps) ─────────────────
+    release_y = FY + 30           # text baseline 30pt above footer centre
+    gold_rule(c, release_y + 22, diamond=False)
     c.setFillColor(INK)
     c.setFont("CrimsonItal", 13)
     c.drawCentredString(
-        W / 2, y,
+        W / 2, release_y,
         "I release this desire to the universe with full trust and gratitude."
     )
 
@@ -1022,7 +1038,7 @@ WEEKLY_SECTIONS = [
 def build_weekly_review(c, week, pn):
     cream_bg(c)
     corner_marks(c)
-    flower_of_life(c, W / 2, H * 0.50, 24, rings=2, color=GOLD, alpha=0.08)
+    flower_of_life(c, W / 2, H * 0.50, 18, rings=1, color=GOLD, alpha=0.04)
 
     y = H - M - 22
     c.setFillColor(GOLD)
@@ -1326,21 +1342,19 @@ def build_moon_calendar(c, month_idx, page_in_month, pn):
     title, is_dark, ctype = MOON_PAGE_INFO[page_in_month]
     month_name = MOON_MONTH_NAMES[month_idx]
 
-    if is_dark:
+    if is_dark and not PRINT_SAFE:
         dark_bg(c)
         corner_marks(c, LGOLD)
         ink  = WTEXT
         gclr = LGOLD
         dark = True
+        flower_of_life(c, W / 2, H / 2, 34, rings=1, color=LGOLD, alpha=0.06)
     else:
         cream_bg(c)
         corner_marks(c)
         ink  = INK
         gclr = GOLD
         dark = False
-
-    if is_dark:
-        flower_of_life(c, W / 2, H / 2, 34, rings=2, color=LGOLD, alpha=0.40)
 
     y = H - M - 20
     c.setFillColor(gclr)
@@ -1353,7 +1367,7 @@ def build_moon_calendar(c, month_idx, page_in_month, pn):
     c.drawCentredString(W / 2, y, title)
     y -= 20
 
-    if is_dark:
+    if dark:
         dark_rule(c, y)
     else:
         gold_rule(c, y, diamond=True)
@@ -1438,7 +1452,7 @@ BONUS_PROMPTS = [
 def build_bonus_page(c, idx, pn):
     cream_bg(c)
     corner_marks(c)
-    flower_of_life(c, W / 2, H * 0.50, 26, rings=2, color=GOLD, alpha=0.09)
+    flower_of_life(c, W / 2, H * 0.50, 18, rings=1, color=GOLD, alpha=0.04)
 
     y = H - M - 22
     c.setFillColor(GOLD)
@@ -1535,6 +1549,8 @@ def build_closing(c, pn):
 # ══════════════════════════════════════════════════════════════════════════════
 
 def main():
+    global PRINT_SAFE
+    PRINT_SAFE = True
     setup_fonts()
 
     out_path = os.path.join(HERE, "369-portal-FINAL.pdf")

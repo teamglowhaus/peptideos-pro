@@ -325,6 +325,7 @@ class _ScaledCanvas(rlc.Canvas):
 
 def _build_fc_print(out_path, pagesize, label):
     """Render the full journal scaled to fit a Franklin Covey page size."""
+    base.PRINT_SAFE = True
     # Restore unpatched draw functions (print — no form fields)
     base.write_line          = base._orig_write_line  if hasattr(base, "_orig_write_line")  else _orig_write_line_draw
     base.write_lines_block   = base._orig_wlb         if hasattr(base, "_orig_wlb")         else _orig_wlb_draw
@@ -362,6 +363,7 @@ def _build_fc_print(out_path, pagesize, label):
     base.build_closing(c, pn); c.showPage()
 
     c.save()
+    base.PRINT_SAFE = False
     scale_pct = int(min(pagesize[0]/letter[0], pagesize[1]/letter[1]) * 100)
     print(f"Saved  {out_path}  ({pn} pages, {os.path.getsize(out_path)//1024} KB)  [{label} — {scale_pct}% scale]")
 
@@ -370,6 +372,7 @@ def _build_fc_print(out_path, pagesize, label):
 
 def build_a4(out_path):
     """Rebuild journal at A4 page size for international buyers."""
+    base.PRINT_SAFE = True
     # Patch base module geometry to A4
     orig_W, orig_H, orig_IW = base.W, base.H, base.IW
     base.W, base.H = A4          # 595.27 × 841.89 pt
@@ -414,6 +417,7 @@ def build_a4(out_path):
     c.save()
     print(f"Saved  {out_path}  ({pn} pages, {os.path.getsize(out_path)//1024} KB)  [A4 PRINT]")
 
+    base.PRINT_SAFE = False
     # Restore geometry
     base.W, base.H, base.IW = orig_W, orig_H, orig_IW
 
@@ -482,6 +486,7 @@ def main():
     print("Building Franklin Covey Compact (4.25×6.75) print edition...")
     _build_fc_print(fc_compact_path, FC_COMPACT, "FC COMPACT")
 
+    base.PRINT_SAFE = False
     print("Building fillable edition...")
     build_fillable(fillable_path)
 
