@@ -140,7 +140,7 @@ def make_thumbnail():
     draw.line([(200, 480), (SQ-200, 480)], fill=GOLD, width=2)
 
     # ── 6-page grid ──────────────────────────────────────────────────────────
-    show_pages = [1, 3, 9, 10, 8, 121]
+    show_pages = [1, 4, 10, 11, 9, 122]
     pw, ph = 520, int(520 * 11 / 8.5)   # ≈ 520 × 674
     cols, rows = 3, 2
     gap = 28
@@ -179,7 +179,7 @@ def make_thumbnail():
     footer_y = strip_y + bh + 30
     draw.line([(100, footer_y), (SQ-100, footer_y)], fill=GOLD, width=1)
     draw.text((SQ//2, footer_y + 14),
-              "121 PAGES  ·  28 DAYS  ·  6 FILE FORMATS  ·  INSTANT DOWNLOAD",
+              "123 PAGES  ·  28 DAYS  ·  6 FILE FORMATS  ·  INSTANT DOWNLOAD",
               font=F(AR, 30), fill=DGOLD, anchor="mt")
 
     save(img, "00-THUMBNAIL.jpg")
@@ -268,8 +268,8 @@ def make_daily_spread():
     x1 = (SQ // 2) - pw - gap // 2
     x2 = (SQ // 2) + gap // 2
 
-    paste_page(img, P(9),  x1, y, pw, ph, border_color=DGOLD, shadow=True)
-    paste_page(img, P(10), x2, y, pw, ph, border_color=DGOLD, shadow=True)
+    paste_page(img, P(10),  x1, y, pw, ph, border_color=DGOLD, shadow=True)
+    paste_page(img, P(11), x2, y, pw, ph, border_color=DGOLD, shadow=True)
 
     # Labels below pages
     ty = y + ph + 24
@@ -293,12 +293,12 @@ def make_pages_overview():
     draw = ImageDraw.Draw(img)
 
     draw.line([(100, 70), (SQ-100, 70)], fill=GOLD, width=2)
-    draw.text((SQ//2, 96), "121 PAGES OF SACRED PRACTICE",
+    draw.text((SQ//2, 96), "123 PAGES OF SACRED PRACTICE",
               font=F(IT, 76), fill=WTEXT, anchor="mt")
     draw.line([(100, 192), (SQ-100, 192)], fill=GOLD, width=1)
 
     # 4×2 grid of pages
-    show = [1, 3, 9, 10, 73, 97, 113, 121]
+    show = [1, 4, 10, 11, 74, 98, 114, 122]
     labels = ["Cover", "Welcome", "Day Morning", "Day Evening",
               "Shadow Work", "Moon Calendar", "Bonus Pages", "Closing"]
     pw, ph = 420, int(420 * 11/8.5)
@@ -330,7 +330,7 @@ def make_pages_overview():
         draw.text((sx, sy + 20), num, font=F(IT, 64), fill=LGOLD, anchor="mt")
         draw.text((sx, sy + 94), lbl, font=F(AR, 22), fill=WTEXT, anchor="mt")
 
-    save(img, "04-121-pages-overview.jpg")
+    save(img, "04-123-pages-overview.jpg")
 
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -342,7 +342,7 @@ def make_method_page():
     draw = ImageDraw.Draw(img)
     x = (SQ - pw) // 2
     y = (SQ - ph) // 2
-    paste_page(img, P(4), x, y, pw, ph, border_color=GOLD, shadow=True)
+    paste_page(img, P(5), x, y, pw, ph, border_color=GOLD, shadow=True)
     # Header bar
     draw.rectangle([0, 0, SQ, 80], fill=INK)
     draw.text((SQ//2, 10), "THE 369 METHOD — NIKOLA TESLA'S SACRED CODE",
@@ -369,8 +369,8 @@ def make_shadow_work():
     x1 = (SQ // 2) - pw - gap // 2
     x2 = (SQ // 2) + gap // 2
 
-    paste_page(img, P(73), x1, y, pw, ph, border_color=DGOLD, shadow=True)
-    paste_page(img, P(90), x2, y, pw, ph, border_color=DGOLD, shadow=True)
+    paste_page(img, P(74), x1, y, pw, ph, border_color=DGOLD, shadow=True)
+    paste_page(img, P(91), x2, y, pw, ph, border_color=DGOLD, shadow=True)
 
     save(img, "06-shadow-work.jpg")
 
@@ -384,7 +384,7 @@ def make_moon_calendar():
     draw = ImageDraw.Draw(img)
     x = (SQ - pw) // 2
     y = (SQ - ph) // 2
-    paste_page(img, P(97), x, y, pw, ph, border_color=LGOLD, shadow=True)
+    paste_page(img, P(98), x, y, pw, ph, border_color=LGOLD, shadow=True)
     # Footer strip
     draw.rectangle([0, SQ-90, SQ, SQ], fill=DARKBG)
     draw.line([(100, SQ-88), (SQ-100, SQ-88)], fill=GOLD, width=1)
@@ -403,7 +403,7 @@ def make_moon_phase_guide():
     draw = ImageDraw.Draw(img)
     x = (SQ - pw) // 2
     y = (SQ - ph) // 2
-    paste_page(img, P(8), x, y, pw, ph, border_color=LGOLD, shadow=True)
+    paste_page(img, P(9), x, y, pw, ph, border_color=LGOLD, shadow=True)
     draw.rectangle([0, SQ-90, SQ, SQ], fill=DARKBG)
     draw.line([(100, SQ-88), (SQ-100, SQ-88)], fill=GOLD, width=1)
     draw.text((SQ//2, SQ-72),
@@ -431,8 +431,8 @@ def make_sync_log():
     x1 = (SQ//2) - pw - gap//2
     x2 = (SQ//2) + gap//2
 
-    paste_page(img, P(81), x1, y, pw, ph, border_color=DGOLD, shadow=True)
-    paste_page(img, P(110), x2, y, pw, ph, border_color=DGOLD, shadow=True)
+    paste_page(img, P(82), x1, y, pw, ph, border_color=DGOLD, shadow=True)
+    paste_page(img, P(111), x2, y, pw, ph, border_color=DGOLD, shadow=True)
 
     save(img, "09-synchronicity-log.jpg")
 
@@ -446,7 +446,7 @@ def make_weekly_review():
     draw = ImageDraw.Draw(img)
     x = (SQ - pw) // 2
     y = (SQ - ph) // 2
-    paste_page(img, P(65), x, y, pw, ph, border_color=GOLD, shadow=True)
+    paste_page(img, P(66), x, y, pw, ph, border_color=GOLD, shadow=True)
     draw.rectangle([0, 0, SQ, 80], fill=INK)
     draw.text((SQ//2, 10),
               "WEEKLY REVIEWS — 4 PAGES TO TRACK YOUR EVIDENCE & SHIFTS",
@@ -474,8 +474,8 @@ def make_bonus_pages():
     x1 = (SQ//2) - pw - gap//2
     x2 = (SQ//2) + gap//2
 
-    paste_page(img, P(113), x1, y, pw, ph, border_color=DGOLD, shadow=True)
-    paste_page(img, P(50),  x2, y, pw, ph, border_color=DGOLD, shadow=True)
+    paste_page(img, P(114), x1, y, pw, ph, border_color=DGOLD, shadow=True)
+    paste_page(img, P(51),  x2, y, pw, ph, border_color=DGOLD, shadow=True)
 
     save(img, "11-bonus-pages.jpg")
 
@@ -489,11 +489,11 @@ def make_closing():
     draw = ImageDraw.Draw(img)
     x = (SQ - pw) // 2
     y = (SQ - ph) // 2
-    paste_page(img, P(121), x, y, pw, ph, border_color=LGOLD, shadow=True)
+    paste_page(img, P(122), x, y, pw, ph, border_color=LGOLD, shadow=True)
     draw.rectangle([0, SQ-90, SQ, SQ], fill=DARKBG)
     draw.line([(100, SQ-88), (SQ-100, SQ-88)], fill=GOLD, width=1)
     draw.text((SQ//2, SQ-72),
-              "THE PORTAL IS OPEN  ·  PAGE 121",
+              "THE PORTAL IS OPEN  ·  PAGE 122",
               font=F(AR, 34), fill=LGOLD, anchor="mt")
     save(img, "12-closing-page.jpg")
 
@@ -530,7 +530,7 @@ def make_ipad_mockup():
 
     # Page inside screen — evening page
     page_margin = 10
-    paste_page(img, P(20), sx + page_margin, sy + page_margin,
+    paste_page(img, P(21), sx + page_margin, sy + page_margin,
                sw - 2*page_margin, sh - 2*page_margin, shadow=False)
 
     # Home bar
@@ -586,7 +586,7 @@ def make_laptop_mockup():
     draw.rounded_rectangle([bx, by, bx+bw, by+bh], radius=10, fill=(20, 16, 13))
 
     # Page on screen
-    paste_page(img, P(9), bx + 8, by + 8, bw - 16, bh - 16, shadow=False)
+    paste_page(img, P(10), bx + 8, by + 8, bw - 16, bh - 16, shadow=False)
 
     # Keyboard base
     kx, ky = lx - 40, ly + lh
@@ -664,7 +664,7 @@ def make_features():
 
     draw.line([(100, SQ-90), (SQ-100, SQ-90)], fill=GOLD, width=2)
     draw.text((SQ//2, SQ-70),
-              "THE PORTAL  ·  369 MANIFESTATION JOURNAL  ·  121 PAGES",
+              "THE PORTAL  ·  369 MANIFESTATION JOURNAL  ·  123 PAGES",
               font=F(AR, 34), fill=LGOLD, anchor="mt")
 
     save(img, "15-features-at-a-glance.jpg")
@@ -687,8 +687,8 @@ def make_welcome_pair():
     x1 = (SQ//2) - pw - gap//2
     x2 = (SQ//2) + gap//2
 
-    paste_page(img, P(3), x1, y, pw, ph, border_color=LGOLD, shadow=True)
-    paste_page(img, P(4), x2, y, pw, ph, border_color=DGOLD, shadow=True)
+    paste_page(img, P(4), x1, y, pw, ph, border_color=LGOLD, shadow=True)
+    paste_page(img, P(5), x2, y, pw, ph, border_color=DGOLD, shadow=True)
 
     ty = y + ph + 24
     draw.text((x1 + pw//2, ty), "WELCOME", font=F(AR, 34), fill=LGOLD, anchor="mt")
@@ -716,7 +716,7 @@ def make_typing_demo():
     pw, ph = 1020, int(1020 * 11/8.5)
     px = (SQ - pw) // 2 + 200
     py = 224
-    paste_page(img, P(9), px, py, pw, ph, border_color=GOLD, shadow=True)
+    paste_page(img, P(10), px, py, pw, ph, border_color=GOLD, shadow=True)
 
     # Simulate typed text overlaid on the page's affirmation fields
     # Fields are approximately at top of page after header (~28% down the page height)
