@@ -25,6 +25,8 @@ import interior_v3 as base
 from reportlab.lib.colors import HexColor, Color
 from reportlab.lib.pagesizes import letter, A4
 from reportlab.lib.units import inch
+FC_CLASSIC  = (5.5 * inch, 8.5 * inch)   # 396 × 612 pt
+FC_COMPACT  = (4.25 * inch, 6.75 * inch)  # 306 × 486 pt
 from reportlab.pdfgen import canvas as rlc
 
 W, H = letter
@@ -297,6 +299,73 @@ def build_tablet_nav(out_path):
     print(f"Saved  {out_path}  ({pages} pages, {os.path.getsize(out_path)//1024} KB)  [TABLET NAV]")
 
 
+# ── Scaled canvas: draws Letter content scaled-to-fit on a smaller page ──────
+# showPage() resets the canvas transform, so we reapply automatically.
+
+class _ScaledCanvas(rlc.Canvas):
+    """Canvas that transparently scales Letter-coordinate content to fit any page."""
+    def __init__(self, filename, pagesize, src_size=letter):
+        super().__init__(filename, pagesize=pagesize)
+        pw, ph = pagesize
+        sw, sh = src_size
+        self._sc  = min(pw / sw, ph / sh)
+        self._ox  = (pw - sw * self._sc) / 2
+        self._oy  = (ph - sh * self._sc) / 2
+        self._apply()
+
+    def _apply(self):
+        self.transform(self._sc, 0, 0, self._sc, self._ox, self._oy)
+
+    def showPage(self):
+        super().showPage()
+        self._apply()
+
+
+# ── Build: Franklin Covey print editions ─────────────────────────────────────
+
+def _build_fc_print(out_path, pagesize, label):
+    """Render the full journal scaled to fit a Franklin Covey page size."""
+    # Restore unpatched draw functions (print — no form fields)
+    base.write_line          = base._orig_write_line  if hasattr(base, "_orig_write_line")  else _orig_write_line_draw
+    base.write_lines_block   = base._orig_wlb         if hasattr(base, "_orig_wlb")         else _orig_wlb_draw
+    base.bordered_box        = base._orig_bordered_box if hasattr(base, "_orig_bordered_box") else _orig_bb_draw
+    base.energy_bar          = _orig_energy_bar
+    base.build_moon_overview = _orig_moon_overview
+
+    c = _ScaledCanvas(out_path, pagesize=pagesize)
+    pn = 1
+    base.build_cover(c);             c.showPage(); pn += 1
+    base.build_title_page(c, pn);    c.showPage(); pn += 1
+    base.build_welcome(c, pn);       c.showPage(); pn += 1
+    base.build_method(c, pn);        c.showPage(); pn += 1
+    base.build_how_to_use(c, pn);    c.showPage(); pn += 1
+    base.build_portal_intention(c, pn); c.showPage(); pn += 1
+    base.build_commitments(c, pn);   c.showPage(); pn += 1
+    base.build_moon_overview(c, pn); c.showPage(); pn += 1
+    for day in range(1, 29):
+        base.build_morning_page(c, day, pn); c.showPage(); pn += 1
+        base.build_evening_page(c, day, pn); c.showPage(); pn += 1
+    for week in range(1, 5):
+        base.build_weekly_review(c, week, pn); c.showPage(); pn += 1
+    for i in range(4):
+        base.build_monthly_review(c, i, pn); c.showPage(); pn += 1
+    for i in range(8):
+        base.build_shadow_work(c, i, pn); c.showPage(); pn += 1
+    for _ in range(16):
+        base.build_sync_log(c, pn); c.showPage(); pn += 1
+    for month_idx in range(4):
+        for page_in_month in range(4):
+            base.build_moon_calendar(c, month_idx, page_in_month, pn)
+            c.showPage(); pn += 1
+    for i in range(8):
+        base.build_bonus_page(c, i, pn); c.showPage(); pn += 1
+    base.build_closing(c, pn); c.showPage()
+
+    c.save()
+    scale_pct = int(min(pagesize[0]/letter[0], pagesize[1]/letter[1]) * 100)
+    print(f"Saved  {out_path}  ({pn} pages, {os.path.getsize(out_path)//1024} KB)  [{label} — {scale_pct}% scale]")
+
+
 # ── Build: A4 Printable ────────────────────────────────────────────────────────
 
 def build_a4(out_path):
@@ -401,9 +470,17 @@ def main():
     fillable_path = os.path.join(HERE, "369-portal-DIGITAL-FILLABLE.pdf")
     tablet_path   = os.path.join(HERE, "369-portal-TABLET-NAVIGATION.pdf")
     a4_path       = os.path.join(HERE, "369-portal-A4-PRINTABLE.pdf")
+    fc_classic_path = os.path.join(HERE, "369-portal-FC-CLASSIC-PRINTABLE.pdf")
+    fc_compact_path = os.path.join(HERE, "369-portal-FC-COMPACT-PRINTABLE.pdf")
 
     print("Building A4 print edition...")
     build_a4(a4_path)
+
+    print("Building Franklin Covey Classic (5.5×8.5) print edition...")
+    _build_fc_print(fc_classic_path, FC_CLASSIC, "FC CLASSIC")
+
+    print("Building Franklin Covey Compact (4.25×6.75) print edition...")
+    _build_fc_print(fc_compact_path, FC_COMPACT, "FC COMPACT")
 
     print("Building fillable edition...")
     build_fillable(fillable_path)

@@ -179,7 +179,7 @@ def make_thumbnail():
     footer_y = strip_y + bh + 30
     draw.line([(100, footer_y), (SQ-100, footer_y)], fill=GOLD, width=1)
     draw.text((SQ//2, footer_y + 14),
-              "121 PAGES  ·  28 DAYS  ·  4 FILE FORMATS  ·  INSTANT DOWNLOAD",
+              "121 PAGES  ·  28 DAYS  ·  6 FILE FORMATS  ·  INSTANT DOWNLOAD",
               font=F(AR, 30), fill=DGOLD, anchor="mt")
 
     save(img, "00-THUMBNAIL.jpg")
@@ -193,7 +193,7 @@ def make_bundle_overview():
     draw = ImageDraw.Draw(img)
 
     draw.line([(100, 80), (SQ-100, 80)], fill=GOLD, width=2)
-    draw.text((SQ//2, 106), "WHAT YOU GET — THREE COMPLETE FILES",
+    draw.text((SQ//2, 106), "WHAT YOU GET — SIX COMPLETE FILES",
               font=F(AR, 44), fill=LGOLD, anchor="mt")
     draw.line([(100, 168), (SQ-100, 168)], fill=GOLD, width=2)
 
@@ -228,7 +228,7 @@ def make_bundle_overview():
 
     draw.line([(100, SQ-100), (SQ-100, SQ-100)], fill=GOLD, width=2)
     draw.text((SQ//2, SQ - 80),
-              "ALL THREE FILES INCLUDED IN ONE DOWNLOAD",
+              "ALL SIX FILES INCLUDED IN ONE DOWNLOAD",
               font=F(AR, 36), fill=GOLD, anchor="mt")
 
     save(img, "01-bundle-three-formats.jpg")
@@ -643,7 +643,7 @@ def make_features():
         ("◆  8 BONUS PAGES",                                        "Overflow, dream journal, visualization & more"),
         ("◆  SACRED GEOMETRY",                                      "Flower of Life woven throughout for high-vibe energy"),
         ("◆  FLOWER OF LIFE COVER",                                 "Luxe dark design with gold accents — premium feel"),
-        ("◆  INSTANT DIGITAL DOWNLOAD",                             "4 files: printable, fillable, tablet nav & A4 edition"),
+        ("◆  INSTANT DIGITAL DOWNLOAD",                             "6 files: Letter, A4, FC Classic, FC Compact, fillable & tablet nav"),
     ]
 
     y = 230
