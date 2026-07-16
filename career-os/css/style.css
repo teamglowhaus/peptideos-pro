@@ -144,12 +144,24 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 .view[hidden]{display:none}
 
 /* ============================ DASHBOARD ============================ */
+/* Dashboard-only richness pass (chic/luxe polish) — scoped to .hero-main,
+   .cert and .stat so it can never bleed into the functional form/board
+   screens. A radial accent wash replaces the flat .card background-image on
+   these three, so grain + glow are combined in one declaration (a second
+   background-image would otherwise silently replace, not layer with, the
+   base .card grain) — dark theme gets its own blend-mode pairing to match. */
 .hero{display:grid;grid-template-columns:1.5fr 1fr;gap:22px;margin-bottom:38px}
-.hero-main{padding:42px 40px;overflow:hidden}
+.hero-main{
+  padding:42px 40px;overflow:hidden;
+  background-image:radial-gradient(ellipse 620px 420px at 104% -12%,var(--accent-soft),transparent 68%),var(--grain-fine);
+  background-blend-mode:normal,multiply;
+}
+[data-theme="dark"] .hero-main{background-blend-mode:normal,overlay}
 .hero-watermark{position:absolute;right:-18px;bottom:-58px;font-family:var(--f-display);font-weight:600;font-size:260px;line-height:1;color:var(--accent);opacity:.06;pointer-events:none;user-select:none;transition:color .4s ease}
 .hero-main .eyebrow{margin-bottom:20px;display:inline-block;position:relative}
 .hero-main h1{font-family:var(--f-display);font-weight:700;font-size:clamp(40px,4.6vw,56px);line-height:1.02;letter-spacing:-.022em;margin-bottom:16px;position:relative}
 .hero-main h1 em{font-style:italic;font-weight:600;color:var(--accent);transition:color .4s}
+.hero-main h1::after{content:'';display:block;width:56px;height:3px;margin-top:16px;border-radius:3px;background:linear-gradient(90deg,var(--gold),transparent)}
 .hero-main p{color:var(--ink-soft);font-size:15.5px;max-width:46ch;line-height:1.62;position:relative}
 .hero-cta{display:flex;gap:11px;margin-top:28px;position:relative;flex-wrap:wrap}
 
@@ -159,8 +171,13 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 .btn-ghost{background:transparent;border:1px solid var(--line);color:var(--ink-soft)}
 .btn-ghost:hover{border-color:var(--gold-line);color:var(--ink)}
 
-.cert{padding:30px 24px;display:flex;flex-direction:column;align-items:center;text-align:center;box-shadow:inset 0 1px 0 rgba(255,250,236,.45),inset 0 0 0 1px var(--surface),inset 0 0 0 2px var(--gold-soft)}
-[data-theme="dark"] .cert{box-shadow:inset 0 0 0 1px var(--surface),inset 0 0 0 2px var(--gold-soft)}
+.cert{
+  padding:30px 24px;display:flex;flex-direction:column;align-items:center;text-align:center;
+  box-shadow:inset 0 1px 0 rgba(255,250,236,.45),inset 0 0 0 1px var(--surface),inset 0 0 0 2px var(--gold-soft);
+  background-image:radial-gradient(ellipse 230px 180px at 50% 24%,var(--gold-soft),transparent 72%),var(--grain-fine);
+  background-blend-mode:normal,multiply;
+}
+[data-theme="dark"] .cert{box-shadow:inset 0 0 0 1px var(--surface),inset 0 0 0 2px var(--gold-soft);background-blend-mode:normal,overlay}
 .cert .eyebrow{margin-bottom:18px}
 .ring-wrap{position:relative;width:146px;height:146px;margin-bottom:6px}
 .ring-wrap svg{transform:rotate(-90deg)}
