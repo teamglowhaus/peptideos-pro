@@ -163,7 +163,7 @@ def make_thumbnail():
     badges = [
         ("PRINTABLE PDF",    "Print at home"),
         ("DIGITAL FILLABLE", "Type on any device"),
-        ("GOODNOTES READY",  "iPad & stylus"),
+        ("TABLET NAVIGATION", "iPad & any PDF app"),
     ]
     bw, bh = 560, 115
     bx_starts = [70, (SQ - bw) // 2, SQ - 70 - bw]
@@ -179,7 +179,7 @@ def make_thumbnail():
     footer_y = strip_y + bh + 30
     draw.line([(100, footer_y), (SQ-100, footer_y)], fill=GOLD, width=1)
     draw.text((SQ//2, footer_y + 14),
-              "121 PAGES  ·  28 DAYS  ·  3 FILE FORMATS  ·  INSTANT DOWNLOAD",
+              "121 PAGES  ·  28 DAYS  ·  4 FILE FORMATS  ·  INSTANT DOWNLOAD",
               font=F(AR, 30), fill=DGOLD, anchor="mt")
 
     save(img, "00-THUMBNAIL.jpg")
@@ -203,7 +203,7 @@ def make_bundle_overview():
                "Print at home on any\nstandard printer.\n8.5×11 Letter size.\nBlack & white friendly."),
         (9,   "02  DIGITAL FILLABLE", "369-portal-DIGITAL-FILLABLE.pdf",
                "Type directly into\nevery field.\nWorks in Adobe Reader,\nbrowser, iPhone & Android."),
-        (97,  "03  GOODNOTES READY",  "369-portal-GOODNOTES.pdf",
+        (97,  "03  TABLET NAVIGATION", "369-portal-TABLET-NAVIGATION.pdf",
                "Clickable navigation\noutline panel.\nPerfect for iPad,\nGoodNotes & Notability."),
     ]
 
@@ -510,9 +510,9 @@ def make_ipad_mockup():
         c = tuple(max(0, int(DARKBG[i] + 12)) for i in range(3))
         draw.ellipse([SQ//2-r, SQ//2-r, SQ//2+r, SQ//2+r], outline=c, width=1)
 
-    draw.text((SQ//2, 60), "GOODNOTES & NOTABILITY READY",
+    draw.text((SQ//2, 60), "TABLET NAVIGATION EDITION",
               font=F(AR, 46), fill=LGOLD, anchor="mt")
-    draw.text((SQ//2, 120), "Full clickable navigation · Type with your Apple Pencil · Any iPad",
+    draw.text((SQ//2, 120), "Full clickable outline · Jump to any section · Any PDF app on any device",
               font=F(CI, 34), fill=WTEXT, anchor="mt")
 
     # iPad frame (silver)
@@ -557,7 +557,7 @@ def make_ipad_mockup():
               "GOODNOTES · NOTABILITY · SAMSUNG NOTES · ANY PDF APP WITH STYLUS",
               font=F(AR, 28), fill=GOLD, anchor="mt")
 
-    save(img, "13-ipad-goodnotes-mockup.jpg")
+    save(img, "13-ipad-tablet-nav-mockup.jpg")
 
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -643,7 +643,7 @@ def make_features():
         ("◆  8 BONUS PAGES",                                        "Overflow, dream journal, visualization & more"),
         ("◆  SACRED GEOMETRY",                                      "Flower of Life woven throughout for high-vibe energy"),
         ("◆  FLOWER OF LIFE COVER",                                 "Luxe dark design with gold accents — premium feel"),
-        ("◆  INSTANT DIGITAL DOWNLOAD",                             "3 files: printable, fillable & GoodNotes edition"),
+        ("◆  INSTANT DIGITAL DOWNLOAD",                             "4 files: printable, fillable, tablet nav & A4 edition"),
     ]
 
     y = 230
@@ -698,6 +698,68 @@ def make_welcome_pair():
 
 
 # ══════════════════════════════════════════════════════════════════════════════
+# IMAGE 17 — Typing demo: fillable PDF with text visible in fields
+# ══════════════════════════════════════════════════════════════════════════════
+def make_typing_demo():
+    img = canvas(SQ, DARKBG)
+    draw = ImageDraw.Draw(img)
+
+    # Header
+    draw.line([(80, 68), (SQ-80, 68)], fill=GOLD, width=2)
+    draw.text((SQ//2, 92), "TYPE YOUR INTENTIONS DIRECTLY IN THE PDF",
+              font=F(AR, 44), fill=LGOLD, anchor="mt")
+    draw.text((SQ//2, 152), "No printing. No pen. Just open in your browser or any free PDF app.",
+              font=F(CI, 32), fill=WTEXT, anchor="mt")
+    draw.line([(80, 204), (SQ-80, 204)], fill=GOLD, width=1)
+
+    # Page preview: morning page (page 9)
+    pw, ph = 1020, int(1020 * 11/8.5)
+    px = (SQ - pw) // 2 + 200
+    py = 224
+    paste_page(img, P(9), px, py, pw, ph, border_color=GOLD, shadow=True)
+
+    # Simulate typed text overlaid on the page's affirmation fields
+    # Fields are approximately at top of page after header (~28% down the page height)
+    field_y_ratios = [0.28, 0.35, 0.42]  # rough relative positions on page
+    typed_lines = [
+        "I am worthy of abundance and love.",
+        "I am worthy of abundance and love.",
+        "I am worthy of abundance and love.",
+    ]
+    for ratio, text in zip(field_y_ratios, typed_lines):
+        fy = py + int(ph * ratio)
+        fx = px + 36
+        fw = pw - 72
+        # Subtle highlight to simulate an active text field
+        draw.rectangle([fx, fy, fx + fw, fy + 26], fill=(40, 34, 30))
+        draw.text((fx + 8, fy + 4), text, font=F(CR, 22), fill=LGOLD)
+
+    # Left callout column
+    callouts = [
+        ("CLICK", "any field to type"),
+        ("SAVE", "your progress instantly"),
+        ("PRINT", "anytime you want"),
+        ("WORKS", "in free Adobe Reader"),
+    ]
+    cx0 = 60
+    cy0 = py + 80
+    for i, (bold, sub) in enumerate(callouts):
+        cy = cy0 + i * 200
+        draw.rounded_rectangle([cx0, cy, cx0+310, cy+160], radius=14,
+                               fill=BGRAY, outline=GOLD, width=2)
+        draw.text((cx0+155, cy+18), bold, font=F(AR, 46), fill=LGOLD, anchor="mt")
+        draw.text((cx0+155, cy+80), sub, font=F(CI, 28), fill=WTEXT, anchor="mt")
+
+    # Bottom footer
+    draw.line([(80, SQ-90), (SQ-80, SQ-90)], fill=GOLD, width=1)
+    draw.text((SQ//2, SQ-68),
+              "1,553 FILLABLE FIELDS  ·  ZERO SOFTWARE REQUIRED  ·  ALL DEVICES SUPPORTED",
+              font=F(AR, 28), fill=GOLD, anchor="mt")
+
+    save(img, "17-typing-demo-fillable.jpg")
+
+
+# ══════════════════════════════════════════════════════════════════════════════
 # RUN ALL
 # ══════════════════════════════════════════════════════════════════════════════
 if __name__ == "__main__":
@@ -720,6 +782,7 @@ if __name__ == "__main__":
     make_laptop_mockup()
     make_features()
     make_welcome_pair()
+    make_typing_demo()
 
     files = sorted(os.listdir(MOCK_DIR))
     print(f"\n{len(files)} mockup images created in outputs/etsy-mockups/")

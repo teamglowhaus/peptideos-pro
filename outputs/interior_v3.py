@@ -529,7 +529,7 @@ def build_method(c, pn):
         "◆  Write by hand — the physical act encodes the intention in your body.",
         '◆  Use present tense: "I am," "I have," "I experience."',
         "◆  Feel the emotion of already having it as you write each repetition.",
-        "◆  Stay consistent — 28 days of practice rewires your subconscious mind.",
+        "◆  Stay consistent — 28 days of practice reshapes your beliefs and daily habits.",
         "◆  Trust the process even when you cannot yet see the how.",
     ]
     c.setFont("CrimsonPro", 13)
@@ -1505,7 +1505,7 @@ def build_closing(c, pn):
         "Each one a thread woven into the fabric of what is becoming real.",
         "",
         "You did not just write in a journal.",
-        "You rewired your subconscious, raised your vibration,",
+        "You reshaped your beliefs and raised your vibration,",
         "and sent a signal so clear the universe could not ignore it.",
         "",
         "The portal is not behind you. It is beneath your feet.",
