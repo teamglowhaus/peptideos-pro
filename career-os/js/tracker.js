@@ -187,7 +187,9 @@ function saveJobFromModal(){
 function deleteEditingJob(){
   if(!editingId) return;
   const i = board.jobs.findIndex(j => j.id === editingId);
-  if(i >= 0) board.jobs.splice(i, 1);
+  if(i < 0) return;
+  if(!confirm(`Delete "${board.jobs[i].company || 'this job'}"? This can't be undone.`)) return;
+  board.jobs.splice(i, 1);
   saveBoard(); closeJobModal(); renderBoard();
 }
 function todayStr(){

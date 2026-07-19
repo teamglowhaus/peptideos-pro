@@ -122,6 +122,16 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 .topbar-title{font-family:var(--f-display);font-weight:600;font-size:21px;letter-spacing:.005em}
 .topbar-sub{font-family:var(--f-mono);font-size:10.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--ink-faint);margin-top:3px}
 
+/* Persistent (not a toast — stays until autosave is back on) reminder that
+   edits aren't being saved, since there's no server-side copy to fall back
+   on if a buyer forgets and closes the tab. */
+.autosave-off-pill{
+  font-family:var(--f-mono);font-size:10.5px;letter-spacing:.06em;
+  color:#a8423f;background:#a8423f12;border:1px solid #a8423f55;
+  padding:6px 12px;border-radius:5px;white-space:nowrap;flex-shrink:0;
+}
+@media(max-width:880px){ .autosave-off-pill{display:none} }
+
 /* hamburger — hidden on desktop, shown on mobile */
 .menu-btn{display:none;width:40px;height:40px;flex-shrink:0;border:1px solid var(--line);border-radius:5px;background:var(--inset);place-items:center;color:var(--ink-soft)}
 .menu-btn:hover{border-color:var(--gold-line);color:var(--ink)}

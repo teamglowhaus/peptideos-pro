@@ -484,7 +484,7 @@ function initExtras(){
       if(set === 'theme')    applyTheme(val);
       if(set === 'occ')    { applyOccupation(val); toast(OCCUPATIONS[val].edition + ' applied'); }
       if(set === 'fontsize') applyFontSize(val);
-      if(set === 'autosave'){ store.autosave = (val === 'on'); toast('Autosave ' + val); }
+      if(set === 'autosave'){ store.autosave = (val === 'on'); updateAutosavePill(); toast('Autosave ' + val); }
       renderSettings();
       return;
     }
