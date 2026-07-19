@@ -322,6 +322,14 @@ function navToView(name, el){
 }
 function toast(m){ const t = $('#toast'); t.textContent = m; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 1900); }
 
+// Persistent (not a toast) reminder while autosave is off — there's no
+// server-side copy of anything, so a buyer who forgets it's off and closes
+// the tab loses that work with no recovery path.
+function updateAutosavePill(){
+  const pill = $('#autosaveOffPill');
+  if(pill) pill.hidden = !!store.autosave;
+}
+
 /* mobile drawer */
 function openDrawer(){ document.body.classList.add('nav-open'); }
 function closeDrawer(){ document.body.classList.remove('nav-open'); }
@@ -405,6 +413,7 @@ function escapeAttr(s){ return String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','
   renderEditionMenu();
   applyOccupation(store.occ);   // sets accent + edition-aware text, renders quick-start
   renderRing();
+  updateAutosavePill();
   bindStaticEvents();
   bindWelcomeModal();
   initResumeBuilder();          // Phase 3 — binds the Resume Builder's events once
