@@ -1,0 +1,9 @@
+build/node_modules/
+build/vault.html
+build/vault_data.json
+build/images_html/
+build/video_frames/
+build/pagepng/
+build/package.json
+build/package-lock.json
+build/__pycache__/
