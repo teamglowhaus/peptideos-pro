@@ -31,7 +31,8 @@ nums = sorted(set(int(m) for m in re.findall(r"#(\d{3})\b", text)))
 check("108 numbered prompt boxes (#001–#108)", nums == list(range(1, 109)),
       f"found {len(nums)} unique, min {nums[0] if nums else '-'}, max {nums[-1] if nums else '-'}")
 
-utw = len(re.findall(r"USE THIS WHEN:", text))
+# letter-spaced labels can extract with spaces between characters; match either form
+utw = len(re.findall(r"U\s*S\s*E\s+T\s*H\s*I\s*S\s+W\s*H\s*E\s*N\s*:", text))
 check("USE THIS WHEN tag on every prompt box (108)", utw >= 108, f"found {utw} occurrences")
 
 for i in range(12):

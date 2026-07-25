@@ -5,7 +5,7 @@ Overall: FAILURES PRESENT — see below
 - [x] PASS — PDF page count is 48 (got 48)
 - [x] PASS — PDF page size is US Letter
 - [x] PASS — 108 numbered prompt boxes (#001–#108) (found 108 unique, min 1, max 108)
-- [x] PASS — USE THIS WHEN tag on every prompt box (108) (found 108 occurrences)
+- [ ] FAIL — USE THIS WHEN tag on every prompt box (108) (found 78 occurrences)
 - [x] PASS — All 12 sections have exactly 9 prompts
 - [ ] FAIL — Companion-doc link is set (no placeholder) (placeholder still present — rebuild with: python3 build_vault.py --companion-url <link> && node render_pdf.mjs)
 - [x] PASS — All 108 prompt bodies present verbatim
@@ -14,7 +14,7 @@ Overall: FAILURES PRESENT — see below
 - [x] PASS — Companion doc has no manual line breaks in prompts
 - [x] PASS — 10 listing images present at 2700x2025
 - [x] PASS — Hero thumbnail QA preview exists
-- [x] PASS — Flip-through video exists (645 KB)
+- [x] PASS — Flip-through video exists (692 KB)
 
 Manual checks that cannot be automated:
 - Companion Google Doc created, shared as 'anyone with link can view', copy-paste tested on mobile

@@ -109,24 +109,27 @@ html,body{ background:#222; }
 .matter h2{ font-family:'Fraunces',serif; font-weight:700; font-size:27pt; line-height:1.08;
   margin-top:.14in; }
 .matter-lede{ margin-top:.16in; font-size:11pt; color:#c9c9d6; max-width:6in; line-height:1.5; }
-.why-grid{ display:grid; grid-template-columns:1fr 1fr; gap:.24in; margin-top:.42in; }
-.why-card{ border:1px solid #26262f; border-radius:6px; padding:.24in .26in; background:#111119; }
-.why-card h3{ font-size:12.5pt; font-weight:600; }
-.why-card p{ margin-top:.07in; font-size:9.5pt; color:#b9b9c6; line-height:1.45; }
+.matter.flexpage{ display:flex; flex-direction:column; }
+.why-grid{ display:grid; grid-template-columns:1fr 1fr; grid-auto-rows:1fr; gap:.28in;
+  margin-top:.42in; flex:1; margin-bottom:.35in; }
+.why-card{ border:1px solid #26262f; border-radius:6px; padding:.3in .3in; background:#111119;
+  display:flex; flex-direction:column; justify-content:center; }
+.why-card h3{ font-size:14.5pt; font-weight:600; }
+.why-card p{ margin-top:.1in; font-size:10.8pt; color:#b9b9c6; line-height:1.5; }
 .why-card:nth-child(3n+1) h3{ color:var(--cyan); }
 .why-card:nth-child(3n+2) h3{ color:var(--magenta); }
 .why-card:nth-child(3n) h3{ color:var(--lime); }
 
 /* ============ TOC ============ */
-.toc-tier{ margin-top:.26in; }
+.toc-tier{ margin-top:.24in; }
 .toc-tier-label{ display:flex; align-items:center; gap:.14in; font-family:'Space Mono',monospace;
-  font-size:8pt; letter-spacing:.24em; }
+  font-size:8.5pt; letter-spacing:.24em; }
 .toc-tier-label::after{ content:''; flex:1; height:1px; background:#26262f; }
-.toc-row{ display:flex; align-items:baseline; gap:.14in; padding:.075in 0; font-size:11pt; }
-.toc-num{ font-family:'Space Mono',monospace; font-size:8.5pt; color:#6d6d7c; width:.32in; }
+.toc-row{ display:flex; align-items:baseline; gap:.14in; padding:.082in 0; font-size:11.5pt; }
+.toc-num{ font-family:'Space Mono',monospace; font-size:9.5pt; color:#6d6d7c; width:.36in; }
 .toc-title{ font-weight:500; color:#f0f0f6; }
 .toc-dots{ flex:1; border-bottom:1px dotted #33333f; transform:translateY(-3px); }
-.toc-page{ font-family:'Space Mono',monospace; font-size:9pt; color:#9a9aa8; }
+.toc-page{ font-family:'Space Mono',monospace; font-size:10pt; color:#9a9aa8; }
 
 /* ============ HOW ============ */
 .how-steps{ margin-top:.4in; display:flex; flex-direction:column; gap:.26in; }
@@ -151,77 +154,87 @@ html,body{ background:#222; }
 /* ============ TIER DIVIDER ============ */
 .tierpage{ display:flex; flex-direction:column; justify-content:center; align-items:center;
   text-align:center; padding:1in; }
-.tier-kicker{ font-family:'Space Mono',monospace; font-size:9pt; letter-spacing:.3em;
+.tier-kicker{ font-family:'Space Mono',monospace; font-size:10pt; letter-spacing:.3em;
   color:#7c7c8c; text-transform:uppercase; }
-.tier-name{ font-family:'Fraunces',serif; font-weight:700; font-size:52pt; margin-top:.2in; }
-.tier-tag{ margin-top:.16in; font-size:12pt; color:#c9c9d6; }
-.tier-secs{ margin-top:.5in; width:5.4in; display:flex; flex-direction:column; gap:.14in; }
-.tier-sec{ display:flex; align-items:baseline; gap:.18in; border:1px solid #26262f;
-  border-radius:5px; padding:.13in .22in; background:#111119; text-align:left; }
-.tier-sec .n{ font-family:'Space Mono',monospace; font-size:9pt; }
-.tier-sec .t{ font-size:11.5pt; font-weight:500; color:#f0f0f6; }
-.tier-sec .c{ margin-left:auto; font-family:'Space Mono',monospace; font-size:8pt; color:#6d6d7c; }
+.tier-name{ font-family:'Fraunces',serif; font-weight:700; font-size:56pt; margin-top:.22in; }
+.tier-tag{ margin-top:.18in; font-size:14pt; color:#c9c9d6; }
+.tier-secs{ margin-top:.55in; width:6.2in; display:flex; flex-direction:column; gap:.19in; }
+.tier-sec{ display:flex; align-items:baseline; gap:.2in; border:1px solid #26262f;
+  border-radius:6px; padding:.2in .28in; background:#111119; text-align:left; }
+.tier-sec .n{ font-family:'Space Mono',monospace; font-size:10.5pt; }
+.tier-sec .t{ font-size:13.5pt; font-weight:500; color:#f0f0f6; }
+.tier-sec .c{ margin-left:auto; font-family:'Space Mono',monospace; font-size:9.5pt; color:#6d6d7c; }
 
 /* ============ MINI-MAP ============ */
-.minimap{ padding:.8in .8in 1in; }
-.mm-tierchip{ display:inline-block; }
-.mm-secnum{ position:absolute; top:.62in; right:.8in; font-family:'Fraunces',serif;
-  font-weight:700; font-size:44pt; color:#22222c; }
-.minimap h2{ font-family:'Fraunces',serif; font-weight:700; font-size:30pt; margin-top:.16in;
+.minimap{ padding:.75in .8in .95in; display:flex; flex-direction:column; }
+.mm-tierchip{ display:inline-block; align-self:flex-start; }
+.mm-secnum{ position:absolute; top:.58in; right:.8in; font-family:'Fraunces',serif;
+  font-weight:700; font-size:46pt; color:#22222c; }
+.minimap h2{ font-family:'Fraunces',serif; font-weight:700; font-size:33pt; margin-top:.16in;
   max-width:6in; line-height:1.05; }
-.mm-best{ margin-top:.14in; font-size:10.5pt; color:#c9c9d6; }
-.mm-best b{ font-family:'Space Mono',monospace; font-size:8pt; letter-spacing:.2em;
+.mm-best{ margin-top:.15in; font-size:11.5pt; color:#c9c9d6; }
+.mm-best b{ font-family:'Space Mono',monospace; font-size:8.5pt; letter-spacing:.2em;
   font-weight:700; text-transform:uppercase; }
-.mm-list{ margin-top:.34in; border-top:1px solid #26262f; }
-.mm-row{ display:flex; align-items:baseline; gap:.2in; padding:.107in 0;
+.mm-list{ margin-top:.3in; border-top:1px solid #26262f; flex:1; display:flex;
+  flex-direction:column; }
+.mm-row{ display:flex; align-items:center; gap:.22in; flex:1;
   border-bottom:1px solid #1c1c26; }
-.mm-row .n{ font-family:'Space Mono',monospace; font-size:9.5pt; width:.42in; }
-.mm-row .t{ font-size:12pt; font-weight:500; color:#f0f0f6; }
-.mm-row .use{ margin-left:auto; max-width:3.1in; text-align:right; font-size:8.5pt;
-  color:#83838f; line-height:1.3; }
-.mm-note{ margin-top:.26in; border:1.5px dashed var(--cyan); border-radius:6px;
-  padding:.14in .22in; font-size:9.5pt; color:#e8e8f0; }
-.mm-note .mono{ color:var(--cyan); font-size:9pt; }
+.mm-row .n{ font-family:'Space Mono',monospace; font-size:10.5pt; width:.46in; flex:none; }
+.mm-row .t{ font-size:13.5pt; font-weight:500; color:#f0f0f6; }
+.mm-row .use{ margin-left:auto; max-width:3.2in; text-align:right; font-size:9.3pt;
+  color:#8b8b98; line-height:1.35; }
+.mm-note{ margin-top:.24in; border:1.5px dashed var(--cyan); border-radius:6px;
+  padding:.15in .22in; font-size:10pt; color:#e8e8f0; }
+.mm-note .mono{ color:var(--cyan); font-size:9.5pt; }
 
 /* ============ PROMPT PAGES (light) ============ */
-.prompts{ padding:.62in .68in .95in; background:var(--paper); }
-.pp-head{ display:flex; align-items:center; justify-content:space-between;
+/* Page is a flex column; .pcol distributes boxes so the page fills edge-to-edge.
+   Type scales per page density via an inline font-size on .pcol (em-based inside). */
+.prompts{ padding:.62in .68in .95in; background:var(--paper); display:flex;
+  flex-direction:column; }
+.pp-head{ display:flex; align-items:center; justify-content:space-between; flex:none;
   background:var(--ink); border-radius:6px; padding:.145in .26in; }
 .pp-head .sec{ font-family:'Space Mono',monospace; font-size:8.5pt; letter-spacing:.16em;
   text-transform:uppercase; }
 .pp-head .brand{ font-family:'Space Mono',monospace; font-size:7pt; letter-spacing:.18em;
   color:#8b8b98; text-transform:uppercase; }
-.pbox{ margin-top:.165in; border:1px solid var(--line); border-left-width:4px; border-radius:5px;
-  background:var(--paper2); padding:.15in .26in .17in; }
-.pbox-use{ font-size:8.8pt; color:#4c4c58; line-height:1.38; }
-.pbox-use b{ font-family:'Space Mono',monospace; font-size:7.8pt; letter-spacing:.14em;
+.pcol{ flex:1; display:flex; flex-direction:column; justify-content:space-between;
+  margin-top:.15in; gap:.12in; }
+.pbox{ border:1px solid var(--line); border-left-width:4px; border-radius:5px;
+  background:var(--paper2); padding:1.15em 1.85em 1.25em; }
+.pbox-use{ font-size:.97em; color:#4c4c58; line-height:1.4; }
+.pbox-use b{ font-family:'Space Mono',monospace; font-size:.86em; letter-spacing:.14em;
   font-weight:700; }
-.pbox-titlerow{ display:flex; align-items:center; gap:.16in; margin-top:.09in; }
-.pbox-num{ font-family:'Space Mono',monospace; font-weight:700; font-size:10.5pt;
-  background:var(--ink); border-radius:3px; padding:.03in .1in; }
-.pbox-title{ font-size:14pt; font-weight:600; letter-spacing:.01em; }
-.pbox-copy{ margin-left:auto; font-family:'Space Mono',monospace; font-size:7.5pt;
+.pbox-titlerow{ display:flex; align-items:center; gap:.16in; margin-top:.6em; }
+.pbox-num{ font-family:'Space Mono',monospace; font-weight:700; font-size:1.15em;
+  background:var(--ink); border-radius:3px; padding:.2em .65em; }
+.pbox-title{ font-size:1.54em; font-weight:600; letter-spacing:.01em; }
+.pbox-copy{ margin-left:auto; font-family:'Space Mono',monospace; font-size:.82em;
   letter-spacing:.1em; color:#9a9aa4; }
-.pbox-body{ margin-top:.09in; font-family:'Space Mono',monospace; font-size:9.1pt;
+.pbox-body{ margin-top:.65em; font-family:'Space Mono',monospace; font-size:1em;
   line-height:1.55; color:#1c1c26; }
 
 /* ============ HIDDEN FEATURES / HACKS (light) ============ */
-.featcard{ margin-top:.22in; border:1px solid var(--line); border-radius:5px;
-  padding:.2in .26in; background:var(--paper2); border-left:4px solid var(--ink); }
-.featcard h3{ font-family:'Space Mono',monospace; font-weight:700; font-size:11.5pt; }
-.featcard p{ margin-top:.08in; font-size:10.2pt; color:#3a3a46; line-height:1.55; }
+.featwrap{ flex:1; display:flex; flex-direction:column; justify-content:space-between;
+  margin-top:.22in; gap:.14in; }
+.featcard{ border:1px solid var(--line); border-radius:5px; display:flex; flex-direction:column;
+  justify-content:center; padding:.2in .28in; background:var(--paper2);
+  border-left:4px solid var(--ink); }
+.featcard h3{ font-family:'Space Mono',monospace; font-weight:700; font-size:12.5pt; }
+.featcard p{ margin-top:.09in; font-size:11pt; color:#3a3a46; line-height:1.55; }
 .light-head .eyebrow{ color:#8b8b98; }
 .light-head h2{ font-family:'Fraunces',serif; font-weight:700; font-size:24pt; margin-top:.1in; }
 .light-head .lede{ margin-top:.08in; font-size:10.5pt; color:#5c5c68; }
 
 /* ============ CHEAT SHEET ============ */
-.cheat-grid{ display:grid; grid-template-columns:1fr 1fr; gap:.22in; margin-top:.34in; }
+.cheat-grid{ display:grid; grid-template-columns:1fr 1fr; grid-auto-rows:1fr; gap:.17in;
+  margin-top:.28in; flex:1; }
 .cheat-card{ border:1px solid var(--line); border-radius:5px; background:var(--paper2);
-  padding:.2in .24in; }
-.cheat-card h3{ font-family:'Space Mono',monospace; font-weight:700; font-size:10.5pt;
-  letter-spacing:.2em; padding-bottom:.09in; border-bottom:1px solid var(--line); }
+  padding:.14in .22in; display:flex; flex-direction:column; justify-content:center; }
+.cheat-card h3{ font-family:'Space Mono',monospace; font-weight:700; font-size:10.2pt;
+  letter-spacing:.2em; padding-bottom:.07in; border-bottom:1px solid var(--line); }
 .cheat-card li{ list-style:none; font-family:'Space Mono',monospace; font-size:8.8pt;
-  color:#2a2a36; line-height:1.45; margin-top:.09in; }
+  color:#2a2a36; line-height:1.42; margin-top:.08in; }
 .cheat-stack{ margin-top:.26in; border-left:4px solid var(--magenta); background:var(--paper2);
   border:1px solid var(--line); border-left:4px solid var(--magenta); border-radius:5px;
   padding:.16in .24in; font-size:10pt; color:#3a3a46; line-height:1.5; }
@@ -278,7 +291,7 @@ def cover_page():
 def why_page():
     cards = "".join(f'<div class="why-card"><h3>{esc(t)}</h3><p>{esc(b)}</p></div>'
                     for t, b in WHY_ITEMS)
-    return f'''<div class="page dark matter">{neonbar()}
+    return f'''<div class="page dark matter flexpage">{neonbar()}
   <div class="matter-head"><div class="eyebrow">Why You Need This · GlowHaus Digital · 2026</div>
   <h2>Stop leaving time &amp; money<br>on the table.</h2>
   <p class="matter-lede">Most people use Claude like a basic search engine and get basic results.
@@ -373,6 +386,18 @@ def minimap_page(section, page_no, companion_url):
 </div>'''
 
 
+def prompt_scale(prompts):
+    """Per-page body font size (pt): sparser pages get bigger type so the page fills.
+
+    Calibrated so the densest 5-box page sits at 9.1pt (known to fit) and sparse
+    pages scale up, capped to stay inside the box distribution slack.
+    """
+    chars = sum(len(u) + len(b) + len(t) // 2 for _, t, u, b in prompts)
+    c0 = 1240 if len(prompts) >= 5 else 1330
+    pt = 9.1 * (c0 / max(chars, 1)) ** 0.5
+    return max(9.1, min(11.6, pt))
+
+
 def prompt_page(section, prompts, page_no):
     t = TIERS[section["tier"]]
     boxes = "".join(
@@ -385,7 +410,7 @@ def prompt_page(section, prompts, page_no):
     return f'''<div class="page prompts">
   <div class="pp-head"><span class="sec" style="color:{t["color"]}">{t["label"]} — {esc(section["title"])}</span>
     <span class="brand">GlowHaus Digital · 2026</span></div>
-  {boxes}
+  <div class="pcol" style="font-size:{prompt_scale(prompts):.2f}pt">{boxes}</div>
   {foot(page_no)}
 </div>'''
 
@@ -401,13 +426,13 @@ def hidden_pages():
   <div class="light-head"><div class="eyebrow">Hidden Features · GlowHaus Digital · 2026</div>
   <h2>Hidden Features &amp; Power Keywords</h2>
   <p class="lede">11 phrases that change what Claude gives you — most users never discover these.</p></div>
-  {first}
+  <div class="featwrap">{first}</div>
   {foot(44)}
 </div>'''
     p2 = f'''<div class="page prompts">
   <div class="light-head"><div class="eyebrow">Hidden Features · Continued</div>
   <h2>Power Keywords, Continued</h2></div>
-  {second}
+  <div class="featwrap">{second}</div>
   {foot(45)}
 </div>'''
     return p1 + p2
@@ -423,9 +448,9 @@ def cheat_page():
   <h2>Quick Reference Cheat Sheet</h2>
   <p class="lede">Keep this page open every time you use Claude.</p></div>
   <div class="cheat-grid">{cards}</div>
-  <div class="cheat-stack"><b>STACK THEM &nbsp;&#8594;</b>&nbsp; Combine one line from each column in a
-  single prompt — role + tone + format + depth — and you'll get professional output on the first try,
-  not the fifth.</div>
+  <div class="cheat-stack" style="flex:none;margin-bottom:.05in"><b>STACK THEM &nbsp;&#8594;</b>&nbsp;
+  Combine one line from each column in a single prompt — role + tone + format + depth — and you'll
+  get professional output on the first try, not the fifth.</div>
   {foot(46)}
 </div>'''
 
@@ -433,14 +458,14 @@ def cheat_page():
 def hacks_page():
     colors = ["#00e5ff", "#ff2d95", "#c6ff00"]
     cards = "".join(
-        f'<div class="featcard" style="border-left-color:{colors[i % 3]};margin-top:.125in;padding:.115in .24in">'
-        f'<h3 style="font-size:9.8pt">{esc(t)}</h3><p style="font-size:9pt;margin-top:.04in;line-height:1.45">{esc(b)}</p></div>'
+        f'<div class="featcard" style="border-left-color:{colors[i % 3]};padding:.12in .26in">'
+        f'<h3 style="font-size:10.5pt">{esc(t)}</h3><p style="font-size:9.6pt;margin-top:.05in;line-height:1.45">{esc(b)}</p></div>'
         for i, (t, b) in enumerate(CLAUDE_HACKS))
     return f'''<div class="page prompts">
   <div class="light-head"><div class="eyebrow">Bonus · GlowHaus Digital · 2026</div>
   <h2>Claude Hacks Most People Miss</h2>
   <p class="lede">8 things power users do that others don't.</p></div>
-  {cards}
+  <div class="featwrap" style="gap:.1in">{cards}</div>
   {foot(47)}
 </div>'''
 

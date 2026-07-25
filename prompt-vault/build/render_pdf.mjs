@@ -32,6 +32,35 @@ if (overflows.length) {
   console.log('no page overflows');
 }
 
+// Overlap check: no two sibling content blocks on a page may intersect.
+const overlaps = await page.evaluate(() => {
+  const SEL = '.pbox, .featcard, .cheat-card, .mm-row, .mm-note, .pp-head, .pgfoot, ' +
+    '.mm-secnum, .minimap h2, .light-head, .matter-head, .toc-row, .why-card, ' +
+    '.how-step, .tier-sec, .protip, .bonusnote, .cheat-stack';
+  const bad = [];
+  document.querySelectorAll('.page').forEach((pg, pi) => {
+    const els = [...pg.querySelectorAll(SEL)];
+    for (let i = 0; i < els.length; i++) {
+      for (let j = i + 1; j < els.length; j++) {
+        const a = els[i], b = els[j];
+        if (a.contains(b) || b.contains(a)) continue;
+        const ra = a.getBoundingClientRect(), rb = b.getBoundingClientRect();
+        const x = Math.min(ra.right, rb.right) - Math.max(ra.left, rb.left);
+        const y = Math.min(ra.bottom, rb.bottom) - Math.max(ra.top, rb.top);
+        if (x > 2 && y > 2) {
+          bad.push({ page: pi + 1, a: a.className.toString().slice(0, 30), b: b.className.toString().slice(0, 30) });
+        }
+      }
+    }
+  });
+  return bad;
+});
+if (overlaps.length) {
+  console.error('OVERLAPS:', JSON.stringify(overlaps.slice(0, 20)));
+} else {
+  console.log('no element overlaps');
+}
+
 await page.pdf({
   path: output,
   preferCSSPageSize: true,
