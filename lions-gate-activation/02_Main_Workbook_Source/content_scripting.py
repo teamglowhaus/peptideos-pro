@@ -1,0 +1,120 @@
+# Manifestation Scripting -- content module for The Lion's Gate 8/8 Activation
+# Exports PAGES for the layout engine in lg/engine.py. See STYLE_GUIDE.md.
+
+PAGES = [
+    {
+        "family": "education",
+        "section": "Manifestation Scripting",
+        "title": "Writing It Real",
+        "subtitle": "The craft of describing a life before it arrives",
+        "toc": True,
+        "wash": True,
+        "blocks": [
+            ("p", "Scripting is journaling with the tense turned around. Instead of writing about the life you have, you write about the life you are building, described as if you are already living in it. It is not a spell. It is a rehearsal: your attention, your language and your self-image practicing the same story until your daily choices begin to match it."),
+            ("h2", "Two voices to try"),
+            ("p", "**Present tense** narrates the desired life as it happens: *I make tea and open my laptop without dread.* **Reflective gratitude** looks back from an imagined vantage point: *I loved the year that my work finally felt like mine.* Try both. Most women find that one voice feels natural and the other feels like a costume. Write in the one that feels natural."),
+            ("h2", "Detail is the engine"),
+            ("p", "A script comes alive through the senses and the feelings, not the price tags. What does the morning smell like? What happens in your shoulders when the bill is already paid? Emotional and sensory detail tell your imagination this is a scene, not a slogan."),
+            ("h2", "Believable language"),
+            ("p", "Your nervous system notices lies. If a sentence makes you flinch, it is arguing with you, not persuading you. Scale the claim down until you can write it without bracing: *money moves through my hands calmly* may be writable on a day when *I am wealthy* is not."),
+            ("callout", "Gratitude without denial", "Thankfulness in a script is not pretending the hard parts are gone. You can be grateful for a strong body and still be tired. Scripting from honesty keeps the whole practice trustworthy."),
+            ("p", "One rule holds everything on these pages together: scripting always pairs with action. The page sets the direction; your feet do the walking."),
+        ],
+    },
+    {
+        "family": "education",
+        "section": "Manifestation Scripting",
+        "title": "Two Scripts, Read Closely",
+        "blocks": [
+            ("callout", "Financial peace, present tense", "There is a quiet in my chest when I open my banking app. I know what is in each account, and the knowing feels like warmth after a cold walk. This month's bills are paid, and I paid them early, sitting at the kitchen table while my coffee went cold because I was not rushing. I keep a little aside without white-knuckling it. Money is no longer a siren in my house. It is a tool on a shelf, and I know exactly where it is."),
+            ("note", "Technique: sensory anchors (the app, the table, the cooling coffee) make an abstract calm concrete."),
+            ("callout", "Self-confidence, reflective gratitude", "I loved the season when I stopped auditioning for my own life. I spoke in meetings without rehearsing every sentence twice. I wore the red coat. When someone praised me, I said thank you and let it land instead of handing it back. I still felt nervous sometimes, and I went ahead anyway. The change was never loud. It was a hundred small moments of taking myself at my word."),
+            ("note", "Technique: the looking-back voice, kept believable by admitting the nerves were still there."),
+            ("h2", "Adapting the craft to your desire"),
+            ("kv", [
+                ("Business growth", "Script the working day, not the revenue: the inquiry arriving, you quoting your price calmly."),
+                ("Meaningful career", "Describe one task that absorbs you so completely you forget to check the clock."),
+                ("Loving partnership", "Write the small scenes: the check-in text, the unhurried dinner, ease inside the silence."),
+                ("Peaceful home", "Narrate rooms through the senses: light, order, one corner that is entirely yours."),
+                ("Creative success", "Center the making itself; let recognition appear only as a quiet afterthought."),
+                ("Healthy routines", "Script the identity, not the streak: a woman who keeps gentle promises to her body."),
+            ]),
+        ],
+    },
+    {
+        "family": "exercise",
+        "section": "Manifestation Scripting",
+        "title": "The Eight-Minute Script",
+        "blocks": [
+            ("p", "Set a timer for eight minutes, in honor of the date, and write without stopping. No editing, no crossing out, no rereading until the bell. If you stall, rewrite your last sentence with one more detail. Speed is the point: it outruns the inner censor."),
+            ("steps", [
+                ("Choose one scene", "One room, one hour, one situation from the life you are building. Small is vivid."),
+                ("Pick your voice", "Present tense or reflective gratitude. Commit to it for the full eight minutes."),
+                ("Write until the bell", "Keep the pen moving. Messy counts. Honest counts double."),
+            ]),
+            ("aff", "I write the direction, and I walk it in real shoes."),
+            ("prompt", "It is one year from today, and I am describing an ordinary Tuesday I once only imagined. It looks like this:", 2),
+            ("linesfill",),
+        ],
+    },
+    {
+        "family": "exercise",
+        "section": "Manifestation Scripting",
+        "title": "The 88-Word Script",
+        "toc": True,
+        "blocks": [
+            ("p", "Eighty-eight words. Not roughly, exactly. The constraint is the teacher: when every word must earn its place, vague language falls away and you discover what you actually mean. Draft freely below, then count, cut and polish until the script lands on 88."),
+            ("h3", "A scaffold, if you want one"),
+            ("fields", [
+                "Opening anchor (where you are, what is true)",
+                "Sensory line (what you see, hear or feel)",
+                "Feeling line (the emotion at the center)",
+                "Action line (what you are doing about it)",
+                "Closing thanks (one honest gratitude)",
+            ]),
+            ("note", "The scaffold is optional. Some of the best 88-word scripts read as a single unbroken breath."),
+            ("linesfill",),
+        ],
+    },
+    {
+        "family": "exercise",
+        "section": "Manifestation Scripting",
+        "title": "An Ideal Day, In Present Tense",
+        "blocks": [
+            ("p", "You may have already mapped an ideal day earlier in this workbook. This page is about how you write it. Treat it as a craft exercise in three skills: staying in present tense, holding one consistent voice, and choosing detail that carries feeling. Future tense keeps the life at arm's length; *I will* and *someday* are window-shopping. Present tense hands you the keys."),
+            ("h3", "Starter stems"),
+            ("fields", [
+                "The first sound of my morning is",
+                "By midday I am in the middle of",
+                "The moment I catch myself smiling is",
+                "As the light changes in the afternoon, I",
+                "The last thing I notice before sleep is",
+            ]),
+            ("note", "Now weave the stems into one continuous scene below. Watch your verbs: if a future tense sneaks in, bring it home to the present."),
+            ("linesfill",),
+        ],
+    },
+    {
+        "family": "exercise",
+        "section": "Manifestation Scripting",
+        "title": "Evidence of Movement",
+        "toc": True,
+        "blocks": [
+            ("p", "Scripting sharpens noticing. Once you have written a direction, your attention starts collecting whatever rhymes with it: a small win, an unexpected reply, a shift in your own behavior. Log those moments here, along with what you did to meet them."),
+            ("table",
+             ["Date", "What moved (small win, shift, response)", "What I did"],
+             [["___ / ___", "", ""] for _ in range(14)],
+             (0.16, 0.50, 0.34)),
+            ("note", "Yes, this is confirmation bias working in your favor, and it is worth being honest about that. The tracker is a noticing practice, not proof of magic. What it does prove is that you moved, and movement compounds."),
+        ],
+    },
+    {
+        "family": "exercise",
+        "section": "Manifestation Scripting",
+        "title": "Open Script",
+        "blocks": [
+            ("pi", "No prompt, no scaffold, no word count. Whatever wants to be written in the present tense, write it here."),
+            ("linesfill",),
+        ],
+    },
+]
