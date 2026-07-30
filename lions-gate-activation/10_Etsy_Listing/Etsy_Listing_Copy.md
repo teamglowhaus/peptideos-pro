@@ -54,13 +54,13 @@ This is a complete eight-day experience, not a stack of quote pages. You will re
 
 Main workbook, four editions:
 • US Letter print edition (8.5 x 11 in), 178 pages
-• A4 print edition (210 x 297 mm), reflowed, not shrunk, 175 pages
+• A4 print edition (210 x 297 mm), reflowed, not shrunk, 176 pages
 • Digital annotation editions in Letter and A4 with clickable contents and roomier writing lines (for Goodnotes, Notability and similar apps)
 
 Inside the workbook: welcome and orientation, an honest guide to what the Lion's Gate is (and is not), preparation and clearing, limiting-belief and shadow work, desire clarity, self-concept and future-self embodiment, the eight-day activation (Awareness, Release, Worthiness, Courage, Clarity, Embodiment, Aligned Action, Activation), three complete 8/8 rituals (15, 45 and 90 minutes) plus partner and small-circle versions, an original guided meditation, manifestation scripting including the 88-word script, abundance and money work, love and relationships, tarot and oracle spreads, crystal and symbol reference, 88 original affirmations, vision-board and visualization pages, the aligned-action plan, and 30 days of post-portal integration.
 
 Planner-compatible insert editions (ring-bound, mirrored punch-safe margins):
-• Pocket, 3.5 x 6 in, 71 pages
+• Pocket, 3.5 x 6 in, 69 pages
 • Compact, 4.25 x 6.75 in, 63 pages
 • Classic, 5.5 x 8.5 in, 52 pages
 • Monarch, 8.5 x 11 in, 52 pages
