@@ -1,0 +1,4 @@
+# The Lion's Gate digital product collection is paid product source/output,
+# not website content. Keep it out of the public Vercel deployment (it also
+# keeps the static upload small and fast).
+lions-gate-activation
