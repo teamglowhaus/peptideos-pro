@@ -41,6 +41,7 @@ GOLD  = HexColor("#c9a84c")
 
 # ── Shared state ───────────────────────────────────────────────────────────────
 _fld       = [0]
+_bmn       = [0]       # dedicated bookmark counter (field counter stalls on field-less pages)
 _tablet    = [False]   # True → taller fields + outline nav
 _dark_page = [False]
 
@@ -147,7 +148,8 @@ def _patched_energy_bar(c, x, y):
 def _bm(c, title, level=0):
     if not _tablet[0]:
         return
-    key = f"bm{_fld[0]:05d}"
+    _bmn[0] += 1
+    key = f"bm{_bmn[0]:05d}"
     c.bookmarkPage(key)
     c.addOutlineEntry(title, key, level=level)
 
@@ -298,6 +300,7 @@ def build_tablet_nav(out_path):
     _install_patches()
     _tablet[0]    = True
     _fld[0]       = 0
+    _bmn[0]       = 0
     _dark_page[0] = False
 
     c = rlc.Canvas(out_path, pagesize=letter)
