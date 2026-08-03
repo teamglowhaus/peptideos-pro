@@ -25,6 +25,10 @@ M     = 0.75 * inch      # margin = 54 pt
 IW    = W - 2 * M        # inner width = 504 pt
 FY    = 26               # footer centre Y (pt from bottom)
 
+# When True, pages that have write lines use cream backgrounds so handwriting
+# shows up on printed paper. Digital editions leave this False.
+PRINT_SAFE = False
+
 # ── Colour palette ─────────────────────────────────────────────────────────────
 INK     = HexColor("#1a1410")  # ALL readable text on cream pages
 INK2    = HexColor("#2e2620")  # secondary body text
@@ -423,7 +427,66 @@ def build_title_page(c, pn):
     footer(c, pn)
 
 
-# ── Page 3: Welcome (dark) ─────────────────────────────────────────────────────
+# ── Page 3: License & Terms of Use ────────────────────────────────────────────
+
+def build_license_page(c, pn):
+    cream_bg(c)
+    corner_marks(c)
+
+    y = H - M - 22
+    c.setFillColor(GOLD)
+    c.setFont("Arsenal", 10)
+    c.drawCentredString(W / 2, y, "✶   L I C E N S E   &   T E R M S   ✶")
+    y -= 38
+
+    c.setFillColor(INK)
+    c.setFont("Italiana", 28)
+    c.drawCentredString(W / 2, y, "Terms of Use")
+    y -= 18
+    gold_rule(c, y, diamond=True)
+    y -= 36
+
+    terms = [
+        ("PERSONAL USE ONLY",
+         "This journal is licensed for your personal use only. One license per purchaser. "
+         "You may print this file for your own personal journaling practice as many times as you wish."),
+        ("NO REDISTRIBUTION",
+         "You may not share, email, upload, resell, or redistribute this file in any "
+         "form — digital or printed — to any other person or platform."),
+        ("NO COMMERCIAL USE",
+         "You may not use this journal or its contents to create products for sale, "
+         "bundles, courses, coaching programs, or any commercial purpose."),
+        ("NO ALTERATIONS",
+         "You may not modify, edit, rebrand, or claim this work as your own. "
+         "All text, design, layout, and content remain the intellectual property of GlowHausDigital."),
+        ("PRINTING",
+         "You are welcome to print this file at home or at a local print shop for your "
+         "own personal use. Commercial printing and resale of printed copies is not permitted."),
+    ]
+
+    for heading, body in terms:
+        c.setFillColor(GOLD)
+        c.setFont("Arsenal", 10)
+        c.drawString(M, y, heading)
+        y -= 18
+        draw_wrapped(c, body, M + 4, y, IW - 8, "CrimsonPro", 12, color=INK, line_h=18)
+        lines_needed = len(body) // 62 + 1
+        y -= lines_needed * 18 + 14
+
+    y -= 8
+    gold_rule(c, y, diamond=False)
+    y -= 28
+
+    c.setFillColor(INK)
+    c.setFont("CrimsonItal", 12)
+    c.drawCentredString(W / 2, y, f"© 2026 GlowHausDigital  ·  All Rights Reserved")
+    y -= 20
+    c.drawCentredString(W / 2, y, "Questions? teamglowhaus@gmail.com")
+
+    footer(c, pn)
+
+
+# ── Page 4: Welcome (dark) ─────────────────────────────────────────────────────
 
 def build_welcome(c, pn):
     dark_bg(c)
@@ -731,20 +794,33 @@ def build_commitments(c, pn):
 # ── Page 8: Moon Phase Overview (dark) ─────────────────────────────────────────
 
 def build_moon_overview(c, pn):
-    dark_bg(c)
-    corner_marks(c, LGOLD)
+    # Print-safe: swap to cream so handwritten notes show on paper
+    if PRINT_SAFE:
+        cream_bg(c)
+        corner_marks(c)
+        hdr_color  = GOLD
+        title_color = INK
+        text_color  = INK
+        rule_fn    = gold_rule
+    else:
+        dark_bg(c)
+        corner_marks(c, LGOLD)
+        hdr_color  = LGOLD
+        title_color = WTEXT
+        text_color  = WTEXT
+        rule_fn    = dark_rule
 
     y = H - M - 22
-    c.setFillColor(LGOLD)
+    c.setFillColor(hdr_color)
     c.setFont("Arsenal", 10)
     c.drawCentredString(W / 2, y, "✶   THE MOON  ·  YOUR COSMIC PARTNER   ✶")
     y -= 42
 
-    c.setFillColor(WTEXT)
+    c.setFillColor(title_color)
     c.setFont("Italiana", 34)
     c.drawCentredString(W / 2, y, "Moon Phase Guide")
     y -= 18
-    dark_rule(c, y)
+    rule_fn(c, y)
     y -= 36
 
     phases = [
@@ -774,44 +850,43 @@ def build_moon_overview(c, pn):
         x = M + col * (col_w + 20)
         row_y = y - row * ROW_H
 
-        c.setFillColor(LGOLD)
+        c.setFillColor(hdr_color)
         c.setFont("Arsenal", 11)
         c.drawString(x, row_y, phase)
-        c.setFillColor(WTEXT)
+        c.setFillColor(text_color)
         c.setFont("CrimsonPro", 12)
         draw_wrapped(c, desc, x + 5, row_y - 18, col_w - 10,
-                     "CrimsonPro", 12, color=WTEXT, line_h=17)
+                     "CrimsonPro", 12, color=text_color, line_h=17)
 
     y -= (4 * ROW_H) + 16
-    dark_rule(c, y)
+    rule_fn(c, y)
     y -= 28
 
-    c.setFillColor(WTEXT)
+    c.setFillColor(text_color)
     c.setFont("CrimsonItal", 13)
     c.drawCentredString(W / 2, y, "Work with the moon’s energy to amplify your 369 practice.")
     y -= 22
     c.drawCentredString(W / 2, y, "New moons are the most potent time to begin a new portal.")
     y -= 36
 
-    dark_rule(c, y)
+    rule_fn(c, y)
     y -= 28
 
-    c.setFillColor(LGOLD)
+    c.setFillColor(hdr_color)
     c.setFont("Arsenal", 10)
     c.drawString(M, y, "MY MOON NOTES FOR THIS PORTAL CYCLE")
     y -= 22
-    # Gold lines — fully visible against the dark background
+    line_color = GOLD if PRINT_SAFE else LGOLD
     c.saveState()
-    c.setStrokeColor(LGOLD)
-    c.setStrokeAlpha(1.0)
-    c.setFillAlpha(1.0)
+    c.setStrokeColor(line_color)
+    c.setStrokeAlpha(0.65 if PRINT_SAFE else 1.0)
     c.setLineWidth(0.65)
     for _ in range(4):
         c.line(M, y, W - M, y)
         y -= 28
     c.restoreState()
 
-    footer(c, pn, dark=True)
+    footer(c, pn, dark=not PRINT_SAFE)
 
 
 # ── Daily Pages ────────────────────────────────────────────────────────────────
@@ -911,8 +986,8 @@ def build_evening_page(c, day, pn):
     """Evening (9×) + Reflection page."""
     cream_bg(c)
     corner_marks(c)
-    # Subtle watermark centred in the 9-write-lines area — well clear of release statement
-    flower_of_life(c, W / 2, H * 0.65, 22, rings=2, color=GOLD, alpha=0.06)
+    # Watermark in the blank space between write-lines section and energy bar
+    flower_of_life(c, W / 2, H * 0.52, 18, rings=1, color=GOLD, alpha=0.04)
 
     week = (day - 1) // 7 + 1
     y = H - M - 14
@@ -990,13 +1065,13 @@ def build_evening_page(c, day, pn):
     write_line(c, M, y, IW)
     y -= 32
 
-    # ── RELEASE STATEMENT ───────────────────────────────────────────────────────
-    gold_rule(c, y, diamond=False)
-    y -= 20
+    # ── RELEASE STATEMENT (fixed above footer — never overlaps) ─────────────────
+    release_y = FY + 30           # text baseline 30pt above footer centre
+    gold_rule(c, release_y + 22, diamond=False)
     c.setFillColor(INK)
     c.setFont("CrimsonItal", 13)
     c.drawCentredString(
-        W / 2, y,
+        W / 2, release_y,
         "I release this desire to the universe with full trust and gratitude."
     )
 
@@ -1022,7 +1097,7 @@ WEEKLY_SECTIONS = [
 def build_weekly_review(c, week, pn):
     cream_bg(c)
     corner_marks(c)
-    flower_of_life(c, W / 2, H * 0.50, 24, rings=2, color=GOLD, alpha=0.08)
+    flower_of_life(c, W / 2, H * 0.50, 18, rings=1, color=GOLD, alpha=0.04)
 
     y = H - M - 22
     c.setFillColor(GOLD)
@@ -1326,21 +1401,19 @@ def build_moon_calendar(c, month_idx, page_in_month, pn):
     title, is_dark, ctype = MOON_PAGE_INFO[page_in_month]
     month_name = MOON_MONTH_NAMES[month_idx]
 
-    if is_dark:
+    if is_dark and not PRINT_SAFE:
         dark_bg(c)
         corner_marks(c, LGOLD)
         ink  = WTEXT
         gclr = LGOLD
         dark = True
+        flower_of_life(c, W / 2, H / 2, 34, rings=1, color=LGOLD, alpha=0.06)
     else:
         cream_bg(c)
         corner_marks(c)
         ink  = INK
         gclr = GOLD
         dark = False
-
-    if is_dark:
-        flower_of_life(c, W / 2, H / 2, 34, rings=2, color=LGOLD, alpha=0.40)
 
     y = H - M - 20
     c.setFillColor(gclr)
@@ -1353,7 +1426,7 @@ def build_moon_calendar(c, month_idx, page_in_month, pn):
     c.drawCentredString(W / 2, y, title)
     y -= 20
 
-    if is_dark:
+    if dark:
         dark_rule(c, y)
     else:
         gold_rule(c, y, diamond=True)
@@ -1438,7 +1511,7 @@ BONUS_PROMPTS = [
 def build_bonus_page(c, idx, pn):
     cream_bg(c)
     corner_marks(c)
-    flower_of_life(c, W / 2, H * 0.50, 26, rings=2, color=GOLD, alpha=0.09)
+    flower_of_life(c, W / 2, H * 0.50, 18, rings=1, color=GOLD, alpha=0.04)
 
     y = H - M - 22
     c.setFillColor(GOLD)
@@ -1530,11 +1603,68 @@ def build_closing(c, pn):
     footer(c, pn, dark=True)
 
 
+# ── Thank You Page (dark) ──────────────────────────────────────────────────────
+
+def build_thank_you(c, pn):
+    dark_bg(c)
+    corner_marks(c, LGOLD)
+    flower_of_life(c, W / 2, H * 0.50, 34, rings=1, color=LGOLD, alpha=0.08)
+
+    y = H - M - 36
+    c.setFillColor(LGOLD)
+    c.setFont("Arsenal", 10)
+    c.drawCentredString(W / 2, y, "✶   T H A N K   Y O U   ✶")
+
+    y = H * 0.50 + 110
+    c.setFillColor(WTEXT)
+    c.setFont("Italiana", 42)
+    c.drawCentredString(W / 2, y, "With Gratitude")
+    y -= 16
+    dark_rule(c, y)
+    y -= 34
+
+    lines = [
+        "Thank you for choosing the 369 Portal Manifestation Journal.",
+        "It was crafted with intention, love, and deep belief",
+        "in the power of your desires.",
+        "",
+        "Your purchase supports an independent creator who pours",
+        "everything into making tools that truly transform lives.",
+        "",
+        "If this journal moves you, please consider leaving a review",
+        "on Etsy — it means the world and helps others find their portal.",
+        "",
+        "You are worthy of everything you are calling in.",
+        "Trust the process. Keep writing. The universe is listening.",
+    ]
+
+    c.setFont("CrimsonPro", 13)
+    for line in lines:
+        if line == "":
+            y -= 8
+        else:
+            c.setFillColor(WTEXT)
+            c.drawCentredString(W / 2, y, line)
+            y -= 22
+
+    y -= 20
+    dark_rule(c, y)
+    y -= 28
+
+    c.setFillColor(LGOLD)
+    c.setFont("Arsenal", 11)
+    c.drawCentredString(W / 2, y, "GlowHausDigital  ·  teamglowhaus@gmail.com")
+
+    footer(c, pn, dark=True)
+
+
 # ══════════════════════════════════════════════════════════════════════════════
 #  MAIN BUILD
 # ══════════════════════════════════════════════════════════════════════════════
 
 def main():
+    global PRINT_SAFE
+    PRINT_SAFE = True
     setup_fonts()
 
     out_path = os.path.join(HERE, "369-portal-FINAL.pdf")
@@ -1542,15 +1672,16 @@ def main():
 
     pn = 1  # running page counter
 
-    # ── Front matter (pages 1-8) ─────────────────────────────────────────────
-    build_cover(c);           c.showPage(); pn += 1   # 1
-    build_title_page(c, pn);  c.showPage(); pn += 1   # 2
-    build_welcome(c, pn);     c.showPage(); pn += 1   # 3
-    build_method(c, pn);      c.showPage(); pn += 1   # 4
-    build_how_to_use(c, pn);  c.showPage(); pn += 1   # 5
-    build_portal_intention(c, pn); c.showPage(); pn += 1  # 6
-    build_commitments(c, pn); c.showPage(); pn += 1   # 7
-    build_moon_overview(c, pn); c.showPage(); pn += 1 # 8
+    # ── Front matter (pages 1-9) ─────────────────────────────────────────────
+    build_cover(c);              c.showPage(); pn += 1   # 1
+    build_title_page(c, pn);     c.showPage(); pn += 1   # 2
+    build_license_page(c, pn);   c.showPage(); pn += 1   # 3
+    build_welcome(c, pn);        c.showPage(); pn += 1   # 4
+    build_method(c, pn);         c.showPage(); pn += 1   # 5
+    build_how_to_use(c, pn);     c.showPage(); pn += 1   # 6
+    build_portal_intention(c, pn); c.showPage(); pn += 1 # 7
+    build_commitments(c, pn);    c.showPage(); pn += 1   # 8
+    build_moon_overview(c, pn);  c.showPage(); pn += 1   # 9
 
     # ── Daily pages (pages 9-64: 28 days × 2 pages) ──────────────────────────
     for day in range(1, 29):
@@ -1590,9 +1721,9 @@ def main():
         build_bonus_page(c, i, pn); c.showPage(); pn += 1
     # now pn = 121
 
-    # ── Closing (page 121) ───────────────────────────────────────────────────
-    build_closing(c, pn)
-    c.showPage()
+    # ── Closing & Thank You (pages 122-123) ─────────────────────────────────
+    build_closing(c, pn);   c.showPage(); pn += 1
+    build_thank_you(c, pn); c.showPage()
 
     c.save()
     print(f"Saved {out_path}  ({pn} pages)")

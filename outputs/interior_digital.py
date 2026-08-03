@@ -41,6 +41,7 @@ GOLD  = HexColor("#c9a84c")
 
 # ── Shared state ───────────────────────────────────────────────────────────────
 _fld       = [0]
+_bmn       = [0]       # dedicated bookmark counter (field counter stalls on field-less pages)
 _tablet    = [False]   # True → taller fields + outline nav
 _dark_page = [False]
 
@@ -147,7 +148,8 @@ def _patched_energy_bar(c, x, y):
 def _bm(c, title, level=0):
     if not _tablet[0]:
         return
-    key = f"bm{_fld[0]:05d}"
+    _bmn[0] += 1
+    key = f"bm{_bmn[0]:05d}"
     c.bookmarkPage(key)
     c.addOutlineEntry(title, key, level=level)
 
@@ -183,6 +185,9 @@ def _build_all(c):
 
     _bm(c, "Title Page")
     _dark_page[0] = False; base.build_title_page(c, pn);    _showpage(c); pn += 1
+
+    _bm(c, "License & Terms")
+    _dark_page[0] = False; base.build_license_page(c, pn);  _showpage(c); pn += 1
 
     _bm(c, "Welcome")
     _dark_page[0] = True;  base.build_welcome(c, pn);       _showpage(c); pn += 1
@@ -257,7 +262,11 @@ def _build_all(c):
 
     _bm(c, "Closing", level=0)
     _dark_page[0] = True
-    base.build_closing(c, pn)
+    base.build_closing(c, pn);  _showpage(c); pn += 1
+
+    _bm(c, "Thank You", level=0)
+    _dark_page[0] = True
+    base.build_thank_you(c, pn)
     _showpage(c)
 
     return pn
@@ -291,6 +300,7 @@ def build_tablet_nav(out_path):
     _install_patches()
     _tablet[0]    = True
     _fld[0]       = 0
+    _bmn[0]       = 0
     _dark_page[0] = False
 
     c = rlc.Canvas(out_path, pagesize=letter)
@@ -325,6 +335,7 @@ class _ScaledCanvas(rlc.Canvas):
 
 def _build_fc_print(out_path, pagesize, label):
     """Render the full journal scaled to fit a Franklin Covey page size."""
+    base.PRINT_SAFE = True
     # Restore unpatched draw functions (print — no form fields)
     base.write_line          = base._orig_write_line  if hasattr(base, "_orig_write_line")  else _orig_write_line_draw
     base.write_lines_block   = base._orig_wlb         if hasattr(base, "_orig_wlb")         else _orig_wlb_draw
@@ -336,6 +347,7 @@ def _build_fc_print(out_path, pagesize, label):
     pn = 1
     base.build_cover(c);             c.showPage(); pn += 1
     base.build_title_page(c, pn);    c.showPage(); pn += 1
+    base.build_license_page(c, pn);  c.showPage(); pn += 1
     base.build_welcome(c, pn);       c.showPage(); pn += 1
     base.build_method(c, pn);        c.showPage(); pn += 1
     base.build_how_to_use(c, pn);    c.showPage(); pn += 1
@@ -359,9 +371,11 @@ def _build_fc_print(out_path, pagesize, label):
             c.showPage(); pn += 1
     for i in range(8):
         base.build_bonus_page(c, i, pn); c.showPage(); pn += 1
-    base.build_closing(c, pn); c.showPage()
+    base.build_closing(c, pn);   c.showPage(); pn += 1
+    base.build_thank_you(c, pn); c.showPage()
 
     c.save()
+    base.PRINT_SAFE = False
     scale_pct = int(min(pagesize[0]/letter[0], pagesize[1]/letter[1]) * 100)
     print(f"Saved  {out_path}  ({pn} pages, {os.path.getsize(out_path)//1024} KB)  [{label} — {scale_pct}% scale]")
 
@@ -370,6 +384,7 @@ def _build_fc_print(out_path, pagesize, label):
 
 def build_a4(out_path):
     """Rebuild journal at A4 page size for international buyers."""
+    base.PRINT_SAFE = True
     # Patch base module geometry to A4
     orig_W, orig_H, orig_IW = base.W, base.H, base.IW
     base.W, base.H = A4          # 595.27 × 841.89 pt
@@ -386,6 +401,7 @@ def build_a4(out_path):
     pn = 1
     base.build_cover(c);             c.showPage(); pn += 1
     base.build_title_page(c, pn);    c.showPage(); pn += 1
+    base.build_license_page(c, pn);  c.showPage(); pn += 1
     base.build_welcome(c, pn);       c.showPage(); pn += 1
     base.build_method(c, pn);        c.showPage(); pn += 1
     base.build_how_to_use(c, pn);    c.showPage(); pn += 1
@@ -409,11 +425,13 @@ def build_a4(out_path):
             c.showPage(); pn += 1
     for i in range(8):
         base.build_bonus_page(c, i, pn); c.showPage(); pn += 1
-    base.build_closing(c, pn); c.showPage()
+    base.build_closing(c, pn);   c.showPage(); pn += 1
+    base.build_thank_you(c, pn); c.showPage()
 
     c.save()
     print(f"Saved  {out_path}  ({pn} pages, {os.path.getsize(out_path)//1024} KB)  [A4 PRINT]")
 
+    base.PRINT_SAFE = False
     # Restore geometry
     base.W, base.H, base.IW = orig_W, orig_H, orig_IW
 
@@ -482,6 +500,7 @@ def main():
     print("Building Franklin Covey Compact (4.25×6.75) print edition...")
     _build_fc_print(fc_compact_path, FC_COMPACT, "FC COMPACT")
 
+    base.PRINT_SAFE = False
     print("Building fillable edition...")
     build_fillable(fillable_path)
 
