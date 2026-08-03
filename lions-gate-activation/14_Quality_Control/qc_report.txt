@@ -1,0 +1,25 @@
+============================== QC RUN ==============================
+03_Main_Workbook_PDFs/Lions_Gate_Activation_US_Letter.pdf       178 pages  8.50x11.00in  links=0  unembedded=Helvetica
+03_Main_Workbook_PDFs/Lions_Gate_Activation_A4.pdf              176 pages  8.27x11.69in  links=0  unembedded=Helvetica
+04_Digital_Editions/Lions_Gate_Activation_Digital_US_Letter.pdf  189 pages  8.50x11.00in  links=308  unembedded=Helvetica
+04_Digital_Editions/Lions_Gate_Activation_Digital_A4.pdf        176 pages  8.27x11.69in  links=295  unembedded=Helvetica
+06_Planner_Insert_PDFs/Lions_Gate_Planner_Pocket_3.5x6.pdf       69 pages  3.50x6.00in  links=0  unembedded=Helvetica
+06_Planner_Insert_PDFs/Lions_Gate_Planner_Compact_4.25x6.75.pdf   63 pages  4.25x6.75in  links=0  unembedded=Helvetica
+06_Planner_Insert_PDFs/Lions_Gate_Planner_Classic_5.5x8.5.pdf    52 pages  5.50x8.50in  links=0  unembedded=Helvetica
+06_Planner_Insert_PDFs/Lions_Gate_Planner_Monarch_8.5x11.pdf     52 pages  8.50x11.00in  links=0  unembedded=Helvetica
+07_Print_and_Trim_Files/Pocket_Inserts_Print_on_US_Letter.pdf    24 pages  11.00x8.50in  links=0  unembedded=Helvetica
+07_Print_and_Trim_Files/Pocket_Inserts_Print_on_A4.pdf           24 pages  11.69x8.27in  links=0  unembedded=Helvetica
+07_Print_and_Trim_Files/Compact_Inserts_Print_on_US_Letter.pdf   32 pages  11.00x8.50in  links=0  unembedded=Helvetica
+07_Print_and_Trim_Files/Compact_Inserts_Print_on_A4.pdf          32 pages  11.69x8.27in  links=0  unembedded=Helvetica
+07_Print_and_Trim_Files/Classic_Inserts_Print_on_US_Letter.pdf   52 pages  8.50x11.00in  links=0  unembedded=Helvetica
+07_Print_and_Trim_Files/Classic_Inserts_Print_on_A4.pdf          52 pages  8.27x11.69in  links=0  unembedded=Helvetica
+08_Bonus_Files/Lions_Gate_Quick_Start.pdf                        10 pages  8.50x11.00in  links=0  unembedded=Helvetica
+08_Bonus_Files/Lions_Gate_Affirmation_Cards_US_Letter.pdf        10 pages  8.50x11.00in  links=0  unembedded=Helvetica
+08_Bonus_Files/Lions_Gate_Affirmation_Cards_A4.pdf               10 pages  8.27x11.69in  links=0  unembedded=Helvetica
+08_Bonus_Files/Lions_Gate_Planner_Tabs_US_Letter.pdf              5 pages  8.50x11.00in  links=0  unembedded=Helvetica
+08_Bonus_Files/Lions_Gate_Planner_Tabs_A4.pdf                     5 pages  8.27x11.69in  links=0  unembedded=Helvetica
+09_Customer_Guides/Lions_Gate_Printing_Guide.pdf                  4 pages  8.50x11.00in  links=0  unembedded=Helvetica
+09_Customer_Guides/Lions_Gate_Planner_Insert_Guide.pdf            6 pages  8.50x11.00in  links=0  unembedded=Helvetica
+09_Customer_Guides/Lions_Gate_Digital_Use_Guide.pdf               4 pages  8.50x11.00in  links=0  unembedded=Helvetica
+09_Customer_Guides/Lions_Gate_Read_Me_First.pdf                   6 pages  8.50x11.00in  links=0  unembedded=Helvetica
+Lions_Gate_Phone_Wallpapers.zip: 25 files (24 png, readme=True)

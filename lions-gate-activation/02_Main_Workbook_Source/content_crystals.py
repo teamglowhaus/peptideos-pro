@@ -1,0 +1,95 @@
+"""Crystals, Candles & Symbolic Tools — traditional associations, honest framing."""
+
+PAGES = [
+    {
+        "family": "education",
+        "section": "Crystals & Symbols",
+        "title": "Why Objects Help",
+        "subtitle": "The honest case for stones, candles and small sacred things",
+        "toc": True,
+        "wash": True,
+        "blocks": [
+            ("p", "A ritual made only of thoughts is easy to abandon. When you hold a stone, light a candle, or set a chosen object on your desk, you give your attention an **anchor**: something your senses can return to when your mind wanders. That is the real work these tools do. They make an invisible intention tangible, so that every time your eyes land on the object, the intention gets rehearsed."),
+            ("p", "Physical symbols also mark thresholds. Lighting a candle says *this time is different from the time around it*. Placing a stone on a written goal says *I meant that*. None of this requires belief in anything beyond your own psychology, though you are welcome to bring whatever beliefs you hold."),
+            ("h2", "What these tools are not"),
+            ("p", "Nothing in this chapter heals, cures or guarantees. The crystal meanings on the next pages are **traditional associations**, carried through folklore and modern practice, offered here as reflection themes rather than facts about minerals. If a stone helps you think more clearly about courage, the courage was always yours."),
+            ("callout", "No purchase required", "Every tool in this chapter is optional. A stone picked up on a meaningful walk works as well as anything sold as sacred. So does your grandmother's ring, a shell from one good summer, or a single word written on paper and folded into your pocket."),
+        ],
+    },
+    {
+        "family": "reference",
+        "section": "Crystals & Symbols",
+        "title": "A Working Crystal Shelf",
+        "subtitle": "Nine stones and their traditional associations · part one",
+        "blocks": [
+            ("p", "Each entry gives the traditional association, a reflective use, one simple ritual idea, and care notes where they matter. Choose one or two stones that speak to your season; a full shelf is never the point."),
+            ("kv", [
+                ("Citrine", "Traditionally associated with warmth, confidence and plenty. Use: hold it while naming one thing that is already going well. Ritual: keep it by your workspace as a cue to notice small wins. Care: its color can fade in direct sunlight."),
+                ("Pyrite", "Traditionally associated with boldness and material ambition. Use: a touchstone before asking for what your work is worth. Ritual: set it on an invoice, application or pitch before sending. Care: keep it dry; water dulls and damages it."),
+                ("Clear quartz", "Traditionally treated as an all-purpose amplifier and stand-in for any stone. Use: hold it while stating an intention in one plain sentence. Ritual: place it on a written goal overnight, then reread the goal at breakfast."),
+                ("Carnelian", "Traditionally associated with vitality, creativity and nerve. Use: carry it on days that ask you to be visible. Ritual: touch it once before you hit publish, send or speak. Care: happiest out of prolonged strong sun."),
+                ("Sunstone", "Traditionally associated with optimism, leadership and light. Use: a morning reminder that your presence affects a room. Ritual: hold it while naming how you want to enter today."),
+            ]),
+            ("quote", "Meaning does not live in the stone. It lives in the noticing."),
+            ("prompt", "The stone on this shelf I feel pulled toward first, and what that pull might be about:", 3),
+        ],
+    },
+    {
+        "family": "reference",
+        "section": "Crystals & Symbols",
+        "title": "The Crystal Shelf, Continued",
+        "subtitle": "Part two, plus alternatives that cost nothing",
+        "blocks": [
+            ("kv", [
+                ("Tiger's eye", "Traditionally associated with grounded focus and steady courage. Use: hold it when a decision needs patience rather than speed. Ritual: keep it beside a project you tend to abandon, as a cue to return."),
+                ("Labradorite", "Traditionally associated with intuition and hidden depths. Use: a companion for journaling on questions without quick answers. Ritual: tilt it in the light before a reflective session, watching what surfaces."),
+                ("Rose quartz", "Traditionally associated with tenderness, worth and self-regard. Use: hold it while speaking to yourself as you would to a dear friend. Ritual: place it near your mirror as a softness cue. Care: fades in long direct sun."),
+                ("Amethyst", "Traditionally associated with calm, rest and inner quiet. Use: a bedside object marking the boundary between doing and being done. Ritual: hold it during three slow breaths before sleep. Care: sunlight fades its violet over time."),
+            ]),
+            ("note", "A quick care rule for all of it: when unsure, keep any stone dry and out of long direct sun. Citrine, rose quartz and amethyst fade; pyrite and similar metallic stones dislike water."),
+            ("callout", "If crystals are not for you", "A river stone from a walk you want to remember, a piece of jewelry with history, or a word inked on paper will carry meaning just as faithfully. The object matters far less than the attention you route through it."),
+            ("prompt", "An object I already own that could serve as my anchor, and the story it carries:", 3),
+        ],
+    },
+    {
+        "family": "ritual",
+        "section": "Crystals & Symbols",
+        "title": "Candlelight and a Chosen Talisman",
+        "subtitle": "A flame to open, an object to remember",
+        "toc": True,
+        "blocks": [
+            ("p", "A candle is attention made visible. Lighting it marks the beginning of a practice; snuffing it marks a clean close, so the ritual has edges instead of leaking into the evening. In modern practice, gold and yellow candles are often chosen for confidence, white for clarity, and rose for self-regard, but any candle you own is enough."),
+            ("h3", "Safe candle use"),
+            ("check", [
+                "A stable, heat-proof surface, well away from fabric, paper and hair",
+                "Out of reach of children, pets and open windows",
+                "Snuffed before you leave the room, every time, no exceptions",
+                "A battery candle whenever an open flame is not practical; the symbolism survives",
+            ]),
+            ("h2", "Your talisman"),
+            ("p", "Choose one object to carry this season's intention: a stone from these pages, or anything with private meaning. It qualifies if it is small enough to live where you will see it, and if looking at it costs you nothing but a thought."),
+            ("prompt", "This object earns its place as my talisman because:", 3),
+            ("fields", ["The object I am choosing", "Where it will live day to day"]),
+            ("aff", "I keep my attention where my intention lives."),
+        ],
+    },
+    {
+        "family": "exercise",
+        "section": "Crystals & Symbols",
+        "title": "The Sideways Eight",
+        "subtitle": "A slow symbol practice for the eighth day",
+        "blocks": [
+            ("p", "Turn the number eight on its side and you have the infinity symbol: one unbroken loop that gives and returns, gives and returns. You do not need to print the symbol anywhere. You are going to draw it."),
+            ("steps", [
+                ("Draw the loop", "On blank paper, draw one large sideways eight in a single unhurried line, without lifting the pen."),
+                ("Name the exchange", "Each pass through the crossing point, name one thing you are releasing on the left loop and one thing you are receiving on the right."),
+                ("Circle eight times", "Let the words change as they want to. Stop when the loop feels finished, and note what showed up more than once."),
+            ]),
+            ("box", 78, "Trace your own sideways eight here, slowly"),
+            ("h3", "The number eight"),
+            ("p", "Upright, the eight reads as balance: two equal chambers, one above and one below. Many practitioners read it as the shape of cycles and return, which makes it a fitting emblem for a season about what comes back to you."),
+            ("prompt", "What keeps returning to me, season after season, and what it might be teaching:", 3),
+            ("prompt", "A symbol that already carries private meaning in my life, and how it earned that:", 2),
+        ],
+    },
+]
