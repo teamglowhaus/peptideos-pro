@@ -225,15 +225,24 @@ class Book:
             c.rect(0, 0, s.w, s.h, stroke=0, fill=1)
         x0, x1 = left, s.w - right
         y_top = s.h - s.m_top
-        # header: kicker + rule
+        # signature fine double frame on non-ring editions (kept off planner
+        # sizes so nothing can enter a punch zone)
+        if not s.mirrored:
+            M.page_frame(c, s.w, s.h, min(s.m_outer, s.m_top) * 0.42, color=T.GOLD_SOFT, weight=0.65)
+        # header: centered letterspaced kicker between star flanks
         kick = pg.get("section", "")
         if kick and s.decor != "minimal":
-            _kicker_text(c, x0, s.h - s.m_top * 0.52, kick, s.kicker, T.GOLD)
-            M.sparkle(c, x1 - 4, s.h - s.m_top * 0.52 + s.kicker * 0.35, 3.4, color=T.GOLD_SOFT)
+            cx = (x0 + x1) / 2.0
+            ky = s.h - s.m_top * 0.52
+            tw = _kicker_text(c, 0, ky, kick, s.kicker, T.GOLD, align="center", cx=cx)
+            for side in (-1, 1):
+                M.dot(c, cx + side * (tw / 2 + 14), ky + s.kicker * 0.32, 1.1, T.GOLD_SOFT)
+                M.eight_point_star(c, cx + side * (tw / 2 + 27), ky + s.kicker * 0.32, 3.6, color=T.GOLD_SOFT, weight=0.45)
         elif kick:
             _kicker_text(c, x0, s.h - s.m_top * 0.5, kick, s.kicker, T.GOLD)
-        c.setStrokeColor(T.GOLD_SOFT); c.setLineWidth(0.6)
-        c.line(x0, s.h - s.m_top * 0.36, x1, s.h - s.m_top * 0.36)
+        if s.mirrored:
+            c.setStrokeColor(T.GOLD_SOFT); c.setLineWidth(0.6)
+            c.line(x0, s.h - s.m_top * 0.36, x1, s.h - s.m_top * 0.36)
         # family decor accents (rotated to avoid repetition)
         self._family_decor(c, fam, pg, x0, x1)
         # footer
@@ -276,7 +285,7 @@ class Book:
         gold = Color(0.66, 0.54, 0.31, alpha=0.55)
         y_low = s.m_bottom * 0.9
         if fam in ("education", "front"):
-            if v == 0: M.corner_ornament(c, x1, y_low, 26, quadrant="br", color=gold)
+            if v == 0: M.constellation(c, x1 - 70, y_low - 4, 62, 30, color=gold, seed=seed * 11 + 5, n=6)
             elif v == 1: M.constellation(c, x1 - 64, y_low - 8, 58, 30, color=gold, seed=seed * 3 + 1, n=6)
             elif v == 2: M.botanical(c, x1 - 10, y_low - 6, 34, color=gold)
             else: M.crescent(c, x1 - 12, y_low + 6, 7, color=gold)
@@ -815,28 +824,27 @@ class Book:
     # ---------------------------------------------------------- special pages
     def _draw_cover(self, c, pg):
         s = self.s
-        c.setFillColor(T.INDIGO_DEEP)
-        c.rect(0, 0, s.w, s.h, stroke=0, fill=1)
-        c.setFillColor(T.INDIGO)
-        c.rect(0, s.h * 0.12, s.w, s.h * 0.83, stroke=0, fill=1)
-        M.starfield(c, s.w * 0.06, s.h * 0.5, s.w * 0.88, s.h * 0.44, seed=pg.get("seed", 5), n=46)
-        M.starfield(c, s.w * 0.06, s.h * 0.08, s.w * 0.88, s.h * 0.22, seed=3, n=16)
         cx = s.w / 2.0
-        # arch frame with medallion — the visual centerpiece, above the title
-        aw = s.w * 0.5
-        ah = s.h * 0.36
-        M.portal_arch(c, cx - aw / 2, s.h * 0.42, aw, ah, color=T.GOLD_ON_DARK, weight=1.1, layers=3)
-        M.lion_medallion(c, cx, s.h * 0.60, min(aw, ah) * 0.30, color=T.GOLD_ON_DARK, weight=0.8)
+        M.night_sky(c, s.w, s.h, glow_xy=(cx, s.h * 0.60), glow_r=s.w * 0.34)
+        M.starfield(c, s.w * 0.05, s.h * 0.46, s.w * 0.9, s.h * 0.48, seed=pg.get("seed", 5), n=52)
+        M.starfield(c, s.w * 0.05, s.h * 0.06, s.w * 0.9, s.h * 0.2, seed=3, n=16)
+        # ornate gate with the radiant sun-lion at its heart
+        gw = s.w * 0.52
+        gh = s.h * 0.40
+        gbase = s.h * 0.40
+        M.grand_gate(c, cx, gbase, gw, gh, color=T.GOLD_ON_DARK, weight=1.0)
+        M.sun_lion(c, cx, gbase + gh * 0.52, min(gw, gh) * 0.30, color=T.GOLD_ON_DARK, weight=0.8)
         # brand
-        _kicker_text(c, 0, s.h * 0.93, pg.get("brand", self.brand), s.kicker + 1, T.GOLD_ON_DARK, align="center", cx=cx)
+        _kicker_text(c, 0, s.h * 0.945, pg.get("brand", self.brand), s.kicker + 1, T.GOLD_ON_DARK, align="center", cx=cx)
+        M.flourish_rule(c, cx - s.w * 0.14, cx + s.w * 0.14, s.h * 0.925, color=T.GOLD_SOFT, weight=0.6)
         # title
         title = pg.get("title", self.title)
         fonts = {"r": T.SERIF_MED, "i": T.SERIF_IT_M, "b": T.SERIF_SB}
         size = s.h1 * 1.45
         lines = _wrap(title, fonts, size, s.w * 0.84)
-        ty = s.h * 0.36
+        ty = s.h * 0.335
         _draw_lines(c, lines, cx - s.w * 0.42, ty, size, size * 1.08, T.STARLIGHT, fonts, align="center", width=s.w * 0.84)
-        ty -= len(lines) * size * 1.08 + s.h2 * 1.0
+        ty -= len(lines) * size * 1.08 + s.h2 * 0.9
         sub = pg.get("subtitle", self.subtitle)
         if sub:
             sf = {"r": T.SERIF_IT, "i": T.SERIF, "b": T.SERIF_IT_M}
@@ -844,73 +852,87 @@ class Book:
             sl = _wrap(sub, sf, ssize, s.w * 0.7)
             _draw_lines(c, sl, cx - s.w * 0.35, ty, ssize, ssize * 1.25, T.GOLD_ON_DARK, sf, align="center", width=s.w * 0.7)
             ty -= len(sl) * ssize * 1.25
+        # moon-phase strip and tagline (skipped when a wrapped subtitle
+        # needs the room, e.g. on the smallest planner covers)
+        if ty > s.h * 0.205:
+            M.moon_phases(c, cx, s.h * 0.155, max(3.2, s.w * 0.008), color=T.GOLD_SOFT)
         tag = pg.get("tagline")
-        if tag and ty > s.h * 0.19:
-            _kicker_text(c, 0, s.h * 0.135, tag, s.kicker, T.GOLD_SOFT, align="center", cx=cx)
-        M.rule_with_star(c, cx - s.w * 0.16, cx + s.w * 0.16, s.h * 0.105, color=T.GOLD_ON_DARK, r=3.6)
-
+        if tag and ty > s.h * 0.20:
+            _kicker_text(c, 0, s.h * 0.115, tag, s.kicker, T.GOLD_SOFT, align="center", cx=cx)
+        # corner stars framing the composition
+        for fx in (s.w * 0.07, s.w * 0.93):
+            for fy in (s.h * 0.05, s.h * 0.965):
+                M.eight_point_star(c, fx, fy, 6, color=T.GOLD_SOFT, weight=0.5)
     def _draw_back(self, c, pg):
         s = self.s
-        c.setFillColor(T.INDIGO_DEEP)
-        c.rect(0, 0, s.w, s.h, stroke=0, fill=1)
-        M.starfield(c, s.w * 0.1, s.h * 0.15, s.w * 0.8, s.h * 0.7, seed=9, n=40)
         cx = s.w / 2.0
-        M.eight_point_star(c, cx, s.h * 0.58, 22, color=T.GOLD_ON_DARK, weight=0.8)
+        M.night_sky(c, s.w, s.h, glow_xy=(cx, s.h * 0.56), glow_r=s.w * 0.3)
+        M.starfield(c, s.w * 0.08, s.h * 0.15, s.w * 0.84, s.h * 0.72, seed=9, n=44)
+        M.page_frame(c, s.w, s.h, min(s.w, s.h) * 0.045, color=T.GOLD_SOFT, weight=0.7)
+        M.sun_lion(c, cx, s.h * 0.62, min(s.w, s.h) * 0.09, color=T.GOLD_ON_DARK, weight=0.7)
         fonts = {"r": T.SERIF_IT_M, "i": T.SERIF_MED, "b": T.SERIF_SB}
         size = s.h2 * 1.1
-        lines = _wrap(pg.get("quote", ""), fonts, size, s.w * 0.6)
-        ty = s.h * 0.5
-        _draw_lines(c, lines, cx - s.w * 0.3, ty, size, size * 1.3, T.STARLIGHT, fonts, align="center", width=s.w * 0.6)
-        _kicker_text(c, 0, s.h * 0.12, pg.get("brand", self.brand), s.kicker, T.GOLD_ON_DARK, align="center", cx=cx)
-
+        lines = _wrap(pg.get("quote", ""), fonts, size, s.w * 0.58)
+        _draw_lines(c, lines, cx - s.w * 0.29, s.h * 0.47, size, size * 1.3, T.STARLIGHT, fonts, align="center", width=s.w * 0.58)
+        M.moon_phases(c, cx, s.h * 0.30, max(3.0, s.w * 0.0075), color=T.GOLD_SOFT)
+        _kicker_text(c, 0, s.h * 0.115, pg.get("brand", self.brand), s.kicker, T.GOLD_ON_DARK, align="center", cx=cx)
     def _draw_divider(self, c, pg):
         s = self.s
-        c.setFillColor(T.INDIGO)
-        c.rect(0, 0, s.w, s.h, stroke=0, fill=1)
-        seed = pg.get("seed", self.page_no)
-        M.starfield(c, s.w * 0.08, s.h * 0.6, s.w * 0.84, s.h * 0.32, seed=seed, n=30)
         cx = s.w / 2.0
+        seed = pg.get("seed", self.page_no)
+        M.night_sky(c, s.w, s.h, glow_xy=(cx, s.h * 0.64), glow_r=s.w * 0.28)
+        M.starfield(c, s.w * 0.08, s.h * 0.55, s.w * 0.84, s.h * 0.36, seed=seed, n=34)
+        M.page_frame(c, s.w, s.h, min(s.w, s.h) * 0.045, color=T.GOLD_SOFT, weight=0.7)
         num = pg.get("num", "")
         if num:
-            _kicker_text(c, 0, s.h * 0.78, "Part " + num, s.kicker + 1, T.GOLD_SOFT, align="center", cx=cx)
+            ny = s.h * 0.845
+            c.setStrokeColor(T.GOLD_SOFT); c.setLineWidth(0.8)
+            c.circle(cx, ny, s.kicker * 2.1, stroke=1, fill=0)
+            c.setFont(T.SERIF_SB, s.kicker * 1.9); c.setFillColor(T.GOLD_ON_DARK)
+            c.drawCentredString(cx, ny - s.kicker * 0.65, num)
+            _kicker_text(c, 0, ny + s.kicker * 3.1, "Part", s.kicker, T.GOLD_SOFT, align="center", cx=cx)
         # motif varies per divider
         motif = pg.get("motif", "star")
         my = s.h * 0.62
         gold = T.GOLD_ON_DARK
         if motif == "arch":
-            M.portal_arch(c, cx - 40, my - 30, 80, 92, color=gold, weight=1.0)
+            M.grand_gate(c, cx, my - 52, 108, 110, color=gold, weight=0.9)
         elif motif == "lion":
-            M.lion_medallion(c, cx, my + 10, 44, color=gold)
+            M.sun_lion(c, cx, my + 8, 52, color=gold)
         elif motif == "sun":
-            M.sun_rays(c, cx, my + 10, 22, 44, color=gold, n=32, weight=0.7)
-            c.setStrokeColor(gold); c.setLineWidth(1.0); c.circle(cx, my + 10, 18, stroke=1, fill=0)
+            M.sun_rays(c, cx, my + 10, 24, 48, color=gold, n=32, weight=0.7)
+            c.setStrokeColor(gold); c.setLineWidth(1.0); c.circle(cx, my + 10, 19, stroke=1, fill=0)
+            c.setLineWidth(0.5); c.circle(cx, my + 10, 15, stroke=1, fill=0)
         elif motif == "moon":
-            M.crescent(c, cx, my + 10, 26, color=gold, weight=0.9)
+            M.crescent(c, cx, my + 10, 27, color=gold, weight=0.9)
+            M.starfield(c, cx - 44, my - 12, 88, 50, seed=seed * 3 + 1, n=8)
         elif motif == "infinity":
-            M.infinity(c, cx, my + 10, 90, color=gold, weight=1.1)
+            M.infinity(c, cx, my + 10, 96, color=gold, weight=1.1)
+            M.dot(c, cx, my + 10, 1.6, gold)
         elif motif == "constellation":
-            M.constellation(c, cx - 55, my - 15, 110, 60, color=gold, seed=seed * 7 + 2, n=8)
+            M.constellation(c, cx - 58, my - 16, 116, 64, color=gold, seed=seed * 7 + 2, n=8)
         elif motif == "geometry":
-            M.sacred_geometry(c, cx, my + 8, 30, color=gold, weight=0.5)
+            M.sacred_geometry(c, cx, my + 8, 32, color=gold, weight=0.5)
         elif motif == "botanical":
-            M.botanical(c, cx - 20, my - 25, 75, color=gold, weight=0.7)
-            M.botanical(c, cx + 20, my - 25, 75, color=gold, weight=0.7, flip=True)
+            M.botanical(c, cx - 20, my - 26, 78, color=gold, weight=0.7)
+            M.botanical(c, cx + 20, my - 26, 78, color=gold, weight=0.7, flip=True)
         else:
-            M.eight_point_star(c, cx, my + 10, 34, color=gold, weight=0.9)
+            M.eight_point_star(c, cx, my + 10, 36, color=gold, weight=0.9)
+            c.setStrokeColor(gold); c.setLineWidth(0.5)
+            c.circle(cx, my + 10, 46, stroke=1, fill=0)
         fonts = {"r": T.SERIF_MED, "i": T.SERIF_IT_M, "b": T.SERIF_SB}
         size = s.h1 * 1.18
-        lines = _wrap(pg["title"], fonts, size, s.w * 0.76)
-        ty = s.h * 0.47
-        _draw_lines(c, lines, cx - s.w * 0.38, ty, size, size * 1.1, T.STARLIGHT, fonts, align="center", width=s.w * 0.76)
+        lines = _wrap(pg["title"], fonts, size, s.w * 0.74)
+        ty = s.h * 0.46
+        _draw_lines(c, lines, cx - s.w * 0.37, ty, size, size * 1.1, T.STARLIGHT, fonts, align="center", width=s.w * 0.74)
         ty -= len(lines) * size * 1.1 + 8
         sub = pg.get("subtitle")
         if sub:
             sf = {"r": T.SERIF_IT, "i": T.SERIF, "b": T.SERIF_IT_M}
-            sl = _wrap(sub, sf, s.h2, s.w * 0.62)
-            _draw_lines(c, sl, cx - s.w * 0.31, ty, s.h2, s.h2 * 1.25, T.GOLD_ON_DARK, sf, align="center", width=s.w * 0.62)
+            sl = _wrap(sub, sf, s.h2, s.w * 0.6)
+            _draw_lines(c, sl, cx - s.w * 0.3, ty, s.h2, s.h2 * 1.25, T.GOLD_ON_DARK, sf, align="center", width=s.w * 0.6)
             ty -= len(sl) * s.h2 * 1.25
-        M.rule_with_star(c, cx - s.w * 0.14, cx + s.w * 0.14, ty - 10, color=T.GOLD_SOFT, r=3.2)
-
+        M.flourish_rule(c, cx - s.w * 0.16, cx + s.w * 0.16, ty - 12, color=T.GOLD_SOFT, weight=0.7)
     def _draw_toc(self, c, pg, entries, final):
         s = self.s
         per_page = max(10, int((s.h - s.m_top - s.m_bottom - s.h1 * 2.4) // (s.body * 1.75)))

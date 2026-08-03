@@ -231,3 +231,155 @@ def gate_886(c, x, y, h, color=T.GOLD, weight=0.8):
         c.circle(cx, y + h * 0.3, r, stroke=1, fill=0)
         c.circle(cx, y + h * 0.66, r * 0.82, stroke=1, fill=0)
     portal_arch(c, x - h * 0.16, y + h * 0.12, h * 0.32, h * 0.72, color=color, weight=weight * 0.7, layers=2)
+
+
+# ================================================================ v2 ornate set
+def night_sky(c, w, h, top=None, bottom=None, glow_xy=None, glow_r=0):
+    """Vertical dusk gradient with an optional radial glow (alpha rings)."""
+    top = top or T.HexColor("#2A2F58")
+    bottom = bottom or T.INDIGO_DEEP
+    steps = 60
+    for i in range(steps):
+        t = i / (steps - 1.0)
+        r_ = top.red + (bottom.red - top.red) * t
+        g_ = top.green + (bottom.green - top.green) * t
+        b_ = top.blue + (bottom.blue - top.blue) * t
+        c.setFillColor(Color(r_, g_, b_))
+        c.rect(0, h - (i + 1) * h / steps, w, h / steps + 1, stroke=0, fill=1)
+    if glow_xy and glow_r:
+        gx, gy = glow_xy
+        c.saveState()
+        for i in range(14, 0, -1):
+            c.setFillColor(Color(0.85, 0.72, 0.45, alpha=0.028))
+            c.circle(gx, gy, glow_r * i / 14.0, stroke=0, fill=1)
+        c.restoreState()
+
+
+def sun_lion(c, x, y, r, color=None, weight=0.8):
+    """Engraved radiant sun-lion: dotted halo, layered curved mane flames,
+    double ring, inner radial etching, center star."""
+    color = color or T.GOLD_ON_DARK
+    c.setStrokeColor(color)
+    # dotted halo
+    n_dots = 48
+    for i in range(n_dots):
+        a = 2 * math.pi * i / n_dots
+        dot(c, x + r * 1.12 * math.cos(a), y + r * 1.12 * math.sin(a), 0.9, color)
+    # mane: 32 curved flames, three alternating lengths
+    n = 32
+    for i in range(n):
+        a = 2 * math.pi * i / n
+        r0 = r * 0.52
+        r1 = r * (1.0 if i % 4 == 0 else 0.86 if i % 2 == 0 else 0.72)
+        x0, y0 = x + r0 * math.cos(a), y + r0 * math.sin(a)
+        x1, y1 = x + r1 * math.cos(a + 0.07), y + r1 * math.sin(a + 0.07)
+        mx = x + (r0 + (r1 - r0) * 0.55) * math.cos(a - 0.10)
+        my = y + (r0 + (r1 - r0) * 0.55) * math.sin(a - 0.10)
+        c.setLineWidth(weight if i % 2 == 0 else weight * 0.6)
+        p = c.beginPath(); p.moveTo(x0, y0)
+        p.curveTo(mx, my, mx, my, x1, y1)
+        c.drawPath(p, stroke=1, fill=0)
+    # double ring
+    c.setLineWidth(weight); c.circle(x, y, r * 0.5, stroke=1, fill=0)
+    c.setLineWidth(weight * 0.55); c.circle(x, y, r * 0.44, stroke=1, fill=0)
+    # inner radial etching
+    c.setLineWidth(weight * 0.45)
+    for i in range(24):
+        a = 2 * math.pi * i / 24 + math.pi / 24
+        c.line(x + r * 0.30 * math.cos(a), y + r * 0.30 * math.sin(a),
+               x + r * 0.41 * math.cos(a), y + r * 0.41 * math.sin(a))
+    eight_point_star(c, x, y, r * 0.22, color=color, fill=True, weight=0.4)
+
+
+def grand_gate(c, cx, base_y, w, h, color=None, weight=1.0):
+    """Ornate coffered portal: pilasters with capitals, three nested arches,
+    star studs along the middle arch, keystone star, stepped threshold."""
+    color = color or T.GOLD_ON_DARK
+    c.setStrokeColor(color)
+    r_out = w / 2.0
+    spring = base_y + h - r_out          # where arches begin to curve
+    # pilasters
+    for side in (-1, 1):
+        px = cx + side * r_out
+        c.setLineWidth(weight)
+        c.line(px, base_y, px, spring)
+        c.setLineWidth(weight * 0.5)
+        c.line(px - side * w * 0.045, base_y, px - side * w * 0.045, spring)
+        # capital + base
+        for yy in (spring, spring - 7):
+            c.setLineWidth(weight * 0.8)
+            c.line(px - side * w * 0.075, yy, px + side * w * 0.02, yy)
+        for yy in (base_y, base_y + 7):
+            c.line(px - side * w * 0.075, yy, px + side * w * 0.02, yy)
+    # nested arches
+    for i, f in enumerate((1.0, 0.86, 0.74)):
+        r_i = r_out * f
+        c.setLineWidth(weight if i == 0 else weight * 0.55)
+        p = c.beginPath()
+        p.arc(cx - r_i, spring - r_i, cx + r_i, spring + r_i, startAng=0, extent=180)
+        c.drawPath(p, stroke=1, fill=0)
+        if i < 2:
+            c.line(cx - r_i, base_y, cx - r_i, spring)
+            c.line(cx + r_i, base_y, cx + r_i, spring)
+    # star studs along middle arch
+    r_m = r_out * 0.80
+    for i in range(9):
+        a = math.pi * (i + 0.5) / 9.0
+        sx, sy = cx + r_m * math.cos(a), spring + r_m * math.sin(a)
+        eight_point_star(c, sx, sy, 3.4, color=color, weight=0.4)
+    # keystone
+    eight_point_star(c, cx, spring + r_out * 1.0 + 9, 7.5, color=color, weight=0.6)
+    # threshold steps
+    for i, ext in enumerate((0.12, 0.2)):
+        c.setLineWidth(weight * 0.7)
+        c.line(cx - r_out - w * ext, base_y - 6 - i * 6, cx + r_out + w * ext, base_y - 6 - i * 6)
+
+
+def page_frame(c, w, h, inset, color=None, weight=0.7):
+    """Fine double-rule frame with corner stars: the 'designed page' signature."""
+    color = color or T.GOLD_SOFT
+    c.setStrokeColor(color)
+    c.setLineWidth(weight)
+    c.rect(inset, inset, w - 2 * inset, h - 2 * inset, stroke=1, fill=0)
+    g = 3.5
+    c.setLineWidth(weight * 0.5)
+    c.rect(inset + g, inset + g, w - 2 * (inset + g), h - 2 * (inset + g), stroke=1, fill=0)
+    for (fx, fy) in ((inset, inset), (w - inset, inset), (inset, h - inset), (w - inset, h - inset)):
+        eight_point_star(c, fx, fy, 5.0, color=color, weight=0.5)
+
+
+def moon_phases(c, cx, y, r, color=None, gap=None):
+    """A strip of seven moon phases, new to full to new."""
+    color = color or T.GOLD_ON_DARK
+    gap = gap or r * 3.2
+    phases = [-1.0, -0.6, -0.2, 0.0, 0.2, 0.6, 1.0]   # -1 new .. 0 full
+    x = cx - 3 * gap
+    for ph in phases:
+        c.setStrokeColor(color); c.setLineWidth(0.7)
+        c.circle(x, y, r, stroke=1, fill=0)
+        if ph == 0.0:
+            c.setFillColor(color)
+            c.circle(x, y, r * 0.75, stroke=0, fill=1)
+        elif abs(ph) < 1.0:
+            c.saveState()
+            pclip = c.beginPath()
+            pclip.circle(x, y, r * 0.78)
+            c.clipPath(pclip, stroke=0, fill=0)
+            c.setFillColor(color)
+            c.circle(x + ph * r * 1.15, y, r * 0.78, stroke=0, fill=1)
+            c.restoreState()
+        x += gap
+
+
+def flourish_rule(c, x0, x1, y, color=None, weight=0.8):
+    """Rule with center star-in-diamond and dotted terminals."""
+    color = color or T.GOLD
+    mid = (x0 + x1) / 2.0
+    c.setStrokeColor(color); c.setLineWidth(weight)
+    c.line(x0 + 10, y, mid - 16, y)
+    c.line(mid + 16, y, x1 - 10, y)
+    eight_point_star(c, mid, y, 6, color=color, weight=0.5)
+    for side in (x0 + 4, x1 - 4):
+        dot(c, side, y, 1.4, color)
+    for side in (mid - 22, mid + 22):
+        dot(c, side, y, 1.1, color)
